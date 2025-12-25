@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Props - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React Props</h1>
+            <p>Chapter 5 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>What are Props?</h2>
+            <p>Props are arguments passed into React components. Props are passed to components via HTML attributes. The word "props" is short for properties.</p>
+
+            <div class="info-box">
+                <strong>💡 Think of Props Like Function Parameters:</strong> Just as functions accept parameters, components accept props to customize their behavior and output!
+            </div>
+
+            <h2>Passing Props</h2>
+            <p>You pass props to a component using attribute syntax:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Car</span>(props) {
+  <span class="keyword">return</span> &lt;h2&gt;I am a {props.brand}!&lt;/h2&gt;;
+}
+
+<span class="keyword">function</span> <span class="function">Garage</span>() {
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;Who lives in my garage?&lt;/h1&gt;
+      &lt;Car brand=<span class="string">"Ford"</span> /&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <p>In this example, <code class="inline-code">brand="Ford"</code> is a prop being passed to the Car component.</p>
+
+            <h2>Accessing Props</h2>
+            <p>Props are received as an object parameter in function components:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Welcome</span>(props) {
+  <span class="keyword">return</span> &lt;h1&gt;Hello, {props.name}!&lt;/h1&gt;;
+}
+
+<span class="comment">// Usage</span>
+&lt;Welcome name=<span class="string">"Sarah"</span> /&gt;</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Output:</strong> This will render: <code class="inline-code">Hello, Sarah!</code>
+            </div>
+
+            <h2>Multiple Props</h2>
+            <p>You can pass multiple props to a component:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Car</span>(props) {
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;h2&gt;Brand: {props.brand}&lt;/h2&gt;
+      &lt;p&gt;Model: {props.model}&lt;/p&gt;
+      &lt;p&gt;Year: {props.year}&lt;/p&gt;
+      &lt;p&gt;Color: {props.color}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+<span class="keyword">function</span> <span class="function">Garage</span>() {
+  <span class="keyword">return</span> (
+    &lt;Car 
+      brand=<span class="string">"Ford"</span> 
+      model=<span class="string">"Mustang"</span> 
+      year={<span class="number">1964</span>} 
+      color=<span class="string">"red"</span> 
+    /&gt;
+  );
+}</code></pre>
+
+            <h2>Props with Variables</h2>
+            <p>You can pass variables as props using curly braces:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Car</span>(props) {
+  <span class="keyword">return</span> &lt;h2&gt;I am a {props.brand}!&lt;/h2&gt;;
+}
+
+<span class="keyword">function</span> <span class="function">Garage</span>() {
+  <span class="keyword">const</span> carName = <span class="string">"Ford"</span>;
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;Who lives in my garage?&lt;/h1&gt;
+      &lt;Car brand={carName} /&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h2>Props with Objects</h2>
+            <p>You can pass entire objects as props:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Car</span>(props) {
+  <span class="keyword">return</span> (
+    &lt;h2&gt;
+      I am a {props.car.color} {props.car.brand} {props.car.model}!
+    &lt;/h2&gt;
+  );
+}
+
+<span class="keyword">function</span> <span class="function">Garage</span>() {
+  <span class="keyword">const</span> carInfo = {
+    brand: <span class="string">"Ford"</span>,
+    model: <span class="string">"Mustang"</span>,
+    color: <span class="string">"red"</span>
+  };
+  
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;My Garage&lt;/h1&gt;
+      &lt;Car car={carInfo} /&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h2>Destructuring Props</h2>
+            <p>A cleaner way to access props is using destructuring:</p>
+
+            <pre><code><span class="comment">// Instead of this:</span>
+<span class="keyword">function</span> <span class="function">Car</span>(props) {
+  <span class="keyword">return</span> &lt;h2&gt;I am a {props.brand}!&lt;/h2&gt;;
+}
+
+<span class="comment">// You can write this:</span>
+<span class="keyword">function</span> <span class="function">Car</span>({ brand }) {
+  <span class="keyword">return</span> &lt;h2&gt;I am a {brand}!&lt;/h2&gt;;
+}
+
+<span class="comment">// Multiple props:</span>
+<span class="keyword">function</span> <span class="function">Car</span>({ brand, model, year, color }) {
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;h2&gt;{brand} {model}&lt;/h2&gt;
+      &lt;p&gt;Year: {year}, Color: {color}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Best Practice:</strong> Destructuring makes your code cleaner and more readable!
+            </div>
+
+            <h2>Props in Class Components</h2>
+            <p>If your component is a class component, props are available on <code class="inline-code">this.props</code>:</p>
+
+            <pre><code><span class="keyword">class</span> Car <span class="keyword">extends</span> React.Component {
+  <span class="function">render</span>() {
+    <span class="keyword">return</span> &lt;h2&gt;I am a {<span class="keyword">this</span>.props.brand}!&lt;/h2&gt;;
+  }
+}
+
+<span class="comment">// Usage</span>
+&lt;Car brand=<span class="string">"Ford"</span> /&gt;</code></pre>
+
+            <h2>Default Props</h2>
+            <p>You can set default values for props:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Car</span>({ brand = <span class="string">"Unknown"</span>, model = <span class="string">"N/A"</span> }) {
+  <span class="keyword">return</span> &lt;h2&gt;{brand} {model}&lt;/h2&gt;;
+}
+
+<span class="comment">// If no props are passed, defaults will be used</span>
+&lt;Car /&gt;  <span class="comment">// Renders: Unknown N/A</span>
+&lt;Car brand=<span class="string">"Ford"</span> /&gt;  <span class="comment">// Renders: Ford N/A</span></code></pre>
+
+            <h2>Props are Read-Only</h2>
+            <p>Props are immutable - you cannot change them from within the component!</p>
+
+            <div class="warning-box">
+                <strong>⚠️ This is WRONG:</strong>
+                <pre><code><span class="keyword">function</span> <span class="function">Car</span>(props) {
+  props.brand = <span class="string">"Tesla"</span>;  <span class="comment">// ❌ Don't do this!</span>
+  <span class="keyword">return</span> &lt;h2&gt;{props.brand}&lt;/h2&gt;;
+}</code></pre>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Why Read-Only?</strong> Props flow from parent to child in one direction (unidirectional data flow). This makes your app predictable and easier to debug.
+            </div>
+
+            <h2>Passing Functions as Props</h2>
+            <p>You can also pass functions as props to allow child components to communicate back to parents:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Button</span>({ onClick, text }) {
+  <span class="keyword">return</span> &lt;button onClick={onClick}&gt;{text}&lt;/button&gt;;
+}
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> <span class="function">handleClick</span> = () => {
+    <span class="function">alert</span>(<span class="string">"Button clicked!"</span>);
+  };
+
+  <span class="keyword">return</span> &lt;Button onClick={handleClick} text=<span class="string">"Click Me"</span> /&gt;;
+}</code></pre>
+
+            <h2>The children Prop</h2>
+            <p>React has a special prop called <code class="inline-code">children</code> that contains anything between the opening and closing tags of a component:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Card</span>({ children }) {
+  <span class="keyword">return</span> (
+    &lt;div className=<span class="string">"card"</span>&gt;
+      {children}
+    &lt;/div&gt;
+  );
+}
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">return</span> (
+    &lt;Card&gt;
+      &lt;h2&gt;My Card Title&lt;/h2&gt;
+      &lt;p&gt;This is the card content.&lt;/p&gt;
+    &lt;/Card&gt;
+  );
+}</code></pre>
+
+            <h2>Real-World Example</h2>
+            <p>Here's a practical example using props:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">UserCard</span>({ name, email, age, avatar }) {
+  <span class="keyword">return</span> (
+    &lt;div className=<span class="string">"user-card"</span>&gt;
+      &lt;img src={avatar} alt={name} /&gt;
+      &lt;h3&gt;{name}&lt;/h3&gt;
+      &lt;p&gt;Email: {email}&lt;/p&gt;
+      &lt;p&gt;Age: {age}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;UserCard 
+        name=<span class="string">"John Doe"</span>
+        email=<span class="string">"john@example.com"</span>
+        age={<span class="number">30</span>}
+        avatar=<span class="string">"avatar1.jpg"</span>
+      /&gt;
+      &lt;UserCard 
+        name=<span class="string">"Jane Smith"</span>
+        email=<span class="string">"jane@example.com"</span>
+        age={<span class="number">25</span>}
+        avatar=<span class="string">"avatar2.jpg"</span>
+      /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Props Summary</h2>
+            <ul>
+                <li>Props are used to pass data from parent to child components</li>
+                <li>Props are read-only and immutable</li>
+                <li>Props can be any JavaScript value: strings, numbers, objects, arrays, functions</li>
+                <li>Use destructuring for cleaner code</li>
+                <li>Props flow in one direction (parent → child)</li>
+            </ul>
+
+            <h2>What's Next?</h2>
+            <p>Now that you understand how to pass data with props, you're ready to learn about State - how components can manage their own internal data!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="04-components.html" class="nav-button">← Previous: Components</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="06-state.html" class="nav-button">Next: State →</a>
+        </div>
+    </div>
+</body>
+</html>
+

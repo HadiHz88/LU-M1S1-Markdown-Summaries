@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .calculator {
+            max-width: 400px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input[type="number"]:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .calc-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calc-btn.add {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .calc-btn.subtract {
+            background: #FF9800;
+            color: white;
+        }
+
+        .calc-btn.multiply {
+            background: #2196F3;
+            color: white;
+        }
+
+        .calc-btn.divide {
+            background: #f44336;
+            color: white;
+        }
+
+        .calc-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .result {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            border: 2px solid #e9ecef;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="calculator">
+        <h1 style="text-align: center; color: #333;">JavaScript Calculator</h1>
+
+        <div class="input-group">
+            <label for="num1">First Number:</label>
+            <input type="number" id="num1" placeholder="Enter first number">
+        </div>
+
+        <div class="input-group">
+            <label for="num2">Second Number:</label>
+            <input type="number" id="num2" placeholder="Enter second number">
+        </div>
+
+        <div class="buttons">
+            <button class="calc-btn add" onclick="calculate('add')">Add (+)</button>
+            <button class="calc-btn subtract" onclick="calculate('subtract')">Subtract (-)</button>
+            <button class="calc-btn multiply" onclick="calculate('multiply')">Multiply (×)</button>
+            <button class="calc-btn divide" onclick="calculate('divide')">Divide (÷)</button>
+        </div>
+
+        <div id="result" class="result">Result will appear here</div>
+    </div>
+
+    <script>
+        function calculate(operation) {
+            const num1 = parseFloat(document.getElementById('num1').value);
+            const num2 = parseFloat(document.getElementById('num2').value);
+            const resultDiv = document.getElementById('result');
+
+            if (!validateInputs(num1, num2)) {
+                resultDiv.textContent = 'Please enter valid numbers!';
+                resultDiv.style.color = '#dc3545';
+                return;
+            }
+
+            let result;
+            let symbol;
+
+            switch(operation) {
+                case 'add':
+                    result = num1 + num2;
+                    symbol = '+';
+                    break;
+                case 'subtract':
+                    result = num1 - num2;
+                    symbol = '-';
+                    break;
+                case 'multiply':
+                    result = num1 * num2;
+                    symbol = '×';
+                    break;
+                case 'divide':
+                    if (num2 === 0) {
+                        resultDiv.textContent = 'Error: Cannot divide by zero!';
+                        resultDiv.style.color = '#dc3545';
+                        return;
+                    }
+                    result = num1 / num2;
+                    symbol = '÷';
+                    break;
+                default:
+                    resultDiv.textContent = 'Invalid operation';
+                    return;
+            }
+
+            resultDiv.textContent = `${num1} ${symbol} ${num2} = ${result}`;
+        }
+
+        function validateInputs(num1, num2) {
+            return !isNaN(num1) && !isNaN(num2);
+        }
+    </script>
+</body>
+
+</html>

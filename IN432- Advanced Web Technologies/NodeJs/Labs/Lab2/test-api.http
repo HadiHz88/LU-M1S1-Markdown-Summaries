@@ -1,0 +1,80 @@
+### ===========================================
+### Book Library API Test File
+### ===========================================
+### Install "REST Client" extension in VS Code
+### Click "Send Request" above each request
+### ===========================================
+
+### Get all books
+GET http://localhost:3000/api/books
+
+### Get all books with category filter (query parameter)
+GET http://localhost:3000/api/books?category=fiction
+
+### Get all books with category and minimum price filter
+GET http://localhost:3000/api/books?category=fiction&minPrice=10
+
+### Get single book (replace BOOK_ID with actual ID from previous responses)
+GET http://localhost:3000/api/books/BOOK_ID
+
+### Create a book
+POST http://localhost:3000/api/books
+Content-Type: application/json
+
+{
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "category": "fiction",
+  "price": 12.99,
+  "inStock": true
+}
+
+### Create another book
+POST http://localhost:3000/api/books
+Content-Type: application/json
+
+{
+  "title": "1984",
+  "author": "George Orwell",
+  "category": "fiction",
+  "price": 10.99,
+  "inStock": true
+}
+
+### Create a non-fiction book
+POST http://localhost:3000/api/books
+Content-Type: application/json
+
+{
+  "title": "Sapiens",
+  "author": "Yuval Noah Harari",
+  "category": "non-fiction",
+  "price": 15.99,
+  "inStock": true
+}
+
+### Update book (replace BOOK_ID with actual ID)
+PUT http://localhost:3000/api/books/BOOK_ID
+Content-Type: application/json
+
+{
+  "price": 9.99
+}
+
+### Update book - change multiple fields
+PUT http://localhost:3000/api/books/BOOK_ID
+Content-Type: application/json
+
+{
+  "price": 11.99,
+  "inStock": false
+}
+
+### Delete book (replace BOOK_ID with actual ID)
+DELETE http://localhost:3000/api/books/BOOK_ID
+
+### Test 404 - Non-existent route
+GET http://localhost:3000/api/nonexistent
+
+### Test 404 - Non-existent book ID
+GET http://localhost:3000/api/books/000000000000000000000000

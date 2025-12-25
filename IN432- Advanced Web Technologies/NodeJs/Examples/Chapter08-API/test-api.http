@@ -1,0 +1,44 @@
+### ===========================================
+### Simple API Test File
+### ===========================================
+### Install "REST Client" extension in VS Code
+### Click "Send Request" above each request
+### ===========================================
+
+### Get all products
+GET http://localhost:3000/api/products
+
+### Get one product (replace ID)
+GET http://localhost:3000/api/products/PRODUCT_ID_HERE
+
+### Create product
+POST http://localhost:3000/api/products
+Content-Type: application/json
+
+{
+  "name": "Laptop",
+  "price": 999,
+  "category": "electronics"
+}
+
+### Create another product
+POST http://localhost:3000/api/products
+Content-Type: application/json
+
+{
+  "name": "Phone",
+  "price": 699,
+  "category": "electronics"
+}
+
+### Update product (replace ID)
+PUT http://localhost:3000/api/products/PRODUCT_ID_HERE
+Content-Type: application/json
+
+{
+  "name": "Gaming Laptop",
+  "price": 1299
+}
+
+### Delete product (replace ID)
+DELETE http://localhost:3000/api/products/PRODUCT_ID_HERE

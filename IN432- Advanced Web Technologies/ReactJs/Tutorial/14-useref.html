@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>useRef Hook - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React useRef Hook</h1>
+            <p>Chapter 14 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>What is useRef?</h2>
+            <p>The <code class="inline-code">useRef</code> Hook allows you to persist values between renders without causing a re-render. It can also be used to access DOM elements directly.</p>
+
+            <div class="info-box">
+                <strong>💡 Two Main Uses:</strong>
+                <ol>
+                    <li>Accessing DOM elements</li>
+                    <li>Storing mutable values that persist across renders</li>
+                </ol>
+            </div>
+
+            <h2>Does Not Cause Re-renders</h2>
+            <p>If we tried to count renders using useState, we'd create an infinite loop:</p>
+
+            <pre><code><span class="comment">// ❌ This creates an infinite loop!</span>
+<span class="keyword">import</span> { useState, useEffect } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+
+  useEffect(() => {
+    <span class="function">setCount</span>(count + <span class="number">1</span>); <span class="comment">// ❌ Causes re-render, triggers useEffect again!</span>
+  });
+
+  <span class="keyword">return</span> &lt;div&gt;Render Count: {count}&lt;/div&gt;;
+}</code></pre>
+
+            <p>useRef solves this problem:</p>
+
+            <pre><code><span class="comment">// ✅ This works!</span>
+<span class="keyword">import</span> { useState, useEffect, useRef } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> [inputValue, setInputValue] = <span class="function">useState</span>(<span class="string">""</span>);
+  <span class="keyword">const</span> count = <span class="function">useRef</span>(<span class="number">0</span>);
+
+  useEffect(() => {
+    count.current = count.current + <span class="number">1</span>;
+  });
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;input
+        type=<span class="string">"text"</span>
+        value={inputValue}
+        onChange={(e) => <span class="function">setInputValue</span>(e.target.value)}
+      /&gt;
+      &lt;h1&gt;Render Count: {count.current}&lt;/h1&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Key Point:</strong> Updating <code class="inline-code">count.current</code> doesn't trigger a re-render!
+            </div>
+
+            <h2>Accessing DOM Elements</h2>
+            <p>useRef is commonly used to access DOM elements directly:</p>
+
+            <pre><code><span class="keyword">import</span> { useRef } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> inputElement = <span class="function">useRef</span>();
+
+  <span class="keyword">const</span> <span class="function">focusInput</span> = () => {
+    inputElement.current.<span class="function">focus</span>();
+  };
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;input type=<span class="string">"text"</span> ref={inputElement} /&gt;
+      &lt;button onClick={focusInput}&gt;Focus Input&lt;/button&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h2>Tracking State Changes</h2>
+            <p>useRef can track previous state values:</p>
+
+            <pre><code><span class="keyword">import</span> { useState, useEffect, useRef } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> [inputValue, setInputValue] = <span class="function">useState</span>(<span class="string">""</span>);
+  <span class="keyword">const</span> previousInputValue = <span class="function">useRef</span>(<span class="string">""</span>);
+
+  useEffect(() => {
+    previousInputValue.current = inputValue;
+  }, [inputValue]);
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;input
+        type=<span class="string">"text"</span>
+        value={inputValue}
+        onChange={(e) => <span class="function">setInputValue</span>(e.target.value)}
+      /&gt;
+      &lt;h2&gt;Current Value: {inputValue}&lt;/h2&gt;
+      &lt;h2&gt;Previous Value: {previousInputValue.current}&lt;/h2&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h2>Common Use Cases</h2>
+
+            <h3>1. Focus Management</h3>
+            <pre><code><span class="keyword">function</span> <span class="function">LoginForm</span>() {
+  <span class="keyword">const</span> usernameRef = <span class="function">useRef</span>();
+
+  useEffect(() => {
+    <span class="comment">// Focus username on mount</span>
+    usernameRef.current.<span class="function">focus</span>();
+  }, []);
+
+  <span class="keyword">return</span> &lt;input ref={usernameRef} placeholder=<span class="string">"Username"</span> /&gt;;
+}</code></pre>
+
+            <h3>2. Storing Timer IDs</h3>
+            <pre><code><span class="keyword">function</span> <span class="function">Timer</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+  <span class="keyword">const</span> timerRef = <span class="function">useRef</span>();
+
+  <span class="keyword">const</span> <span class="function">start</span> = () => {
+    timerRef.current = <span class="function">setInterval</span>(() => {
+      <span class="function">setCount</span>(c => c + <span class="number">1</span>);
+    }, <span class="number">1000</span>);
+  };
+
+  <span class="keyword">const</span> <span class="function">stop</span> = () => {
+    <span class="function">clearInterval</span>(timerRef.current);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={start}&gt;Start&lt;/button&gt;
+      &lt;button onClick={stop}&gt;Stop&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h3>3. Measuring Element Size</h3>
+            <pre><code><span class="keyword">function</span> <span class="function">MeasureDiv</span>() {
+  <span class="keyword">const</span> divRef = <span class="function">useRef</span>();
+
+  <span class="keyword">const</span> <span class="function">logSize</span> = () => {
+    console.<span class="function">log</span>(divRef.current.offsetWidth);
+    console.<span class="function">log</span>(divRef.current.offsetHeight);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;div ref={divRef} style={{ width: <span class="string">"200px"</span>, height: <span class="string">"100px"</span> }}&gt;
+        Measure me!
+      &lt;/div&gt;
+      &lt;button onClick={logSize}&gt;Log Size&lt;/button&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h3>4. Scroll to Element</h3>
+            <pre><code><span class="keyword">function</span> <span class="function">ScrollExample</span>() {
+  <span class="keyword">const</span> bottomRef = <span class="function">useRef</span>();
+
+  <span class="keyword">const</span> <span class="function">scrollToBottom</span> = () => {
+    bottomRef.current.<span class="function">scrollIntoView</span>({ behavior: <span class="string">"smooth"</span> });
+  };
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;button onClick={scrollToBottom}&gt;Scroll to Bottom&lt;/button&gt;
+      {/* Long content */}
+      &lt;div ref={bottomRef}&gt;Bottom of page&lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>useRef vs useState</h2>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background-color: #f2f2f2;">
+                    <th style="border: 1px solid #ddd; padding: 12px;">Feature</th>
+                    <th style="border: 1px solid #ddd; padding: 12px;">useRef</th>
+                    <th style="border: 1px solid #ddd; padding: 12px;">useState</th>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>Triggers Re-render</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">❌ No</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">✅ Yes</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>Mutable</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">✅ Yes (current)</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">❌ No (immutable)</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>Updates</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Synchronous</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Asynchronous</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>Use For</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">DOM access, timers</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">UI state</td>
+                </tr>
+            </table>
+
+            <h2>Multiple Refs</h2>
+            <p>You can use multiple refs in a single component:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">MultipleRefs</span>() {
+  <span class="keyword">const</span> inputRef1 = <span class="function">useRef</span>();
+  <span class="keyword">const</span> inputRef2 = <span class="function">useRef</span>();
+  <span class="keyword">const</span> inputRef3 = <span class="function">useRef</span>();
+
+  <span class="keyword">const</span> <span class="function">focusFirst</span> = () => inputRef1.current.<span class="function">focus</span>();
+  <span class="keyword">const</span> <span class="function">focusSecond</span> = () => inputRef2.current.<span class="function">focus</span>();
+  <span class="keyword">const</span> <span class="function">focusThird</span> = () => inputRef3.current.<span class="function">focus</span>();
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;input ref={inputRef1} placeholder=<span class="string">"First"</span> /&gt;
+      &lt;input ref={inputRef2} placeholder=<span class="string">"Second"</span> /&gt;
+      &lt;input ref={inputRef3} placeholder=<span class="string">"Third"</span> /&gt;
+      &lt;button onClick={focusFirst}&gt;Focus First&lt;/button&gt;
+      &lt;button onClick={focusSecond}&gt;Focus Second&lt;/button&gt;
+      &lt;button onClick={focusThird}&gt;Focus Third&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Best Practices</h2>
+            <ul>
+                <li>Use useState for values that should trigger re-renders</li>
+                <li>Use useRef for values that shouldn't trigger re-renders</li>
+                <li>Use useRef to access DOM elements directly</li>
+                <li>Don't read or write <code class="inline-code">ref.current</code> during rendering</li>
+                <li>Avoid overusing refs - prefer declarative React patterns</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> In React, you should generally let React handle DOM updates. Use refs only when you need to do something that React can't handle declaratively.
+            </div>
+
+            <h2>When to Use useRef</h2>
+
+            <div class="success-box">
+                <strong>✅ Good Use Cases:</strong>
+                <ul>
+                    <li>Managing focus, text selection, or media playback</li>
+                    <li>Triggering imperative animations</li>
+                    <li>Integrating with third-party DOM libraries</li>
+                    <li>Storing mutable values without causing re-renders</li>
+                    <li>Keeping reference to timer/interval IDs</li>
+                </ul>
+            </div>
+
+            <h2>What's Next?</h2>
+            <p>Now that you understand useRef, you're ready to learn about Custom Hooks - how to create your own reusable hooks!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="13-usecontext.html" class="nav-button">← Previous: useContext</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="15-custom-hooks.html" class="nav-button">Next: Custom Hooks →</a>
+        </div>
+    </div>
+</body>
+</html>
+

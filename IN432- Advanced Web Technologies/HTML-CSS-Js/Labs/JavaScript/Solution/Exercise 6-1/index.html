@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Explorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .sample-dom {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+        }
+
+        .sample-dom h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+
+        .article {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .article h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .article p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .highlighted {
+            background: #ffd700 !important;
+            border-color: #ff9800 !important;
+            font-weight: bold;
+        }
+
+        .control-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .control-section {
+            margin-bottom: 25px;
+        }
+
+        .control-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .control-btn {
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: #007bff;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+        }
+
+        .btn-purple {
+            background: #667eea;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .output-panel {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .output-panel h4 {
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+
+        .output-panel pre {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 12px;
+            color: #856404;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 DOM Explorer</h1>
+            <p>Master DOM Selection and Traversal Methods</p>
+        </div>
+
+        <div class="content-wrapper">
+            <!-- Sample DOM Structure -->
+            <div class="sample-dom">
+                <h2>Sample Website Structure</h2>
+
+                <nav id="mainNav">
+                    <ul class="menu">
+                        <li class="menu-item" data-category="home">Home</li>
+                        <li class="menu-item" data-category="products">Products</li>
+                        <li class="menu-item active" data-category="services">Services</li>
+                        <li class="menu-item" data-category="about">About Us</li>
+                        <li class="menu-item" data-category="contact">Contact</li>
+                    </ul>
+                </nav>
+
+                <section id="content">
+                    <article class="article featured" data-id="1">
+                        <h3>Featured Article</h3>
+                        <p class="intro">This is the introduction paragraph.</p>
+                        <p>This is the main content of the article.</p>
+                        <footer>
+                            <span class="author">By John Doe</span>
+                            <span class="date">2024-01-15</span>
+                        </footer>
+                    </article>
+
+                    <article class="article" data-id="2">
+                        <h3>Second Article</h3>
+                        <p class="intro">Another interesting article.</p>
+                        <p>More detailed content here.</p>
+                        <footer>
+                            <span class="author">By Jane Smith</span>
+                            <span class="date">2024-01-16</span>
+                        </footer>
+                    </article>
+
+                    <article class="article" data-id="3">
+                        <h3>Third Article</h3>
+                        <p class="intro">Yet another article.</p>
+                        <p>Additional content information.</p>
+                        <footer>
+                            <span class="author">By Bob Johnson</span>
+                            <span class="date">2024-01-17</span>
+                        </footer>
+                    </article>
+                </section>
+            </div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="info-box">
+                    💡 Click buttons to select and highlight DOM elements. Check the output panel below.
+                </div>
+
+                <!-- Selection Methods -->
+                <div class="control-section">
+                    <h3>🎯 Selection Methods</h3>
+                    <div class="button-group">
+                        <button class="control-btn btn-primary" onclick="selectById()">Select by ID</button>
+                        <button class="control-btn btn-success" onclick="selectByClass()">Select by Class</button>
+                        <button class="control-btn btn-warning" onclick="selectByTag()">Select by Tag</button>
+                        <button class="control-btn btn-danger" onclick="selectByQuery()">querySelector</button>
+                        <button class="control-btn btn-info" onclick="selectByQueryAll()">querySelectorAll</button>
+                        <button class="control-btn btn-purple" onclick="selectByAttribute()">Select by
+                            Attribute</button>
+                    </div>
+                </div>
+
+                <!-- Traversal Methods -->
+                <div class="control-section">
+                    <h3>🌳 DOM Traversal</h3>
+                    <div class="button-group">
+                        <button class="control-btn btn-primary" onclick="getParent()">Get Parent</button>
+                        <button class="control-btn btn-success" onclick="getChildren()">Get Children</button>
+                        <button class="control-btn btn-warning" onclick="getSiblings()">Get Siblings</button>
+                        <button class="control-btn btn-danger" onclick="getFirstLast()">First/Last Child</button>
+                        <button class="control-btn btn-info" onclick="getClosest()">Closest Ancestor</button>
+                        <button class="control-btn btn-purple" onclick="traverseTree()">Traverse Tree</button>
+                    </div>
+                </div>
+
+                <!-- Custom Selector -->
+                <div class="control-section">
+                    <h3>✨ Custom Selection</h3>
+                    <div class="input-group">
+                        <label for="customSelector">Enter CSS Selector:</label>
+                        <input type="text" id="customSelector" placeholder="e.g., .menu-item[data-category='home']">
+                    </div>
+                    <button class="control-btn btn-primary" onclick="customSelect()" style="width: 100%;">Execute Custom
+                        Selector</button>
+                </div>
+
+                <!-- Actions -->
+                <div class="control-section">
+                    <h3>⚡ Actions</h3>
+                    <div class="button-group">
+                        <button class="control-btn btn-warning" onclick="clearHighlights()">Clear Highlights</button>
+                        <button class="control-btn btn-danger" onclick="clearOutput()">Clear Output</button>
+                    </div>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="output-panel">
+                    <h4>📋 Selection Output</h4>
+                    <pre id="output">Results will appear here...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM selection methods implementation
+
+        function selectById() {
+            clearHighlights();
+            const element = document.getElementById('mainTitle');
+            if (element) {
+                highlightElement(element);
+                displayElementInfo(element);
+            }
+        }
+
+        function selectByClass() {
+            clearHighlights();
+            const elements = document.getElementsByClassName('menu-item');
+            const output = document.getElementById('output');
+
+            output.innerHTML = `<h4>Selected Elements</h4>
+                <pre>Found ${elements.length} elements with class "menu-item"
+${Array.from(elements).map((el, i) => `${i + 1}. ${el.tagName}: ${el.textContent}`).join('\n')}</pre>`;
+
+            Array.from(elements).forEach(el => highlightElement(el));
+        }
+
+        function selectByTag() {
+            clearHighlights();
+            const elements = document.getElementsByTagName('p');
+            const output = document.getElementById('output');
+
+            output.innerHTML = `<h4>Selected Elements</h4>
+                <pre>Found ${elements.length} &lt;p&gt; elements
+${Array.from(elements).map((el, i) => `${i + 1}. ${el.textContent.substring(0, 50)}...`).join('\n')}</pre>`;
+
+            Array.from(elements).forEach(el => highlightElement(el));
+        }
+
+        function selectByQuery() {
+            clearHighlights();
+            const element = document.querySelector('.article');
+            if (element) {
+                highlightElement(element);
+                displayElementInfo(element);
+            }
+        }
+
+        function selectByQueryAll() {
+            clearHighlights();
+            const elements = document.querySelectorAll('.menu-item');
+            const output = document.getElementById('output');
+
+            output.innerHTML = `<h4>Selected Elements (querySelectorAll)</h4>
+                <pre>NodeList length: ${elements.length}
+${Array.from(elements).map((el, i) => `${i + 1}. ${el.textContent}`).join('\n')}</pre>`;
+
+            elements.forEach(el => highlightElement(el));
+        }
+
+        function selectByAttribute() {
+            clearHighlights();
+            const elements = document.querySelectorAll('[data-category]');
+            const output = document.getElementById('output');
+
+            output.innerHTML = `<h4>Elements with data-category attribute</h4>
+                <pre>Found ${elements.length} elements
+${Array.from(elements).map((el, i) => `${i + 1}. ${el.tagName} - category: ${el.dataset.category}`).join('\n')}</pre>`;
+
+            elements.forEach(el => highlightElement(el));
+        }
+
+        function getParent() {
+            clearHighlights();
+            const element = document.querySelector('.menu-item');
+            if (element && element.parentElement) {
+                highlightElement(element.parentElement);
+                const output = document.getElementById('output');
+                output.innerHTML = `<h4>Parent Element</h4>
+                    <pre>Parent of first menu item:
+Tag: ${element.parentElement.tagName}
+Class: ${element.parentElement.className}
+ID: ${element.parentElement.id || 'none'}</pre>`;
+            }
+        }
+
+        function getChildren() {
+            clearHighlights();
+            const element = document.getElementById('navigationMenu');
+            if (element) {
+                const children = element.children;
+                const output = document.getElementById('output');
+
+                output.innerHTML = `<h4>Child Elements</h4>
+                    <pre>Children of #navigationMenu: ${children.length}
+${Array.from(children).map((el, i) => `${i + 1}. ${el.tagName}.${el.className}`).join('\n')}</pre>`;
+
+                Array.from(children).forEach(el => highlightElement(el));
+            }
+        }
+
+        function getSiblings() {
+            clearHighlights();
+            const element = document.querySelector('.menu-item:nth-child(2)');
+            if (element) {
+                const prev = element.previousElementSibling;
+                const next = element.nextElementSibling;
+                const output = document.getElementById('output');
+
+                output.innerHTML = `<h4>Sibling Elements</h4>
+                    <pre>Current: ${element.textContent}
+Previous: ${prev ? prev.textContent : 'none'}
+Next: ${next ? next.textContent : 'none'}</pre>`;
+
+                highlightElement(element);
+                if (prev) highlightElement(prev);
+                if (next) highlightElement(next);
+            }
+        }
+
+        function getFirstLast() {
+            clearHighlights();
+            const container = document.getElementById('navigationMenu');
+            if (container) {
+                const first = container.firstElementChild;
+                const last = container.lastElementChild;
+                const output = document.getElementById('output');
+
+                output.innerHTML = `<h4>First & Last Children</h4>
+                    <pre>First child: ${first ? first.textContent : 'none'}
+Last child: ${last ? last.textContent : 'none'}</pre>`;
+
+                if (first) highlightElement(first);
+                if (last) highlightElement(last);
+            }
+        }
+
+        function getClosest() {
+            clearHighlights();
+            const element = document.querySelector('.menu-item');
+            if (element) {
+                const closest = element.closest('.sample-dom');
+                const output = document.getElementById('output');
+
+                output.innerHTML = `<h4>Closest Ancestor</h4>
+                    <pre>Starting from: ${element.textContent}
+Closest .sample-dom: ${closest ? closest.tagName + '.' + closest.className : 'none'}</pre>`;
+
+                if (closest) highlightElement(closest);
+            }
+        }
+
+        function traverseTree() {
+            clearHighlights();
+            const root = document.querySelector('.sample-dom');
+            const output = document.getElementById('output');
+
+            let treeHTML = '<h4>DOM Tree Structure</h4><pre>';
+            let elementCount = { div: 0, ul: 0, li: 0, h2: 0, h3: 0, p: 0 };
+
+            function traverse(element, depth = 0) {
+                const indent = '  '.repeat(depth);
+                const tag = element.tagName.toLowerCase();
+                elementCount[tag] = (elementCount[tag] || 0) + 1;
+
+                let info = `${indent}${tag}`;
+                if (element.id) info += `#${element.id}`;
+                if (element.className) info += `.${element.className.split(' ').join('.')}`;
+
+                treeHTML += info + '\n';
+
+                Array.from(element.children).forEach(child => {
+                    traverse(child, depth + 1);
+                });
+            }
+
+            traverse(root);
+
+            treeHTML += '\n--- Element Count ---\n';
+            Object.entries(elementCount).forEach(([tag, count]) => {
+                if (count > 0) treeHTML += `${tag}: ${count}\n`;
+            });
+
+            treeHTML += '</pre>';
+            output.innerHTML = treeHTML;
+        }
+
+        function customSelect() {
+            const selector = document.getElementById('customSelector').value;
+            if (!selector) {
+                alert('Please enter a CSS selector');
+                return;
+            }
+
+            try {
+                clearHighlights();
+                const elements = document.querySelectorAll(selector);
+                const output = document.getElementById('output');
+
+                output.innerHTML = `<h4>Custom Selector Results</h4>
+                    <pre>Selector: "${selector}"
+Found: ${elements.length} element(s)
+${Array.from(elements).map((el, i) => `${i + 1}. ${el.tagName}${el.id ? '#' + el.id : ''}${el.className ? '.' + el.className.split(' ').join('.') : ''}`).join('\n')}</pre>`;
+
+                elements.forEach(el => highlightElement(el));
+            } catch (e) {
+                alert('Invalid selector: ' + e.message);
+            }
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.highlighted').forEach(el => {
+                el.classList.remove('highlighted');
+            });
+        }
+
+        function clearOutput() {
+            document.getElementById('output').innerHTML = '';
+        }
+
+        // Utility function to highlight element
+        function highlightElement(element) {
+            element.classList.add('highlighted');
+        }
+
+        // Utility function to display element info
+        function displayElementInfo(element) {
+            const output = document.getElementById('output');
+            output.innerHTML = `<h4>Element Information</h4>
+                <pre>Tag: ${element.tagName}
+ID: ${element.id || 'none'}
+Class: ${element.className || 'none'}
+Text Content: ${element.textContent.substring(0, 100)}${element.textContent.length > 100 ? '...' : ''}
+Children: ${element.children.length}
+Parent: ${element.parentElement ? element.parentElement.tagName : 'none'}</pre>`;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>useEffect Hook - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React useEffect Hook</h1>
+            <p>Chapter 12 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>What is useEffect?</h2>
+            <p>The <code class="inline-code">useEffect</code> Hook allows you to perform side effects in your components. Side effects are operations that affect something outside the component, such as:</p>
+            
+            <ul>
+                <li>Fetching data from an API</li>
+                <li>Directly updating the DOM</li>
+                <li>Setting up timers or intervals</li>
+                <li>Subscribing to external data sources</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>💡 Think of useEffect as:</strong> componentDidMount, componentDidUpdate, and componentWillUnmount combined!
+            </div>
+
+            <h2>Basic Syntax</h2>
+            <pre><code><span class="keyword">import</span> { useEffect } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+useEffect(<span class="function">function</span>, <span class="function">dependencies</span>)</code></pre>
+
+            <h2>Example 1: Run on Every Render</h2>
+            <p>If you don't provide a dependency array, useEffect runs after every render:</p>
+
+            <pre><code><span class="keyword">import</span> { useState, useEffect } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Timer</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+
+  useEffect(() => {
+    <span class="function">setTimeout</span>(() => {
+      <span class="function">setCount</span>((count) => count + <span class="number">1</span>);
+    }, <span class="number">1000</span>);
+  });
+
+  <span class="keyword">return</span> &lt;h1&gt;I've rendered {count} times!&lt;/h1&gt;;
+}</code></pre>
+
+            <h2>Example 2: Run Once (on Mount)</h2>
+            <p>Pass an empty array <code class="inline-code">[]</code> to run the effect only once:</p>
+
+            <pre><code><span class="keyword">import</span> { useState, useEffect } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">DataFetcher</span>() {
+  <span class="keyword">const</span> [data, setData] = <span class="function">useState</span>(<span class="keyword">null</span>);
+
+  useEffect(() => {
+    <span class="function">fetch</span>(<span class="string">'https://api.example.com/data'</span>)
+      .<span class="function">then</span>(response => response.<span class="function">json</span>())
+      .<span class="function">then</span>(data => <span class="function">setData</span>(data));
+  }, []); <span class="comment">// Empty array = run once</span>
+
+  <span class="keyword">return</span> &lt;div&gt;{data ? data.title : <span class="string">"Loading..."</span>}&lt;/div&gt;;
+}</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Common Pattern:</strong> Empty dependency array <code class="inline-code">[]</code> is perfect for fetching data when component mounts!
+            </div>
+
+            <h2>Example 3: Run When Dependencies Change</h2>
+            <p>Specify dependencies to run the effect only when those values change:</p>
+
+            <pre><code><span class="keyword">import</span> { useState, useEffect } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Counter</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+  <span class="keyword">const</span> [calculation, setCalculation] = <span class="function">useState</span>(<span class="number">0</span>);
+
+  useEffect(() => {
+    <span class="function">setCalculation</span>(() => count * <span class="number">2</span>);
+  }, [count]); <span class="comment">// Only re-run when count changes</span>
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={() => <span class="function">setCount</span>((c) => c + <span class="number">1</span>)}&gt;+&lt;/button&gt;
+      &lt;p&gt;Calculation: {calculation}&lt;/p&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h2>Effect Cleanup</h2>
+            <p>Return a cleanup function to clean up resources when the component unmounts or before the effect runs again:</p>
+
+            <pre><code><span class="keyword">import</span> { useState, useEffect } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Timer</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+
+  useEffect(() => {
+    <span class="keyword">let</span> timer = <span class="function">setTimeout</span>(() => {
+      <span class="function">setCount</span>((count) => count + <span class="number">1</span>);
+    }, <span class="number">1000</span>);
+
+    <span class="comment">// Cleanup function</span>
+    <span class="keyword">return</span> () => <span class="function">clearTimeout</span>(timer);
+  }, []);
+
+  <span class="keyword">return</span> &lt;h1&gt;I've rendered {count} times!&lt;/h1&gt;;
+}</code></pre>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> Always cleanup subscriptions, timers, and event listeners to prevent memory leaks!
+            </div>
+
+            <h2>Common Use Cases</h2>
+
+            <h3>1. Fetching Data</h3>
+            <pre><code>useEffect(() => {
+  <span class="keyword">const</span> <span class="function">fetchData</span> = <span class="keyword">async</span> () => {
+    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">'api/url'</span>);
+    <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+    <span class="function">setData</span>(data);
+  };
+  
+  <span class="function">fetchData</span>();
+}, []);</code></pre>
+
+            <h3>2. Setting up Event Listeners</h3>
+            <pre><code>useEffect(() => {
+  <span class="keyword">const</span> <span class="function">handleResize</span> = () => {
+    <span class="function">setWindowWidth</span>(window.innerWidth);
+  };
+  
+  window.<span class="function">addEventListener</span>(<span class="string">'resize'</span>, handleResize);
+  
+  <span class="comment">// Cleanup</span>
+  <span class="keyword">return</span> () => {
+    window.<span class="function">removeEventListener</span>(<span class="string">'resize'</span>, handleResize);
+  };
+}, []);</code></pre>
+
+            <h3>3. Document Title Update</h3>
+            <pre><code>useEffect(() => {
+  document.title = `You clicked ${count} times`;
+}, [count]);</code></pre>
+
+            <h3>4. Local Storage</h3>
+            <pre><code>useEffect(() => {
+  localStorage.<span class="function">setItem</span>(<span class="string">'count'</span>, count);
+}, [count]);</code></pre>
+
+            <h2>Multiple useEffect Hooks</h2>
+            <p>You can use multiple useEffect hooks in a single component for different concerns:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">MyComponent</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+  <span class="keyword">const</span> [name, setName] = <span class="function">useState</span>(<span class="string">""</span>);
+
+  <span class="comment">// Effect for count</span>
+  useEffect(() => {
+    document.title = `Count: ${count}`;
+  }, [count]);
+
+  <span class="comment">// Effect for name</span>
+  useEffect(() => {
+    console.<span class="function">log</span>(`Name changed to: ${name}`);
+  }, [name]);
+
+  <span class="comment">// Effect that runs once</span>
+  useEffect(() => {
+    console.<span class="function">log</span>(<span class="string">"Component mounted"</span>);
+  }, []);
+  
+  <span class="comment">// ...</span>
+}</code></pre>
+
+            <h2>Dependency Array Rules</h2>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background-color: #f2f2f2;">
+                    <th style="border: 1px solid #ddd; padding: 12px;">Dependencies</th>
+                    <th style="border: 1px solid #ddd; padding: 12px;">When Effect Runs</th>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>No array</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">After every render</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>Empty array []</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Only once (on mount)</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>[var1, var2]</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">When var1 or var2 changes</td>
+                </tr>
+            </table>
+
+            <h2>Best Practices</h2>
+            <ul>
+                <li>Always include all dependencies that the effect uses</li>
+                <li>Cleanup subscriptions and timers</li>
+                <li>Use multiple useEffect hooks for different concerns</li>
+                <li>Avoid infinite loops by managing dependencies carefully</li>
+                <li>Use async functions properly (can't make useEffect itself async)</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>⚠️ Common Mistake:</strong>
+                <pre><code><span class="comment">// ❌ Wrong - infinite loop</span>
+useEffect(() => {
+  <span class="function">setCount</span>(count + <span class="number">1</span>);
+});
+
+<span class="comment">// ✅ Correct</span>
+useEffect(() => {
+  <span class="function">setCount</span>(count + <span class="number">1</span>);
+}, []); <span class="comment">// Only run once</span></code></pre>
+            </div>
+
+            <h2>What's Next?</h2>
+            <p>Now that you understand useEffect, you're ready to learn about useContext for managing global state!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="11-styling.html" class="nav-button">← Previous: Styling</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="13-usecontext.html" class="nav-button">Next: useContext →</a>
+        </div>
+    </div>
+</body>
+</html>
+

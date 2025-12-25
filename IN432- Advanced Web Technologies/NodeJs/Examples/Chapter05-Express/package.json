@@ -1,0 +1,14 @@
+{
+  "name": "chapter05-express",
+  "version": "1.0.0",
+  "description": "Basic Express.js server examples",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
+

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Files Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 { color: #3c873a; }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🟢 Static Files Demo</h1>
+        <p>This HTML file is served by Express static middleware!</p>
+        <p>Files in the <code>public</code> folder are automatically served.</p>
+        <hr>
+        <p>Try the API endpoints:</p>
+        <ul>
+            <li><a href="/health">/health</a> - Health check</li>
+            <li><a href="/api/secret">/api/secret</a> - Protected (will fail)</li>
+        </ul>
+    </div>
+</body>
+</html>
+

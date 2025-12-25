@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplication Table</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            align-items: end;
+        }
+
+        .input-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .generate-btn {
+            padding: 12px 25px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .generate-btn:hover {
+            background: #45a049;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .multiplication-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .multiplication-table th,
+        .multiplication-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .multiplication-table th {
+            background: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .multiplication-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .multiplication-table tr:hover {
+            background: #e8f4fd;
+        }
+
+        .single-table {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .single-table h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .equation {
+            font-size: 18px;
+            margin: 5px 0;
+            padding: 5px;
+            background: white;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #333;">Multiplication Table Generator</h1>
+
+        <div class="controls">
+            <div class="input-group">
+                <label for="tableNumber">Table Number:</label>
+                <input type="number" id="tableNumber" min="1" max="20" value="5">
+            </div>
+            <div class="input-group">
+                <label for="tableRange">Range (up to):</label>
+                <input type="number" id="tableRange" min="1" max="20" value="10">
+            </div>
+            <div class="input-group">
+                <label for="tableType">Table Type:</label>
+                <select id="tableType">
+                    <option value="single">Single Table</option>
+                    <option value="multiple">Multiple Tables</option>
+                    <option value="grid">Grid Format</option>
+                </select>
+            </div>
+            <button class="generate-btn" onclick="generateTable()">Generate</button>
+        </div>
+
+        <div id="tableOutput"></div>
+    </div>
+
+    <script>
+        function generateTable() {
+            const number = parseInt(document.getElementById('tableNumber').value);
+            const range = parseInt(document.getElementById('tableRange').value);
+            const type = document.getElementById('tableType').value;
+            const output = document.getElementById('tableOutput');
+
+            if (isNaN(number) || isNaN(range) || number < 1 || range < 1) {
+                output.innerHTML = '<p style="color: red; text-align: center;">Please enter valid numbers!</p>';
+                return;
+            }
+
+            if (type === 'single') {
+                generateSingleTable(number, range);
+            } else if (type === 'multiple') {
+                generateMultipleTables(number, range);
+            } else if (type === 'grid') {
+                generateGridTable(number, range);
+            }
+        }
+
+        function generateSingleTable(number, range) {
+            const output = document.getElementById('tableOutput');
+            let html = `<div class="single-table">
+                <h3>Multiplication Table of ${number}</h3>`;
+            
+            for (let i = 1; i <= range; i++) {
+                html += `<div class="equation">${number} × ${i} = ${number * i}</div>`;
+            }
+            
+            html += '</div>';
+            output.innerHTML = html;
+        }
+
+        function generateMultipleTables(maxNumber, range) {
+            const output = document.getElementById('tableOutput');
+            let html = '';
+            
+            for (let num = 1; num <= maxNumber; num++) {
+                html += `<div class="single-table">
+                    <h3>Table of ${num}</h3>`;
+                
+                for (let i = 1; i <= range; i++) {
+                    html += `<div class="equation">${num} × ${i} = ${num * i}</div>`;
+                }
+                
+                html += '</div>';
+            }
+            
+            output.innerHTML = html;
+        }
+
+        function generateGridTable(maxNumber, range) {
+            const output = document.getElementById('tableOutput');
+            let html = '<div class="table-container"><table class="multiplication-table">';
+            
+            // Header row
+            html += '<tr><th>×</th>';
+            for (let i = 1; i <= range; i++) {
+                html += `<th>${i}</th>`;
+            }
+            html += '</tr>';
+            
+            // Table rows
+            for (let i = 1; i <= maxNumber; i++) {
+                html += `<tr><th>${i}</th>`;
+                for (let j = 1; j <= range; j++) {
+                    html += `<td>${i * j}</td>`;
+                }
+                html += '</tr>';
+            }
+            
+            html += '</table></div>';
+            output.innerHTML = html;
+        }
+    </script>
+</body>
+
+</html>

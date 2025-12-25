@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2: Node.js Fundamentals - Node.js Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>2️⃣ Node.js Fundamentals</h1>
+            <p>Understanding the JavaScript Runtime</p>
+        </header>
+
+        <div class="content">
+            <h2>2.1 What is Node.js?</h2>
+            
+            <p><strong>Node.js</strong> is a JavaScript runtime that lets you run JavaScript code outside of a web browser - on your computer or server.</p>
+
+            <div class="diagram-box">
+┌─────────────────────────────────────────────────────────────┐
+│                    Before Node.js                            │
+│                                                              │
+│   JavaScript ──► Browser Only (Chrome, Firefox, etc.)        │
+│                                                              │
+├─────────────────────────────────────────────────────────────┤
+│                    With Node.js                              │
+│                                                              │
+│   JavaScript ──► Browser (Frontend)                          │
+│              ──► Server (Backend)                            │
+│              ──► Desktop Apps (Electron)                     │
+│              ──► Command Line Tools                          │
+└─────────────────────────────────────────────────────────────┘
+            </div>
+
+            <h3>Key Characteristics</h3>
+
+            <h4>1. JavaScript Runtime</h4>
+            <p>Node.js uses the same V8 engine that powers Google Chrome. Your JavaScript runs directly on the machine.</p>
+
+            <h4>2. Single-Threaded</h4>
+            <p>Node uses <strong>one thread</strong> to handle all requests. But don't worry - it's very efficient!</p>
+
+            <h4>3. Non-Blocking I/O</h4>
+            <p>Node doesn't wait for slow operations (file reading, database queries). It continues processing other requests.</p>
+
+            <div class="info-box">
+                <strong>💡 Why is Node Popular for APIs?</strong>
+                <ul>
+                    <li>⚡ <strong>Fast</strong> - V8 engine is highly optimized</li>
+                    <li>🔄 <strong>Same Language</strong> - JavaScript for frontend AND backend</li>
+                    <li>📦 <strong>NPM</strong> - Largest package ecosystem (1M+ packages)</li>
+                    <li>🌐 <strong>Great for Real-time</strong> - Chat apps, live updates</li>
+                </ul>
+            </div>
+
+            <h2>Setup & First Script</h2>
+
+            <h3>Step 1: Install Node.js</h3>
+            <div class="step">
+                <span class="step-number">1</span>
+                Download from <a href="https://nodejs.org" target="_blank">nodejs.org</a> (choose LTS version)
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                Run the installer and follow the prompts
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                Verify installation in terminal:
+            </div>
+
+            <pre><code><span class="comment"># Check Node.js version</span>
+node --version
+<span class="comment"># Output: v20.10.0 (or similar)</span>
+
+<span class="comment"># Check npm version</span>
+npm --version
+<span class="comment"># Output: 10.2.0 (or similar)</span></code></pre>
+
+            <h3>Step 2: Create Your First Script</h3>
+            
+            <p>Create a file called <code class="inline-code">hello.js</code>:</p>
+
+            <pre><code><span class="comment">// hello.js - Your first Node.js program</span>
+
+console.<span class="function">log</span>(<span class="string">"Hello from Node.js!"</span>);
+
+<span class="keyword">const</span> message = <span class="string">"Node runs JavaScript outside the browser"</span>;
+console.<span class="function">log</span>(message);
+
+<span class="comment">// Node can access system information</span>
+console.<span class="function">log</span>(<span class="string">"Platform:"</span>, process.platform);     <span class="comment">// win32, darwin, linux</span>
+console.<span class="function">log</span>(<span class="string">"Node Version:"</span>, process.version);   <span class="comment">// v20.10.0</span>
+console.<span class="function">log</span>(<span class="string">"Current Directory:"</span>, process.<span class="function">cwd</span>()); <span class="comment">// Working directory</span></code></pre>
+
+            <p>Run it in terminal:</p>
+            <pre><code>node hello.js</code></pre>
+
+            <p><strong>Output:</strong></p>
+            <pre><code>Hello from Node.js!
+Node runs JavaScript outside the browser
+Platform: win32
+Node Version: v20.10.0
+Current Directory: C:\Users\yourname\projects</code></pre>
+
+            <div class="success-box">
+                <strong>🎉 Congratulations!</strong> You just ran JavaScript without a browser!
+            </div>
+
+            <h2>2.2 Node Core Modules</h2>
+            
+            <p>Node comes with built-in modules. No installation needed - just <code class="inline-code">require()</code> them!</p>
+
+            <h3>🟢 The <code>http</code> Module</h3>
+            <p>Create web servers:</p>
+
+            <pre><code><span class="comment">// server.js - Basic HTTP server</span>
+<span class="keyword">const</span> http = <span class="function">require</span>(<span class="string">'http'</span>);
+
+<span class="keyword">const</span> server = http.<span class="function">createServer</span>((req, res) => {
+  <span class="comment">// Set response headers</span>
+  res.<span class="function">writeHead</span>(<span class="number">200</span>, { <span class="string">'Content-Type'</span>: <span class="string">'text/plain'</span> });
+  
+  <span class="comment">// Send response</span>
+  res.<span class="function">end</span>(<span class="string">'Hello World from Node.js!'</span>);
+});
+
+<span class="comment">// Start listening on port 3000</span>
+server.<span class="function">listen</span>(<span class="number">3000</span>, () => {
+  console.<span class="function">log</span>(<span class="string">'Server running at http://localhost:3000'</span>);
+});</code></pre>
+
+            <p>Run and visit <code class="inline-code">http://localhost:3000</code> in your browser!</p>
+
+            <h3>🟢 The <code>fs</code> Module (File System)</h3>
+            <p>Read and write files:</p>
+
+            <pre><code><span class="comment">// files.js - Working with files</span>
+<span class="keyword">const</span> fs = <span class="function">require</span>(<span class="string">'fs'</span>);
+
+<span class="comment">// ✍️ Write a file (synchronous)</span>
+fs.<span class="function">writeFileSync</span>(<span class="string">'message.txt'</span>, <span class="string">'Hello from Node!'</span>);
+console.<span class="function">log</span>(<span class="string">'File created!'</span>);
+
+<span class="comment">// 📖 Read a file (synchronous)</span>
+<span class="keyword">const</span> content = fs.<span class="function">readFileSync</span>(<span class="string">'message.txt'</span>, <span class="string">'utf8'</span>);
+console.<span class="function">log</span>(<span class="string">'File content:'</span>, content);
+
+<span class="comment">// 📋 List files in directory</span>
+<span class="keyword">const</span> files = fs.<span class="function">readdirSync</span>(<span class="string">'.'</span>);
+console.<span class="function">log</span>(<span class="string">'Files in directory:'</span>, files);
+
+<span class="comment">// ❓ Check if file exists</span>
+<span class="keyword">if</span> (fs.<span class="function">existsSync</span>(<span class="string">'message.txt'</span>)) {
+  console.<span class="function">log</span>(<span class="string">'File exists!'</span>);
+}</code></pre>
+
+            <h3>🟢 The <code>path</code> Module</h3>
+            <p>Handle file paths safely across operating systems:</p>
+
+            <pre><code><span class="comment">// paths.js - Working with paths</span>
+<span class="keyword">const</span> path = <span class="function">require</span>(<span class="string">'path'</span>);
+
+<span class="comment">// Join paths (works on Windows, Mac, Linux)</span>
+<span class="keyword">const</span> filePath = path.<span class="function">join</span>(__dirname, <span class="string">'data'</span>, <span class="string">'users.json'</span>);
+console.<span class="function">log</span>(<span class="string">'Full path:'</span>, filePath);
+<span class="comment">// Windows: C:\project\data\users.json</span>
+<span class="comment">// Mac/Linux: /project/data/users.json</span>
+
+<span class="comment">// Get file extension</span>
+console.<span class="function">log</span>(path.<span class="function">extname</span>(<span class="string">'photo.jpg'</span>));      <span class="comment">// .jpg</span>
+console.<span class="function">log</span>(path.<span class="function">extname</span>(<span class="string">'document.pdf'</span>));  <span class="comment">// .pdf</span>
+
+<span class="comment">// Get filename without path</span>
+console.<span class="function">log</span>(path.<span class="function">basename</span>(<span class="string">'/users/data/file.txt'</span>));  <span class="comment">// file.txt</span>
+
+<span class="comment">// Get directory name</span>
+console.<span class="function">log</span>(path.<span class="function">dirname</span>(<span class="string">'/users/data/file.txt'</span>));   <span class="comment">// /users/data</span>
+
+<span class="comment">// Special variables</span>
+console.<span class="function">log</span>(<span class="string">'Current file:'</span>, __filename);  <span class="comment">// Full path to this file</span>
+console.<span class="function">log</span>(<span class="string">'Current dir:'</span>, __dirname);    <span class="comment">// Directory of this file</span></code></pre>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> Always use <code class="inline-code">path.join()</code> instead of string concatenation for paths. It handles Windows backslashes and Unix forward slashes automatically!
+            </div>
+
+            <h2>Simple HTTP Server Demo (Serving JSON)</h2>
+            
+            <p>This is what React's <code class="inline-code">fetch()</code> connects to:</p>
+
+            <pre><code><span class="comment">// api-server.js - A simple JSON API</span>
+<span class="keyword">const</span> http = <span class="function">require</span>(<span class="string">'http'</span>);
+
+<span class="comment">// Sample data</span>
+<span class="keyword">const</span> products = [
+  { id: <span class="number">1</span>, name: <span class="string">'Laptop'</span>, price: <span class="number">999</span> },
+  { id: <span class="number">2</span>, name: <span class="string">'Phone'</span>, price: <span class="number">699</span> },
+  { id: <span class="number">3</span>, name: <span class="string">'Tablet'</span>, price: <span class="number">499</span> }
+];
+
+<span class="keyword">const</span> server = http.<span class="function">createServer</span>((req, res) => {
+  <span class="comment">// Set JSON headers</span>
+  res.<span class="function">writeHead</span>(<span class="number">200</span>, { 
+    <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>,
+    <span class="string">'Access-Control-Allow-Origin'</span>: <span class="string">'*'</span>  <span class="comment">// Allow React to connect</span>
+  });
+  
+  <span class="comment">// Send JSON response</span>
+  res.<span class="function">end</span>(JSON.<span class="function">stringify</span>(products));
+});
+
+server.<span class="function">listen</span>(<span class="number">3000</span>, () => {
+  console.<span class="function">log</span>(<span class="string">'API running at http://localhost:3000'</span>);
+  console.<span class="function">log</span>(<span class="string">'Try visiting it in your browser!'</span>);
+});</code></pre>
+
+            <h3>Testing Your API</h3>
+            <ol>
+                <li>Run <code class="inline-code">node api-server.js</code></li>
+                <li>Open <code class="inline-code">http://localhost:3000</code> in browser</li>
+                <li>You'll see the JSON array of products!</li>
+            </ol>
+
+            <h2>Module Summary</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Module</th>
+                        <th>Purpose</th>
+                        <th>Common Methods</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code class="inline-code">http</code></td>
+                        <td>Create web servers</td>
+                        <td>createServer(), listen()</td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">fs</code></td>
+                        <td>File operations</td>
+                        <td>readFile(), writeFile(), readdir()</td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">path</code></td>
+                        <td>Path manipulation</td>
+                        <td>join(), basename(), extname()</td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">os</code></td>
+                        <td>Operating system info</td>
+                        <td>platform(), cpus(), totalmem()</td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">events</code></td>
+                        <td>Event handling</td>
+                        <td>on(), emit()</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="success-box">
+                <strong>🎯 Key Takeaways:</strong>
+                <ul>
+                    <li>Node.js = JavaScript running on your computer/server</li>
+                    <li>Use <code class="inline-code">require()</code> to import modules</li>
+                    <li>Built-in modules: http, fs, path (no install needed)</li>
+                    <li>http module creates servers that serve JSON to React</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="01-introduction.html" class="nav-button">← Previous: Introduction</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="03-async-programming.html" class="nav-button">Next: Async Programming →</a>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,167 @@
+.App {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.info-banner {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  border-left: 5px solid #667eea;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.info-banner h2 {
+  color: #667eea;
+  margin-top: 0;
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.demo-box {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.demo-box h3 {
+  margin: 0 0 15px 0;
+  color: #333;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 10px;
+}
+
+/* Method 2: Regular CSS */
+.styled-box {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.styled-button {
+  background-color: #667eea;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.styled-button:hover {
+  background-color: #764ba2;
+}
+
+/* Method 6: Dynamic Classes */
+.theme-box {
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  margin: 15px 0;
+  transition: all 0.3s;
+}
+
+.theme-box.light {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 2px solid #ddd;
+}
+
+.theme-box.dark {
+  background-color: #333;
+  color: white;
+  border: 2px solid #666;
+}
+
+button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: transform 0.2s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+.comparison-table {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.comparison-table h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #667eea;
+  color: white;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+.tips-box {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  border-left: 5px solid #28a745;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.tips-box h3 {
+  margin-top: 0;
+  color: #28a745;
+}
+
+.tips-box ul {
+  line-height: 2;
+}
+
+

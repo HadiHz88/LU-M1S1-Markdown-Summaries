@@ -1,0 +1,27 @@
+/* CSS Modules - Scoped Styles */
+
+.moduleButton {
+  background-color: #ff6b6b;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.moduleButton:hover {
+  background-color: #ee5a6f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.moduleText {
+  color: #666;
+  margin-top: 15px;
+  font-style: italic;
+}
+
+

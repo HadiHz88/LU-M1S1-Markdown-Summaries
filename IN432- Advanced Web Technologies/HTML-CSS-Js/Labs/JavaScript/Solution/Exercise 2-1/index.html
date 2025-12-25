@@ -1,0 +1,189 @@
+!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .grade-calculator {
+            max-width: 500px;
+            margin: 30px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 18px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: transform 0.3s ease;
+        }
+
+        .calculate-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .grade-result {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .grade-a {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .grade-b {
+            background: #cce5ff;
+            color: #004085;
+            border: 2px solid #99d6ff;
+        }
+
+        .grade-c {
+            background: #fff3cd;
+            color: #856404;
+            border: 2px solid #ffeaa7;
+        }
+
+        .grade-d {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .grade-f {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .statistics {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grade-calculator">
+        <h1 style="text-align: center; color: #333;">Grade Calculator</h1>
+
+        <label for="score">Enter your score (0-100):</label>
+        <input type="number" id="score" class="score-input" min="0" max="100" placeholder="Enter score">
+
+        <button class="calculate-btn" onclick="calculateGrade()">Calculate Grade</button>
+
+        <div id="gradeResult" class="grade-result" style="display: none;"></div>
+
+        <div class="statistics">
+            <h3>Grading Scale:</h3>
+            <ul>
+                <li><strong>A:</strong> 90-100 (Excellent)</li>
+                <li><strong>B:</strong> 80-89 (Good)</li>
+                <li><strong>C:</strong> 70-79 (Average)</li>
+                <li><strong>D:</strong> 60-69 (Below Average)</li>
+                <li><strong>F:</strong> 0-59 (Fail)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function calculateGrade() {
+            const score = parseFloat(document.getElementById('score').value);
+            const resultDiv = document.getElementById('gradeResult');
+
+            // Validate the score
+            if (isNaN(score) || score < 0 || score > 100) {
+                resultDiv.style.display = 'block';
+                resultDiv.textContent = 'Please enter a valid score between 0 and 100';
+                resultDiv.className = 'grade-result grade-f';
+                return;
+            }
+
+            let grade;
+            let className;
+
+            // Determine grade using if-else
+            if (score >= 90) {
+                grade = 'A';
+                className = 'grade-a';
+            } else if (score >= 80) {
+                grade = 'B';
+                className = 'grade-b';
+            } else if (score >= 70) {
+                grade = 'C';
+                className = 'grade-c';
+            } else if (score >= 60) {
+                grade = 'D';
+                className = 'grade-d';
+            } else {
+                grade = 'F';
+                className = 'grade-f';
+            }
+
+            // Display result with message
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'grade-result ' + className;
+            resultDiv.innerHTML = `
+                <h2>Your Grade: ${grade}</h2>
+                <p>Score: ${score}/100</p>
+                <p>${getGradeMessage(grade)}</p>
+            `;
+        }
+
+        function getGradeMessage(grade) {
+            switch(grade) {
+                case 'A':
+                    return '🎉 Excellent work! Keep it up!';
+                case 'B':
+                    return '👍 Good job! You\'re doing great!';
+                case 'C':
+                    return '👌 Average performance. Keep working hard!';
+                case 'D':
+                    return '⚠️ Below average. You need to study more!';
+                case 'F':
+                    return '❌ Failed. Don\'t give up, study harder next time!';
+                default:
+                    return '';
+            }
+        }
+    </script>
+</body>
+
+</html>

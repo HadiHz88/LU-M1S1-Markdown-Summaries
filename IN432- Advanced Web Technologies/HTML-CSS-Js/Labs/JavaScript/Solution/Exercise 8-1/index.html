@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Events & Event Dispatcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .demo-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            height: fit-content;
+        }
+
+        .control-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+        }
+
+        .control-section h3 {
+            color: #38f9d7;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: #38f9d7;
+            color: #333;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .display-area {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .display-area h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #38f9d7;
+        }
+
+        .event-timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 20px 0;
+        }
+
+        .event-timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .timeline-item {
+            position: relative;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #38f9d7;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -37px;
+            top: 20px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #38f9d7;
+            border: 3px solid white;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .event-type {
+            font-weight: bold;
+            color: #38f9d7;
+            font-size: 1.1em;
+        }
+
+        .event-time {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .event-details {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .event-data {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .notification.success {
+            border-left: 5px solid #28a745;
+        }
+
+        .notification.warning {
+            border-left: 5px solid #ffc107;
+        }
+
+        .notification.error {
+            border-left: 5px solid #dc3545;
+        }
+
+        .notification.info {
+            border-left: 5px solid #17a2b8;
+        }
+
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .component {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .component:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .component h4 {
+            margin-bottom: 10px;
+        }
+
+        .component.active {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Custom Events & Event Dispatcher</h1>
+            <p>Create and Manage Custom Events</p>
+        </div>
+
+        <div class="demo-layout">
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="control-section">
+                    <h3>🎯 Create Custom Event</h3>
+                    <div class="form-group">
+                        <label for="eventName">Event Name:</label>
+                        <input type="text" id="eventName" placeholder="e.g., userLogin">
+                    </div>
+                    <div class="form-group">
+                        <label for="eventData">Event Data (JSON):</label>
+                        <textarea id="eventData" placeholder='{"user": "john", "role": "admin"}'></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="bubbles" checked> Bubbles
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="cancelable" checked> Cancelable
+                        </label>
+                    </div>
+                    <button class="btn btn-primary" onclick="dispatchCustomEvent()">Dispatch Event</button>
+                </div>
+
+                <div class="control-section">
+                    <h3>🎪 Predefined Events</h3>
+                    <button class="btn btn-success" onclick="triggerUserLogin()">User Login</button>
+                    <button class="btn btn-warning" onclick="triggerDataUpdate()">Data Update</button>
+                    <button class="btn btn-danger" onclick="triggerError()">Error Event</button>
+                    <button class="btn btn-primary" onclick="triggerNotification()">Show Notification</button>
+                </div>
+
+                <div class="control-section">
+                    <h3>📊 Statistics</h3>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                        <div style="margin: 10px 0;">
+                            <strong>Total Events:</strong>
+                            <span id="totalEvents" style="color: #38f9d7; font-size: 1.5em; font-weight: bold;">0</span>
+                        </div>
+                        <div style="margin: 10px 0;">
+                            <strong>Custom Events:</strong>
+                            <span id="customEvents"
+                                style="color: #667eea; font-size: 1.5em; font-weight: bold;">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display Area -->
+            <div class="display-area">
+                <h2>📺 Event Timeline</h2>
+
+                <div class="component-grid">
+                    <div class="component" id="component1">
+                        <h4>Component 1</h4>
+                        <p>Listening for events...</p>
+                    </div>
+                    <div class="component" id="component2">
+                        <h4>Component 2</h4>
+                        <p>Listening for events...</p>
+                    </div>
+                    <div class="component" id="component3">
+                        <h4>Component 3</h4>
+                        <p>Listening for events...</p>
+                    </div>
+                </div>
+
+                <div class="event-timeline" id="eventTimeline">
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <span class="event-type">System Ready</span>
+                            <span class="event-time">00:00:00</span>
+                        </div>
+                        <div class="event-details">
+                            <div class="event-data">Waiting for custom events...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-danger" onclick="clearTimeline()" style="width: 200px;">Clear Timeline</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let totalEventCount = 0;
+        let customEventCount = 0;
+
+        // EventDispatcher class
+        class EventDispatcher {
+            constructor() {
+                this.listeners = {};
+            }
+
+            addEventListener(eventType, callback) {
+                if (!this.listeners[eventType]) {
+                    this.listeners[eventType] = [];
+                }
+                this.listeners[eventType].push(callback);
+            }
+
+            removeEventListener(eventType, callback) {
+                if (this.listeners[eventType]) {
+                    this.listeners[eventType] = this.listeners[eventType].filter(cb => cb !== callback);
+                }
+            }
+
+            dispatchEvent(eventType, eventData) {
+                const event = new CustomEvent(eventType, {
+                    detail: eventData,
+                    bubbles: true,
+                    cancelable: true
+                });
+                
+                document.dispatchEvent(event);
+                
+                if (this.listeners[eventType]) {
+                    this.listeners[eventType].forEach(callback => callback(event));
+                }
+            }
+        }
+
+        const dispatcher = new EventDispatcher();
+
+        // Create custom event
+        function dispatchCustomEvent() {
+            const eventName = document.getElementById('eventName').value.trim();
+            const eventDataInput = document.getElementById('eventData').value.trim();
+            const bubbles = document.getElementById('bubbles').checked;
+            const cancelable = document.getElementById('cancelable').checked;
+
+            if (!eventName) {
+                alert('Please enter an event name!');
+                return;
+            }
+
+            let eventData = {};
+            if (eventDataInput) {
+                try {
+                    eventData = JSON.parse(eventDataInput);
+                } catch (e) {
+                    alert('Invalid JSON data!');
+                    return;
+                }
+            }
+
+            const customEvent = new CustomEvent(eventName, {
+                detail: eventData,
+                bubbles: bubbles,
+                cancelable: cancelable
+            });
+
+            document.dispatchEvent(customEvent);
+            addToTimeline(eventName, eventData);
+            customEventCount++;
+            totalEventCount++;
+            updateStatistics();
+            showNotification(`Custom event "${eventName}" dispatched!`, 'success');
+        }
+
+        // Trigger predefined user login event
+        function triggerUserLogin() {
+            const eventData = {
+                user: 'john_doe',
+                email: 'john@example.com',
+                role: 'admin',
+                timestamp: new Date().toISOString()
+            };
+
+            const event = new CustomEvent('userLogin', {
+                detail: eventData,
+                bubbles: true
+            });
+
+            document.dispatchEvent(event);
+            addToTimeline('userLogin', eventData);
+            totalEventCount++;
+            updateStatistics();
+            highlightComponent('component1');
+            showNotification('User logged in successfully!', 'success');
+        }
+
+        // Trigger data update event
+        function triggerDataUpdate() {
+            const eventData = {
+                type: 'data_refresh',
+                records: Math.floor(Math.random() * 100),
+                source: 'Database',
+                timestamp: new Date().toISOString()
+            };
+
+            const event = new CustomEvent('dataUpdate', {
+                detail: eventData,
+                bubbles: true
+            });
+
+            document.dispatchEvent(event);
+            addToTimeline('dataUpdate', eventData);
+            totalEventCount++;
+            updateStatistics();
+            highlightComponent('component2');
+            showNotification(`Updated ${eventData.records} records!`, 'info');
+        }
+
+        // Trigger error event
+        function triggerError() {
+            const eventData = {
+                error: 'Connection timeout',
+                code: 504,
+                message: 'The server took too long to respond',
+                timestamp: new Date().toISOString()
+            };
+
+            const event = new CustomEvent('error', {
+                detail: eventData,
+                bubbles: true
+            });
+
+            document.dispatchEvent(event);
+            addToTimeline('error', eventData);
+            totalEventCount++;
+            updateStatistics();
+            highlightComponent('component3');
+            showNotification(`Error: ${eventData.error}`, 'error');
+        }
+
+        // Trigger notification event
+        function triggerNotification() {
+            const messages = [
+                'New message received!',
+                'Task completed successfully!',
+                'Reminder: Meeting in 5 minutes',
+                'File upload complete!',
+                'Welcome back!'
+            ];
+            
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            
+            const eventData = {
+                message: randomMessage,
+                type: 'info',
+                timestamp: new Date().toISOString()
+            };
+
+            const event = new CustomEvent('notification', {
+                detail: eventData,
+                bubbles: true
+            });
+
+            document.dispatchEvent(event);
+            addToTimeline('notification', eventData);
+            totalEventCount++;
+            updateStatistics();
+            showNotification(randomMessage, 'info');
+        }
+
+        // Setup event listeners on components
+        function setupComponentListeners() {
+            const components = document.querySelectorAll('.component');
+            
+            components.forEach(component => {
+                component.addEventListener('click', function() {
+                    const componentName = this.querySelector('h4').textContent;
+                    const eventData = {
+                        component: componentName,
+                        clicked: true,
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    const event = new CustomEvent('componentClick', {
+                        detail: eventData,
+                        bubbles: true
+                    });
+                    
+                    document.dispatchEvent(event);
+                    addToTimeline('componentClick', eventData);
+                    totalEventCount++;
+                    updateStatistics();
+                    highlightComponent(this.id);
+                });
+            });
+        }
+
+        // Add event to timeline
+        function addToTimeline(eventType, eventData) {
+            const timeline = document.getElementById('eventTimeline');
+            const item = document.createElement('div');
+            item.className = 'timeline-item';
+            
+            const dataString = JSON.stringify(eventData, null, 2);
+            
+            item.innerHTML = `
+                <div class="timeline-header">
+                    <span class="event-type">${eventType}</span>
+                    <span class="event-time">${getCurrentTime()}</span>
+                </div>
+                <div class="event-details">
+                    <div class="event-data">${dataString}</div>
+                </div>
+            `;
+            
+            timeline.insertBefore(item, timeline.firstChild);
+            
+            // Limit to 20 items
+            while (timeline.children.length > 20) {
+                timeline.removeChild(timeline.lastChild);
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 5px;">${type.toUpperCase()}</div>
+                <div>${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Update statistics
+        function updateStatistics() {
+            document.getElementById('totalEvents').textContent = totalEventCount;
+            document.getElementById('customEvents').textContent = customEventCount;
+        }
+
+        // Clear timeline
+        function clearTimeline() {
+            const timeline = document.getElementById('eventTimeline');
+            timeline.innerHTML = `
+                <div class="timeline-item">
+                    <div class="timeline-header">
+                        <span class="event-type">System Ready</span>
+                        <span class="event-time">${getCurrentTime()}</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-data">Timeline cleared. Waiting for custom events...</div>
+                    </div>
+                </div>
+            `;
+            totalEventCount = 0;
+            customEventCount = 0;
+            updateStatistics();
+        }
+
+        // Highlight component
+        function highlightComponent(componentId) {
+            const component = document.getElementById(componentId);
+            if (component) {
+                component.classList.add('active');
+                setTimeout(() => {
+                    component.classList.remove('active');
+                }, 1500);
+            }
+        }
+
+        // Format timestamp
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleTimeString();
+        }
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', function () {
+            setupComponentListeners();
+            updateStatistics();
+        });
+
+        // Custom event listeners
+        document.addEventListener('userLogin', function (e) {
+            console.log('User Login Event:', e.detail);
+        });
+
+        document.addEventListener('dataUpdate', function (e) {
+            console.log('Data Update Event:', e.detail);
+        });
+
+        document.addEventListener('error', function (e) {
+            console.error('Error Event:', e.detail);
+        });
+
+        document.addEventListener('notification', function (e) {
+            console.log('Notification Event:', e.detail);
+        });
+
+        document.addEventListener('componentClick', function (e) {
+            console.log('Component Click Event:', e.detail);
+        });
+    </script>
+</body>
+
+</html>

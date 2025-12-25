@@ -1,0 +1,30 @@
+### Test the Notes API
+
+### 1. Get welcome message
+GET http://localhost:3000/
+
+### 2. Get all notes
+GET http://localhost:3000/notes
+
+### 3. Add a new note
+POST http://localhost:3000/notes
+Content-Type: application/json
+
+{
+  "text": "My first note"
+}
+
+### 4. Add another note
+POST http://localhost:3000/notes
+Content-Type: application/json
+
+{
+  "text": "Remember to study Node.js"
+}
+
+### 5. Get all notes again (should show 2 notes)
+GET http://localhost:3000/notes
+
+### 6. Test 404 route
+GET http://localhost:3000/unknown
+

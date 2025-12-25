@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 3: Asynchronous Programming - Node.js Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>3️⃣ Asynchronous Programming</h1>
+            <p>Using async/await in Node.js</p>
+        </header>
+
+        <div class="content">
+            <h2>3.1 Why Async Matters</h2>
+            
+            <p><strong>The Problem:</strong> Some operations are slow:</p>
+            <ul>
+                <li>📁 Reading files from disk</li>
+                <li>🗄️ Querying a database</li>
+                <li>🌐 Fetching data from the internet</li>
+            </ul>
+
+            <p><strong>Node's Solution:</strong> Don't wait! Continue with other work.</p>
+
+            <div class="diagram-box">
+SYNCHRONOUS (Blocking) ❌
+┌─────────────────────────────────────────────────┐
+│  Task 1  │  Wait...  │  Task 2  │  Task 3       │
+│  Start   │  (stuck)  │  Start   │  Start        │
+└──────────┴───────────┴──────────┴───────────────┘
+Server is BLOCKED - can't serve other users!
+
+
+ASYNCHRONOUS (Non-blocking) ✅
+┌─────────────────────────────────────────────────┐
+│  Task 1  │  Task 2  │  Task 3  │ Task 1 Done    │
+│  Start   │  Start   │  Start   │ (continues)    │
+└──────────┴──────────┴──────────┴────────────────┘
+Server can handle many users at once!
+            </div>
+
+            <h3>Simple Example</h3>
+
+            <pre><code><span class="comment">// Node doesn't wait for slow operations</span>
+console.<span class="function">log</span>(<span class="string">"1. Start"</span>);
+
+<span class="function">setTimeout</span>(() => {
+  console.<span class="function">log</span>(<span class="string">"3. This runs after 1 second"</span>);
+}, <span class="number">1000</span>);
+
+console.<span class="function">log</span>(<span class="string">"2. This runs immediately"</span>);
+
+<span class="comment">// Output:</span>
+<span class="comment">// 1. Start</span>
+<span class="comment">// 2. This runs immediately</span>
+<span class="comment">// 3. This runs after 1 second</span></code></pre>
+
+            <div class="info-box">
+                <strong>💡 Notice:</strong> Step 2 runs BEFORE step 3! Node doesn't wait.
+            </div>
+
+            <h2>3.2 Asynchronous Node.js APIs</h2>
+            
+            <p><strong>Many Node.js operations are asynchronous by default.</strong> They don't block your code while waiting for results.</p>
+            
+            <div class="success-box">
+                <strong>📋 Common Asynchronous Node.js APIs:</strong>
+                <ul>
+                    <li><code class="inline-code">setTimeout()</code> - Schedule code to run later</li>
+                    <li><code class="inline-code">fs.readFile()</code> - Read files from disk</li>
+                    <li><code class="inline-code">fs.writeFile()</code> - Write files to disk</li>
+                    <li><code class="inline-code">fetch()</code> - Make HTTP requests</li>
+                    <li><code class="inline-code">Database queries</code> - MongoDB, MySQL, PostgreSQL operations</li>
+                    <li><code class="inline-code">Network operations</code> - Sending/receiving data over the network</li>
+                </ul>
+            </div>
+
+            <h3>Why These Operations Are Asynchronous</h3>
+            
+            <p>These operations are <strong>slow</strong> compared to regular JavaScript code:</p>
+            <ul>
+                <li>📁 <strong>File I/O</strong> - Reading/writing to disk takes milliseconds</li>
+                <li>🗄️ <strong>Database queries</strong> - Querying a database takes time</li>
+                <li>🌐 <strong>Network requests</strong> - Fetching data from the internet can take seconds</li>
+            </ul>
+            
+            <p><strong>If these were synchronous (blocking), your server would freeze!</strong></p>
+
+            <div class="diagram-box">
+BLOCKING (Synchronous) ❌
+┌─────────────────────────────────────────────┐
+│ User 1: Read file (2 seconds) → WAIT...     │
+│ User 2: Request arrives → BLOCKED! ❌        │
+│ User 3: Request arrives → BLOCKED! ❌        │
+└─────────────────────────────────────────────┘
+Server can only handle ONE request at a time!
+
+
+NON-BLOCKING (Asynchronous) ✅
+┌─────────────────────────────────────────────┐
+│ User 1: Read file → Start, continue...      │
+│ User 2: Request arrives → Handle immediately │
+│ User 3: Request arrives → Handle immediately │
+│ User 1: File read complete → Continue       │
+└─────────────────────────────────────────────┘
+Server handles MANY requests simultaneously!
+            </div>
+
+            <h3>Examples of Asynchronous Operations</h3>
+
+            <pre><code><span class="comment">// 1. setTimeout() - Schedule code to run later</span>
+console.<span class="function">log</span>(<span class="string">"Start"</span>);
+<span class="function">setTimeout</span>(() => {
+  console.<span class="function">log</span>(<span class="string">"This runs after 1 second"</span>);
+}, <span class="number">1000</span>);
+console.<span class="function">log</span>(<span class="string">"End"</span>);
+<span class="comment">// Output: Start, End, (1 second later) This runs after 1 second</span>
+
+<span class="comment">// 2. fs.readFile() - Read file asynchronously</span>
+<span class="keyword">const</span> fs = require(<span class="string">'fs'</span>);
+console.<span class="function">log</span>(<span class="string">"Before reading file"</span>);
+fs.<span class="function">readFile</span>(<span class="string">'data.txt'</span>, <span class="string">'utf8'</span>, (err, data) => {
+  <span class="comment">// This callback runs AFTER the file is read</span>
+  console.<span class="function">log</span>(<span class="string">"File content:"</span>, data);
+});
+console.<span class="function">log</span>(<span class="string">"After reading file (but file might not be read yet!)"</span>);
+
+<span class="comment">// 3. fetch() - Make HTTP request</span>
+console.<span class="function">log</span>(<span class="string">"Before fetch"</span>);
+<span class="function">fetch</span>(<span class="string">'https://api.example.com/data'</span>)
+  .<span class="function">then</span>(response => response.<span class="function">json</span>())
+  .<span class="function">then</span>(data => {
+    <span class="comment">// This runs AFTER the network request completes</span>
+    console.<span class="function">log</span>(<span class="string">"Data received:"</span>, data);
+  });
+console.<span class="function">log</span>(<span class="string">"After fetch (but request might not be done yet!)"</span>);
+
+<span class="comment">// 4. Database query (MongoDB example)</span>
+console.<span class="function">log</span>(<span class="string">"Before database query"</span>);
+User.<span class="function">findById</span>(userId)
+  .<span class="function">then</span>(user => {
+    <span class="comment">// This runs AFTER the database responds</span>
+    console.<span class="function">log</span>(<span class="string">"User found:"</span>, user);
+  });
+console.<span class="function">log</span>(<span class="string">"After database query (but query might not be done yet!)"</span>);</code></pre>
+
+            <div class="info-box">
+                <strong>💡 Key Point:</strong> All these operations <strong>start immediately</strong> but <strong>don't block</strong> your code. 
+                The results come back later through callbacks or Promises (which we'll learn about next!).
+            </div>
+
+            <h3>What Happens Behind the Scenes?</h3>
+            
+            <p>When you call an asynchronous function:</p>
+            <ol>
+                <li>✅ <strong>Function starts</strong> - The operation begins (e.g., start reading file)</li>
+                <li>✅ <strong>Code continues</strong> - Your program doesn't wait, it moves to the next line</li>
+                <li>⏳ <strong>Operation runs in background</strong> - Node.js handles it while your code continues</li>
+                <li>✅ <strong>Callback/Promise fires</strong> - When done, your callback or Promise resolves</li>
+            </ol>
+
+            <div class="diagram-box">
+Timeline Example (fs.readFile):
+┌─────────────────────────────────────────────────────┐
+│ Time  │ Code Execution                              │
+├───────┼─────────────────────────────────────────────┤
+│ 0ms   │ console.log("Start")                        │
+│ 1ms   │ fs.readFile(...) ← Starts reading file      │
+│ 2ms   │ console.log("End") ← Doesn't wait!          │
+│ ...   │ (file reading happens in background...)     │
+│ 50ms  │ File read complete → Callback fires         │
+│ 51ms  │ console.log("File content:", data)          │
+└─────────────────────────────────────────────────────┘
+            </div>
+
+            <div class="success-box">
+                <strong>🎯 Remember:</strong>
+                <ul>
+                    <li>Asynchronous operations <strong>don't block</strong> your code</li>
+                    <li>They run in the <strong>background</strong> while your code continues</li>
+                    <li>Results come back through <strong>callbacks</strong> or <strong>Promises</strong></li>
+                    <li>This allows Node.js to handle <strong>many operations simultaneously</strong></li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>⚠️ Coming Next:</strong> These asynchronous operations return <strong>Promises</strong> (or use callbacks). 
+                We'll learn how to handle them properly with <code class="inline-code">async/await</code>!
+            </div>
+
+            <h2>3.3 Promises (Foundation of async/await) ⚠️</h2>
+            
+            <div class="info-box">
+                <strong>⚠️ Important:</strong> You MUST understand Promises before using async/await!
+                <br>async/await is just a cleaner way to write Promise code.
+            </div>
+
+            <h3>What is a Promise?</h3>
+            <p>A <strong>Promise</strong> is an object representing a future value (success or failure).</p>
+            
+            <p><strong>Why do we need Promises?</strong> Remember those asynchronous operations we just learned about? 
+            (<code class="inline-code">fs.readFile</code>, <code class="inline-code">fetch</code>, database queries, etc.) 
+            Many of them return <strong>Promises</strong> to handle their results!</p>
+            
+            <p>Think of it like ordering food at a restaurant:</p>
+            <ul>
+                <li>🧾 You place an order → <strong>create a Promise</strong></li>
+                <li>⏳ You wait for your food → <strong>pending state</strong></li>
+                <li>✅ Food arrives → <strong>fulfilled (resolved)</strong></li>
+                <li>❌ Order fails → <strong>rejected</strong></li>
+            </ul>
+
+            <div class="diagram-box">
+Promise States:
+┌─────────────────────────────────────────────────┐
+│                                                 │
+│   pending ──────► fulfilled (resolved) ✅       │
+│      │                                          │
+│      └──────────► rejected ❌                   │
+│                                                 │
+└─────────────────────────────────────────────────┘
+            </div>
+
+            <h3>Real-World Connection: Async APIs Return Promises!</h3>
+            
+            <p>Many of the asynchronous operations we learned about <strong>return Promises</strong>:</p>
+
+            <pre><code><span class="comment">// fs.promises.readFile() returns a Promise</span>
+<span class="keyword">const</span> fs = require(<span class="string">'fs'</span>).promises;
+
+fs.<span class="function">readFile</span>(<span class="string">'data.txt'</span>, <span class="string">'utf8'</span>)
+  .<span class="function">then</span>(data => {
+    console.<span class="function">log</span>(<span class="string">'File content:'</span>, data);  <span class="comment">// ✅ Success!</span>
+  })
+  .<span class="function">catch</span>(error => {
+    console.<span class="function">log</span>(<span class="string">'Error:'</span>, error);  <span class="comment">// ❌ Failure!</span>
+  });
+
+<span class="comment">// fetch() returns a Promise</span>
+<span class="function">fetch</span>(<span class="string">'https://api.example.com/data'</span>)
+  .<span class="function">then</span>(response => response.<span class="function">json</span>())
+  .<span class="function">then</span>(data => {
+    console.<span class="function">log</span>(<span class="string">'Data:'</span>, data);  <span class="comment">// ✅ Success!</span>
+  })
+  .<span class="function">catch</span>(error => {
+    console.<span class="function">log</span>(<span class="string">'Error:'</span>, error);  <span class="comment">// ❌ Failure!</span>
+  });
+
+<span class="comment">// Database queries return Promises</span>
+User.<span class="function">findById</span>(userId)
+  .<span class="function">then</span>(user => {
+    console.<span class="function">log</span>(<span class="string">'User:'</span>, user);  <span class="comment">// ✅ Success!</span>
+  })
+  .<span class="function">catch</span>(error => {
+    console.<span class="function">log</span>(<span class="string">'Error:'</span>, error);  <span class="comment">// ❌ Failure!</span>
+  });</code></pre>
+
+            <div class="info-box">
+                <strong>💡 See the pattern?</strong> All these async operations return Promises! 
+                That's why understanding Promises is so important - you'll use them everywhere in Node.js!
+            </div>
+
+            <h3>Creating Your Own Promise</h3>
+
+            <pre><code><span class="comment">// Creating a Promise manually</span>
+<span class="keyword">const</span> myPromise = <span class="keyword">new</span> <span class="function">Promise</span>((resolve, reject) => {
+  <span class="comment">// Simulate async operation (like database query)</span>
+  <span class="function">setTimeout</span>(() => {
+    <span class="keyword">const</span> success = <span class="keyword">true</span>;
+    
+    <span class="keyword">if</span> (success) {
+      resolve({ id: <span class="number">1</span>, name: <span class="string">'Ahmad'</span> });  <span class="comment">// ✅ Success!</span>
+    } <span class="keyword">else</span> {
+      reject(<span class="string">'Something went wrong'</span>);      <span class="comment">// ❌ Failure!</span>
+    }
+  }, <span class="number">1000</span>);
+});
+
+<span class="comment">// Using the Promise with .then() and .catch()</span>
+myPromise
+  .<span class="function">then</span>(result => {
+    console.<span class="function">log</span>(<span class="string">'Success:'</span>, result);
+  })
+  .<span class="function">catch</span>(error => {
+    console.<span class="function">log</span>(<span class="string">'Error:'</span>, error);
+  });</code></pre>
+
+            <h3>Understanding <code class="inline-code">resolve</code> and <code class="inline-code">reject</code></h3>
+
+            <div class="info-box">
+                <strong>❓ Where are resolve and reject declared?</strong><br>
+                They are <strong>callback functions provided by JavaScript</strong> when you create a Promise.
+                You don't declare them - JavaScript gives them to you!
+            </div>
+
+            <pre><code><span class="comment">//                    ↓ resolve and reject are PROVIDED by JavaScript</span>
+<span class="keyword">const</span> myPromise = <span class="keyword">new</span> <span class="function">Promise</span>((resolve, reject) => {
+  <span class="comment">// You don't declare them - JavaScript gives them to you!</span>
+  <span class="comment">// You just CALL them when appropriate</span>
+});</code></pre>
+
+            <div class="info-box">
+                <strong>❓ Can I omit reject?</strong><br>
+                Yes! You only declare the parameters you need:
+            </div>
+
+            <pre><code><span class="comment">// ✅ Option 1: Only resolve (when errors are not possible)</span>
+<span class="keyword">new</span> <span class="function">Promise</span>((resolve) => {
+  <span class="function">setTimeout</span>(() => {
+    resolve({ id: <span class="number">1</span>, name: <span class="string">'John'</span> });  <span class="comment">// Always succeeds</span>
+  }, <span class="number">1000</span>);
+});
+
+<span class="comment">// ✅ Option 2: Both resolve and reject (when errors are possible)</span>
+<span class="keyword">new</span> <span class="function">Promise</span>((resolve, reject) => {
+  <span class="keyword">if</span> (userId > <span class="number">0</span>) {
+    resolve({ id: userId, name: <span class="string">'John'</span> });
+  } <span class="keyword">else</span> {
+    reject(<span class="keyword">new</span> <span class="function">Error</span>(<span class="string">'Invalid user ID'</span>));  <span class="comment">// Can fail!</span>
+  }
+});</code></pre>
+
+            <div class="success-box">
+                <strong>⚠️ Best Practice:</strong> In real applications, always include <code class="inline-code">reject</code> 
+                because things can fail (network errors, database errors, etc.)
+            </div>
+
+            <p><strong>When to call each function:</strong></p>
+            <table style="width:100%; border-collapse: collapse; margin: 15px 0;">
+                <tr style="background: #2d2d2d;">
+                    <th style="padding: 10px; border: 1px solid #444;">Function</th>
+                    <th style="padding: 10px; border: 1px solid #444;">When to Call</th>
+                    <th style="padding: 10px; border: 1px solid #444;">What Happens</th>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #444;"><code>resolve(value)</code></td>
+                    <td style="padding: 10px; border: 1px solid #444;">Operation <strong>succeeded</strong></td>
+                    <td style="padding: 10px; border: 1px solid #444;"><code>.then()</code> receives the value</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border: 1px solid #444;"><code>reject(error)</code></td>
+                    <td style="padding: 10px; border: 1px solid #444;">Operation <strong>failed</strong></td>
+                    <td style="padding: 10px; border: 1px solid #444;"><code>.catch()</code> receives the error</td>
+                </tr>
+            </table>
+
+            <h3>What Types Can resolve/reject Accept?</h3>
+
+            <p>Both can accept <strong>ANY type</strong> of value:</p>
+
+            <pre><code><span class="comment">// ✅ resolve() can return ANY value type:</span>
+resolve(<span class="string">"Success!"</span>);                        <span class="comment">// String</span>
+resolve(<span class="number">42</span>);                                <span class="comment">// Number</span>
+resolve(<span class="keyword">true</span>);                              <span class="comment">// Boolean</span>
+resolve({ id: <span class="number">1</span>, name: <span class="string">'Ahmad'</span> });          <span class="comment">// Object</span>
+resolve([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);                         <span class="comment">// Array</span>
+
+<span class="comment">// ❌ reject() can return ANY error type:</span>
+reject(<span class="string">"Error message"</span>);                    <span class="comment">// String</span>
+reject(<span class="number">404</span>);                                <span class="comment">// Number (error code)</span>
+reject({ code: <span class="number">500</span>, message: <span class="string">"Failed"</span> });   <span class="comment">// Object</span>
+reject(<span class="keyword">new</span> <span class="function">Error</span>(<span class="string">"Something went wrong"</span>));  <span class="comment">// Error object (RECOMMENDED!)</span></code></pre>
+
+            <div class="success-box">
+                <strong>💡 Best Practice:</strong> Use <code class="inline-code">new Error("message")</code> with <code class="inline-code">reject()</code> 
+                because it includes a <strong>stack trace</strong> for debugging!
+            </div>
+
+            <h3>How Does the Error Flow? (Complete Example)</h3>
+
+            <pre><code><span class="comment">// STEP 1: Create a function that returns a Promise</span>
+<span class="keyword">function</span> <span class="function">getUser</span>(userId) {
+  <span class="keyword">return new</span> <span class="function">Promise</span>((resolve, reject) => {
+    <span class="comment">// STEP 2: Simulate database query</span>
+    <span class="function">setTimeout</span>(() => {
+      
+      <span class="comment">// STEP 3: Check if operation succeeded or failed</span>
+      <span class="keyword">if</span> (userId > <span class="number">0</span>) {
+        <span class="comment">// SUCCESS: Call resolve() with the data</span>
+        resolve({ id: userId, name: <span class="string">'John'</span> });
+        <span class="comment">// This value goes to → .then(user => ...)</span>
+      } <span class="keyword">else</span> {
+        <span class="comment">// FAILURE: Call reject() with an error</span>
+        reject(<span class="keyword">new</span> <span class="function">Error</span>(<span class="string">'User ID must be positive'</span>));
+        <span class="comment">// This error goes to → .catch(error => ...)</span>
+      }
+      
+    }, <span class="number">1000</span>);
+  });
+}</code></pre>
+
+            <h3>Using with .then() and .catch()</h3>
+
+            <pre><code><span class="comment">// CASE 1: Success (userId = 1)</span>
+<span class="function">getUser</span>(<span class="number">1</span>)
+  .<span class="function">then</span>(user => {
+    <span class="comment">// ✅ resolve() was called → we get the user here</span>
+    console.<span class="function">log</span>(user);  <span class="comment">// { id: 1, name: 'John' }</span>
+  })
+  .<span class="function">catch</span>(error => {
+    <span class="comment">// ❌ This is SKIPPED because resolve() was called</span>
+    console.<span class="function">log</span>(error.message);
+  });
+
+<span class="comment">// CASE 2: Failure (userId = -1)</span>
+<span class="function">getUser</span>(<span class="number">-1</span>)
+  .<span class="function">then</span>(user => {
+    <span class="comment">// ❌ This is SKIPPED because reject() was called</span>
+    console.<span class="function">log</span>(user);
+  })
+  .<span class="function">catch</span>(error => {
+    <span class="comment">// ✅ reject() was called → we get the error here</span>
+    console.<span class="function">log</span>(error.message);  <span class="comment">// "User ID must be positive"</span>
+  });</code></pre>
+
+            <h3>Using with async/await</h3>
+
+            <pre><code><span class="keyword">async function</span> <span class="function">main</span>() {
+  <span class="keyword">try</span> {
+    <span class="comment">// await waits for the Promise to resolve</span>
+    <span class="keyword">const</span> user = <span class="keyword">await</span> <span class="function">getUser</span>(<span class="number">1</span>);  <span class="comment">// ✅ Gets the resolved value</span>
+    console.<span class="function">log</span>(user);
+  } <span class="keyword">catch</span> (error) {
+    <span class="comment">// If reject() was called, the error comes here</span>
+    console.<span class="function">log</span>(error.message);  <span class="comment">// ❌ Gets the rejected error</span>
+  }
+}</code></pre>
+
+            <div class="diagram-box">
+Error Flow Diagram:
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         getUser(userId)                                 │
+│                              │                                          │
+│                    ┌─────────┴─────────┐                                │
+│                    │                   │                                │
+│             userId > 0?           userId <= 0?                          │
+│                    │                   │                                │
+│                    ▼                   ▼                                │
+│    resolve({ id, name })      reject(new Error(...))                    │
+│                    │                   │                                │
+└────────────────────│───────────────────│────────────────────────────────┘
+                     │                   │
+         ┌───────────┴───────┐   ┌───────┴───────────┐
+         │   .then(user)     │   │   .catch(error)   │
+         │   ───────────     │   │   ─────────────   │
+         │   try { await }   │   │   catch (error)   │
+         └───────────────────┘   └───────────────────┘
+            </div>
+
+            <div class="success-box">
+                <strong>📌 Promise Key Points:</strong>
+                <ul>
+                    <li><code class="inline-code">resolve</code> and <code class="inline-code">reject</code> are provided by JavaScript, not declared by you</li>
+                    <li><code class="inline-code">resolve(value)</code> - Call when successful → goes to <code class="inline-code">.then()</code></li>
+                    <li><code class="inline-code">reject(error)</code> - Call when failed → goes to <code class="inline-code">.catch()</code></li>
+                    <li><code class="inline-code">.then()</code> - Handle success</li>
+                    <li><code class="inline-code">.catch()</code> - Handle failure</li>
+                </ul>
+            </div>
+
+            <h2>3.4 async/await (Cleaner Promise Syntax) ⭐</h2>
+            
+            <p><strong>async/await</strong> is syntactic sugar for Promises - it makes Promise code look synchronous!</p>
+
+            <div class="success-box">
+                <strong>📝 Two Keywords:</strong>
+                <ul>
+                    <li><code class="inline-code">async</code> - Put before a function (makes it return a Promise)</li>
+                    <li><code class="inline-code">await</code> - Wait for the Promise result (only works inside async function)</li>
+                </ul>
+            </div>
+
+            <h3>Comparison: Promise vs async/await</h3>
+
+            <pre><code><span class="comment">// ❌ Using Promise .then() (harder to read)</span>
+<span class="function">getUser</span>(<span class="number">1</span>)
+  .<span class="function">then</span>(user => {
+    console.<span class="function">log</span>(user);
+  })
+  .<span class="function">catch</span>(error => {
+    console.<span class="function">log</span>(error);
+  });
+
+<span class="comment">// ✅ Using async/await (much cleaner!)</span>
+<span class="keyword">async function</span> <span class="function">main</span>() {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> user = <span class="keyword">await</span> <span class="function">getUser</span>(<span class="number">1</span>);
+    console.<span class="function">log</span>(user);
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="function">log</span>(error);
+  }
+}</code></pre>
+
+            <div class="info-box">
+                <strong>💡 Both do the same thing!</strong> async/await just makes the code easier to read.
+            </div>
+
+            <h3>Basic Example (Best Practice with Error Handling)</h3>
+
+            <pre><code><span class="comment">// This function returns a Promise (with proper error handling!)</span>
+<span class="keyword">function</span> <span class="function">getUser</span>(id) {
+  <span class="keyword">return new</span> <span class="function">Promise</span>((resolve, reject) => {
+    <span class="function">setTimeout</span>(() => {
+      <span class="keyword">if</span> (id > <span class="number">0</span>) {
+        resolve({ id: id, name: <span class="string">'John'</span> });
+      } <span class="keyword">else</span> {
+        reject(<span class="keyword">new</span> <span class="function">Error</span>(<span class="string">'User ID must be positive'</span>));
+      }
+    }, <span class="number">1000</span>);
+  });
+}
+
+<span class="comment">// Using async/await with try/catch</span>
+<span class="keyword">async function</span> <span class="function">main</span>() {
+  <span class="keyword">try</span> {
+    console.<span class="function">log</span>(<span class="string">"Getting user..."</span>);
+    
+    <span class="keyword">const</span> user = <span class="keyword">await</span> <span class="function">getUser</span>(<span class="number">1</span>);  <span class="comment">// Wait for Promise to resolve</span>
+    
+    console.<span class="function">log</span>(<span class="string">"User:"</span>, user);
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="function">log</span>(<span class="string">"Error:"</span>, error.message);
+  }
+}
+
+<span class="function">main</span>();
+
+<span class="comment">// Output (success):</span>
+<span class="comment">// Getting user...</span>
+<span class="comment">// (1 second later)</span>
+<span class="comment">// User: { id: 1, name: 'John' }</span></code></pre>
+
+            <h2>3.5 Error Handling with try/catch</h2>
+
+            <p>Always wrap await in try/catch to handle errors:</p>
+
+            <pre><code><span class="keyword">async function</span> <span class="function">main</span>() {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> user = <span class="keyword">await</span> <span class="function">getUser</span>(<span class="number">1</span>);
+    console.<span class="function">log</span>(<span class="string">"User:"</span>, user);
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="function">log</span>(<span class="string">"Error:"</span>, error.message);
+  }
+}</code></pre>
+
+            <h2>3.6 The Express Pattern ⭐</h2>
+            
+            <p>This is the pattern you'll use in ALL Express routes:</p>
+
+            <pre><code><span class="comment">// Express route with async/await</span>
+app.<span class="function">get</span>(<span class="string">'/users/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="comment">// 1. Get ID from URL</span>
+    <span class="keyword">const</span> id = req.params.id;
+    
+    <span class="comment">// 2. Get data from database (await)</span>
+    <span class="keyword">const</span> user = <span class="keyword">await</span> User.<span class="function">findById</span>(id);
+    
+    <span class="comment">// 3. Send response</span>
+    res.<span class="function">json</span>(user);
+    
+  } <span class="keyword">catch</span> (error) {
+    <span class="comment">// 4. Handle errors</span>
+    res.<span class="function">status</span>(<span class="number">500</span>).<span class="function">json</span>({ error: error.message });
+  }
+});</code></pre>
+
+            <h3>More Examples</h3>
+
+            <pre><code><span class="comment">// GET all products</span>
+app.<span class="function">get</span>(<span class="string">'/products'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> products = <span class="keyword">await</span> Product.<span class="function">find</span>();
+    res.<span class="function">json</span>(products);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">500</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+<span class="comment">// POST create product</span>
+app.<span class="function">post</span>(<span class="string">'/products'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> product = <span class="keyword">await</span> Product.<span class="function">create</span>(req.body);
+    res.<span class="function">status</span>(<span class="number">201</span>).<span class="function">json</span>(product);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">400</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+<span class="comment">// DELETE product</span>
+app.<span class="function">delete</span>(<span class="string">'/products/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">await</span> Product.<span class="function">findByIdAndDelete</span>(req.params.id);
+    res.<span class="function">json</span>({ message: <span class="string">'Deleted'</span> });
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">500</span>).<span class="function">json</span>({ error: error.message });
+  }
+});</code></pre>
+
+            <div class="success-box">
+                <strong>🎯 Key Takeaways:</strong>
+                <ul>
+                    <li>Node.js doesn't wait for slow operations</li>
+                    <li>Use <code class="inline-code">async</code> before the function</li>
+                    <li>Use <code class="inline-code">await</code> to wait for data</li>
+                    <li>Always use <code class="inline-code">try/catch</code> for error handling</li>
+                    <li>Every Express route uses this pattern!</li>
+                </ul>
+            </div>
+
+            <h2>Quick Reference</h2>
+
+            <pre><code><span class="comment">// The pattern you'll use everywhere:</span>
+
+app.<span class="function">get</span>(<span class="string">'/endpoint'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> data = <span class="keyword">await</span> <span class="function">someAsyncOperation</span>();
+    res.<span class="function">json</span>(data);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">500</span>).<span class="function">json</span>({ error: error.message });
+  }
+});</code></pre>
+        </div>
+
+        <div class="navigation">
+            <a href="02-nodejs-fundamentals.html" class="nav-button">← Previous: Node.js Fundamentals</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="04-events.html" class="nav-button">Next: Events →</a>
+        </div>
+    </div>
+</body>
+</html>

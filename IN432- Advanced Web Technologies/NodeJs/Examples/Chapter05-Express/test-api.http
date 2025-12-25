@@ -1,0 +1,38 @@
+### ===========================================
+### API Test File (VS Code REST Client Extension)
+### ===========================================
+### Install "REST Client" extension in VS Code
+### Then click "Send Request" above each request
+### ===========================================
+
+### Get all products
+GET http://localhost:3000/products
+
+### Get single product
+GET http://localhost:3000/products/1
+
+### Create product
+POST http://localhost:3000/products
+Content-Type: application/json
+
+{
+  "name": "Tablet",
+  "price": 499,
+  "category": "electronics"
+}
+
+### Update product
+PUT http://localhost:3000/products/1
+Content-Type: application/json
+
+{
+  "name": "Gaming Laptop",
+  "price": 1299
+}
+
+### Delete product
+DELETE http://localhost:3000/products/1
+
+### Search products
+GET http://localhost:3000/search?q=phone&category=electronics
+

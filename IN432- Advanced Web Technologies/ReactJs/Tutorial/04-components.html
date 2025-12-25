@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Components - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React Components</h1>
+            <p>Chapter 4 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>What are Components?</h2>
+            <p>Components are independent and reusable bits of code. They serve the same purpose as JavaScript functions, but work in isolation and return HTML via a render function.</p>
+
+            <div class="info-box">
+                <strong>💡 Think of Components as Custom HTML Elements:</strong> Just like you use <code class="inline-code">&lt;div&gt;</code> or <code class="inline-code">&lt;button&gt;</code>, you can create your own elements like <code class="inline-code">&lt;Header&gt;</code> or <code class="inline-code">&lt;UserProfile&gt;</code>!
+            </div>
+
+            <h2>Types of Components</h2>
+            <p>There are two types of components in React:</p>
+            <ul>
+                <li><strong>Function components</strong> (Recommended)</li>
+                <li><strong>Class components</strong> (Legacy, but still supported)</li>
+            </ul>
+
+            <h2>Function Components</h2>
+            <p>A Function component is a JavaScript function that returns HTML (JSX). This is the modern way to write React components:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Car</span>() {
+  <span class="keyword">return</span> &lt;h2&gt;Hi, I am a Car!&lt;/h2&gt;;
+}</code></pre>
+
+            <p>You can also use arrow function syntax:</p>
+
+            <pre><code><span class="keyword">const</span> <span class="function">Car</span> = () => {
+  <span class="keyword">return</span> &lt;h2&gt;Hi, I am a Car!&lt;/h2&gt;;
+}</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Best Practice:</strong> Component names must start with a capital letter! This helps React distinguish between regular HTML tags and components.
+            </div>
+
+            <h2>Rendering a Component</h2>
+            <p>To use a component in your application, use it like an HTML tag:</p>
+
+            <pre><code><span class="keyword">const</span> root = ReactDOM.<span class="function">createRoot</span>(document.<span class="function">getElementById</span>(<span class="string">'root'</span>));
+root.<span class="function">render</span>(&lt;Car /&gt;);</code></pre>
+
+            <h2>Class Components</h2>
+            <p>A class component must include the <code class="inline-code">extends React.Component</code> statement and a <code class="inline-code">render()</code> method:</p>
+
+            <pre><code><span class="keyword">class</span> Car <span class="keyword">extends</span> React.Component {
+  <span class="function">render</span>() {
+    <span class="keyword">return</span> &lt;h2&gt;Hi, I am a Car!&lt;/h2&gt;;
+  }
+}</code></pre>
+
+            <div class="info-box">
+                <strong>📚 History Note:</strong> Before React Hooks were introduced in 2019, class components were the only way to use state and lifecycle methods. Now, function components with Hooks are the recommended approach.
+            </div>
+
+            <h2>Components in Components</h2>
+            <p>We can refer to components inside other components. This is called composition:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Car</span>() {
+  <span class="keyword">return</span> &lt;h2&gt;I am a Car!&lt;/h2&gt;;
+}
+
+<span class="keyword">function</span> <span class="function">Garage</span>() {
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;Who lives in my Garage?&lt;/h1&gt;
+      &lt;Car /&gt;
+    &lt;/&gt;
+  );
+}
+
+<span class="keyword">const</span> root = ReactDOM.<span class="function">createRoot</span>(document.<span class="function">getElementById</span>(<span class="string">'root'</span>));
+root.<span class="function">render</span>(&lt;Garage /&gt;);</code></pre>
+
+            <h2>Multiple Components</h2>
+            <p>You can use the same component multiple times:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Car</span>() {
+  <span class="keyword">return</span> &lt;h2&gt;I am a Car!&lt;/h2&gt;;
+}
+
+<span class="keyword">function</span> <span class="function">Garage</span>() {
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;My Garage&lt;/h1&gt;
+      &lt;Car /&gt;
+      &lt;Car /&gt;
+      &lt;Car /&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h2>Components in Files</h2>
+            <p>React is all about re-using code. It's recommended to split your components into separate files for better organization:</p>
+
+            <h3>Car.js</h3>
+            <pre><code><span class="keyword">function</span> <span class="function">Car</span>() {
+  <span class="keyword">return</span> &lt;h2&gt;Hi, I am a Car!&lt;/h2&gt;;
+}
+
+<span class="keyword">export default</span> Car;</code></pre>
+
+            <h3>App.jsx</h3>
+            <pre><code><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>
+<span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom/client'</span>
+<span class="keyword">import</span> Car <span class="keyword">from</span> <span class="string">'./Car.jsx'</span>
+
+ReactDOM.<span class="function">createRoot</span>(document.<span class="function">getElementById</span>(<span class="string">'root'</span>)).<span class="function">render</span>(
+  &lt;React.StrictMode&gt;
+    &lt;Car /&gt;
+  &lt;/React.StrictMode&gt;
+)</code></pre>
+
+            <div class="success-box">
+                <strong>✨ File Organization:</strong> Create a separate file for each component. Use <code>.jsx</code> extension for files containing JSX. This makes your code easier to maintain and test!
+            </div>
+
+            <h2>Component Folder Structure (Vite)</h2>
+            <p>A typical Vite React project structure might look like:</p>
+
+            <pre><code>src/
+├── components/
+│   ├── Header.jsx
+│   ├── Footer.jsx
+│   ├── Car.jsx
+│   └── Garage.jsx
+├── App.jsx
+└── main.jsx</code></pre>
+
+            <h2>Named Exports vs Default Exports</h2>
+            
+            <h3>Default Export (One per file)</h3>
+            <pre><code><span class="comment">// Car.jsx</span>
+<span class="keyword">function</span> <span class="function">Car</span>() {
+  <span class="keyword">return</span> &lt;h2&gt;Car&lt;/h2&gt;
+}
+<span class="keyword">export default</span> Car
+
+<span class="comment">// Importing in Vite</span>
+<span class="keyword">import</span> Car <span class="keyword">from</span> <span class="string">'./Car.jsx'</span></code></pre>
+
+            <h3>Named Export (Multiple per file)</h3>
+            <pre><code><span class="comment">// Vehicles.jsx</span>
+<span class="keyword">export function</span> <span class="function">Car</span>() {
+  <span class="keyword">return</span> &lt;h2&gt;Car&lt;/h2&gt;
+}
+
+<span class="keyword">export function</span> <span class="function">Truck</span>() {
+  <span class="keyword">return</span> &lt;h2&gt;Truck&lt;/h2&gt;;
+}
+
+<span class="comment">// Importing</span>
+<span class="keyword">import</span> { Car, Truck } <span class="keyword">from</span> <span class="string">'./Vehicles'</span>;</code></pre>
+
+            <h2>Component Best Practices</h2>
+            <ul>
+                <li><strong>Single Responsibility:</strong> Each component should do one thing well</li>
+                <li><strong>Reusable:</strong> Design components to be used in multiple places</li>
+                <li><strong>Small:</strong> Keep components small and manageable (ideally under 200 lines)</li>
+                <li><strong>Named Well:</strong> Use descriptive names that explain what the component does</li>
+                <li><strong>Organized:</strong> Put each component in its own file</li>
+            </ul>
+
+            <h2>Real-World Example</h2>
+            <p>Here's a more realistic example with multiple components:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Header</span>() {
+  <span class="keyword">return</span> (
+    &lt;header&gt;
+      &lt;h1&gt;My Website&lt;/h1&gt;
+      &lt;nav&gt;
+        &lt;a href=<span class="string">"/"</span>&gt;Home&lt;/a&gt;
+        &lt;a href=<span class="string">"/about"</span>&gt;About&lt;/a&gt;
+      &lt;/nav&gt;
+    &lt;/header&gt;
+  );
+}
+
+<span class="keyword">function</span> <span class="function">Content</span>() {
+  <span class="keyword">return</span> (
+    &lt;main&gt;
+      &lt;h2&gt;Welcome!&lt;/h2&gt;
+      &lt;p&gt;This is my React application.&lt;/p&gt;
+    &lt;/main&gt;
+  );
+}
+
+<span class="keyword">function</span> <span class="function">Footer</span>() {
+  <span class="keyword">return</span> (
+    &lt;footer&gt;
+      &lt;p&gt;&copy; <span class="number">2025</span> My Website&lt;/p&gt;
+    &lt;/footer&gt;
+  );
+}
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;Header /&gt;
+      &lt;Content /&gt;
+      &lt;Footer /&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <div class="warning-box">
+                <strong>⚠️ Remember:</strong> Always capitalize component names! React treats components starting with lowercase letters as DOM tags.
+            </div>
+
+            <h2>What's Next?</h2>
+            <p>Now that you understand components, you're ready to learn about Props - how to pass data between components!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="03-jsx.html" class="nav-button">← Previous: JSX</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="05-props.html" class="nav-button">Next: Props →</a>
+        </div>
+    </div>
+</body>
+</html>
+

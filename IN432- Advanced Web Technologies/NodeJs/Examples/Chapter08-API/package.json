@@ -1,0 +1,14 @@
+{
+  "name": "chapter08-api",
+  "version": "1.0.0",
+  "description": "Simple REST API example",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0",
+    "cors": "^2.8.5"
+  }
+}

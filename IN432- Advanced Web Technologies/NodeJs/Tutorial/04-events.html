@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4: Event-Driven Architecture - Node.js Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>4️⃣ Event-Driven Architecture</h1>
+            <p>How Node.js Handles Concurrency</p>
+        </header>
+
+        <div class="content">
+            <div class="info-box">
+                <strong>📝 Note:</strong> This is a short section to help you understand how Node.js works internally. No deep theory needed!
+            </div>
+
+            <h2>4.1 EventEmitter</h2>
+            
+            <p>Node.js uses <strong>events</strong> extensively. Many built-in objects emit events that you can listen to.</p>
+
+            <h3>Basic EventEmitter Example</h3>
+
+            <pre><code><span class="comment">// events-example.js</span>
+<span class="keyword">const</span> EventEmitter = <span class="function">require</span>(<span class="string">'events'</span>);
+
+<span class="comment">// Create an event emitter</span>
+<span class="keyword">const</span> emitter = <span class="keyword">new</span> <span class="function">EventEmitter</span>();
+
+<span class="comment">// Listen for 'orderPlaced' event</span>
+emitter.<span class="function">on</span>(<span class="string">'orderPlaced'</span>, (order) => {
+  console.<span class="function">log</span>(<span class="string">'📧 Sending confirmation email for order:'</span>, order.id);
+});
+
+<span class="comment">// Another listener for same event</span>
+emitter.<span class="function">on</span>(<span class="string">'orderPlaced'</span>, (order) => {
+  console.<span class="function">log</span>(<span class="string">'📦 Preparing shipment for order:'</span>, order.id);
+});
+
+<span class="comment">// Trigger (emit) the event</span>
+emitter.<span class="function">emit</span>(<span class="string">'orderPlaced'</span>, { id: <span class="number">123</span>, product: <span class="string">'Laptop'</span> });
+
+<span class="comment">// Output:</span>
+<span class="comment">// 📧 Sending confirmation email for order: 123</span>
+<span class="comment">// 📦 Preparing shipment for order: 123</span></code></pre>
+
+            <h3>Common Event Methods</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code class="inline-code">.on(event, fn)</code></td>
+                        <td>Listen for event (multiple times)</td>
+                        <td><code>emitter.on('click', handler)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">.once(event, fn)</code></td>
+                        <td>Listen once only</td>
+                        <td><code>emitter.once('connect', handler)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">.emit(event, data)</code></td>
+                        <td>Trigger an event</td>
+                        <td><code>emitter.emit('save', data)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">.off(event, fn)</code></td>
+                        <td>Remove a listener</td>
+                        <td><code>emitter.off('click', handler)</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Practical Example: Order System</h3>
+
+            <pre><code><span class="comment">// order-events.js</span>
+<span class="keyword">const</span> EventEmitter = <span class="function">require</span>(<span class="string">'events'</span>);
+
+<span class="keyword">class</span> <span class="function">OrderSystem</span> <span class="keyword">extends</span> EventEmitter {
+  <span class="function">placeOrder</span>(product, quantity) {
+    <span class="keyword">const</span> order = {
+      id: Date.<span class="function">now</span>(),
+      product,
+      quantity,
+      status: <span class="string">'placed'</span>
+    };
+    
+    console.<span class="function">log</span>(<span class="string">'Order placed!'</span>, order);
+    
+    <span class="comment">// Emit event - all listeners will be notified</span>
+    <span class="keyword">this</span>.<span class="function">emit</span>(<span class="string">'orderPlaced'</span>, order);
+    
+    <span class="keyword">return</span> order;
+  }
+}
+
+<span class="comment">// Create system</span>
+<span class="keyword">const</span> shop = <span class="keyword">new</span> <span class="function">OrderSystem</span>();
+
+<span class="comment">// Register listeners (like plugins)</span>
+shop.<span class="function">on</span>(<span class="string">'orderPlaced'</span>, (order) => {
+  console.<span class="function">log</span>(<span class="string">`📧 Email sent for order #${order.id}`</span>);
+});
+
+shop.<span class="function">on</span>(<span class="string">'orderPlaced'</span>, (order) => {
+  console.<span class="function">log</span>(<span class="string">`📊 Analytics updated: ${order.product}`</span>);
+});
+
+shop.<span class="function">on</span>(<span class="string">'orderPlaced'</span>, (order) => {
+  console.<span class="function">log</span>(<span class="string">`🏪 Inventory reduced by ${order.quantity}`</span>);
+});
+
+<span class="comment">// Place an order - all listeners react!</span>
+shop.<span class="function">placeOrder</span>(<span class="string">'iPhone 15'</span>, <span class="number">2</span>);</code></pre>
+
+            <h3>Where Node Uses Events</h3>
+            
+            <ul>
+                <li><strong>HTTP Server:</strong> <code class="inline-code">'request'</code>, <code class="inline-code">'connection'</code> events</li>
+                <li><strong>File Streams:</strong> <code class="inline-code">'data'</code>, <code class="inline-code">'end'</code>, <code class="inline-code">'error'</code> events</li>
+                <li><strong>Database:</strong> <code class="inline-code">'connect'</code>, <code class="inline-code">'disconnect'</code> events</li>
+                <li><strong>Process:</strong> <code class="inline-code">'exit'</code>, <code class="inline-code">'uncaughtException'</code> events</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>📚 Educational Note:</strong> The example below shows how events work internally.
+                In practice, developers use the shorthand version (shown first).
+            </div>
+
+            <pre><code><span class="comment">// ✅ NORMAL WAY (what developers actually write)</span>
+<span class="keyword">const</span> http = <span class="function">require</span>(<span class="string">'http'</span>);
+
+<span class="keyword">const</span> server = http.<span class="function">createServer</span>((req, res) => {
+  res.<span class="function">end</span>(<span class="string">'Hello!'</span>);
+});
+
+server.<span class="function">listen</span>(<span class="number">3000</span>);
+
+
+<span class="comment">// 📚 EQUIVALENT (to show events behind the scenes)</span>
+<span class="comment">// This is what happens internally:</span>
+<span class="keyword">const</span> http2 = <span class="function">require</span>(<span class="string">'http'</span>);
+<span class="keyword">const</span> server2 = http2.<span class="function">createServer</span>();
+
+server2.<span class="function">on</span>(<span class="string">'request'</span>, (req, res) => {
+  res.<span class="function">end</span>(<span class="string">'Hello!'</span>);
+});
+
+server2.<span class="function">listen</span>(<span class="number">3001</span>);
+
+<span class="comment">// Both do the same thing!</span>
+<span class="comment">// The callback in createServer() is just a shorthand for .on('request', ...)</span></code></pre>
+
+            <h2>4.2 Event Loop (High-Level Overview)</h2>
+            
+            <p>The <strong>Event Loop</strong> is how Node handles many users with just ONE thread.</p>
+
+            <div class="diagram-box">
+                    ┌───────────────────────────────────────────┐
+                    │           Node.js Event Loop               │
+                    │                                            │
+    User 1 ─────►   │  ┌─────────┐    ┌─────────────────────┐   │
+    User 2 ─────►   │  │ Receive │───►│ Start Async Work    │   │
+    User 3 ─────►   │  │ Request │    │ (DB, File, Network) │   │
+    User 4 ─────►   │  └─────────┘    └──────────┬──────────┘   │
+                    │                             │              │
+                    │       🔄 Continue to        │              │
+                    │       next request          │              │
+                    │                             ▼              │
+                    │                  ┌──────────────────────┐  │
+                    │                  │ When done: Callback  │  │
+                    │                  │ runs and responds    │  │
+                    │                  └──────────────────────┘  │
+                    └───────────────────────────────────────────┘
+            </div>
+
+            <h3>Key Points About the Event Loop</h3>
+
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>Single Thread:</strong> Node uses only ONE thread for JavaScript
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>Non-Blocking:</strong> Slow operations run in background
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>Event Loop:</strong> Constantly checks for completed operations
+            </div>
+
+            <div class="step">
+                <span class="step-number">4</span>
+                <strong>Callbacks:</strong> When work is done, callback executes
+            </div>
+
+            <h3>Simple Analogy: Restaurant Waiter</h3>
+
+            <div class="info-box">
+                <p>Think of Node.js as a <strong>single waiter</strong> serving many tables:</p>
+                <ul>
+                    <li>Takes order from Table 1 → sends to kitchen</li>
+                    <li>Doesn't wait! → Takes order from Table 2</li>
+                    <li>Takes order from Table 3</li>
+                    <li>Kitchen rings bell → Delivers Table 1's food</li>
+                    <li>Continues serving other tables...</li>
+                </ul>
+                <p><strong>Result:</strong> One waiter can serve many tables efficiently!</p>
+            </div>
+
+            <h3>Visualizing the Event Loop</h3>
+
+            <pre><code><span class="comment">// event-loop-demo.js</span>
+console.<span class="function">log</span>(<span class="string">'1. Script start'</span>);
+
+<span class="function">setTimeout</span>(() => {
+  console.<span class="function">log</span>(<span class="string">'2. Timeout callback'</span>);
+}, <span class="number">0</span>);  <span class="comment">// Even with 0ms delay!</span>
+
+Promise.<span class="function">resolve</span>().<span class="function">then</span>(() => {
+  console.<span class="function">log</span>(<span class="string">'3. Promise callback'</span>);
+});
+
+console.<span class="function">log</span>(<span class="string">'4. Script end'</span>);
+
+<span class="comment">// Output (notice the order!):</span>
+<span class="comment">// 1. Script start</span>
+<span class="comment">// 4. Script end</span>
+<span class="comment">// 3. Promise callback</span>
+<span class="comment">// 2. Timeout callback</span></code></pre>
+
+            <div class="warning-box">
+                <strong>⚠️ Why this order?</strong>
+                <ul>
+                    <li>Synchronous code runs first (1, 4)</li>
+                    <li>Promises run next (microtask queue)</li>
+                    <li>Timers run last (macrotask queue)</li>
+                </ul>
+            </div>
+
+            <div class="success-box">
+                <strong>✅ Deterministic Behavior:</strong> This output will be <strong>exactly the same every time</strong> you run it!
+                The event loop order is predictable and consistent. This is a fundamental behavior of JavaScript's event loop.
+            </div>
+
+            <h2>Why Events Matter for APIs</h2>
+
+            <pre><code><span class="comment">// Without understanding events, this code is confusing:</span>
+<span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> app = <span class="function">express</span>();
+
+app.<span class="function">get</span>(<span class="string">'/slow'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="comment">// This takes 5 seconds...</span>
+  <span class="keyword">await</span> <span class="function">slowDatabaseQuery</span>();
+  res.<span class="function">send</span>(<span class="string">'Done!'</span>);
+});
+
+app.<span class="function">get</span>(<span class="string">'/fast'</span>, (req, res) => {
+  res.<span class="function">send</span>(<span class="string">'Fast response!'</span>);
+});
+
+<span class="comment">// User A requests /slow (takes 5 seconds)</span>
+<span class="comment">// User B requests /fast</span>
+
+<span class="comment">// ✅ With Event Loop: User B gets response immediately!</span>
+<span class="comment">// Node doesn't block while waiting for User A's slow query</span></code></pre>
+
+            <div class="success-box">
+                <strong>🎯 Key Takeaways:</strong>
+                <ul>
+                    <li><strong>EventEmitter:</strong> Use <code class="inline-code">.on()</code> to listen, <code class="inline-code">.emit()</code> to trigger</li>
+                    <li><strong>Event Loop:</strong> Node handles many users with one thread</li>
+                    <li><strong>Non-blocking:</strong> Node continues working while waiting</li>
+                    <li><strong>Why it matters:</strong> Your API can serve thousands of users efficiently</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Remember:</strong> You don't need to deeply understand the Event Loop to use Node.js effectively. Just know that:
+                <ul>
+                    <li>Use <code class="inline-code">async/await</code> for slow operations</li>
+                    <li>Node handles concurrency automatically</li>
+                    <li>One user's slow request won't block others</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="03-async-programming.html" class="nav-button">← Previous: Async Programming</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="05-express.html" class="nav-button">Next: Express.js →</a>
+        </div>
+    </div>
+</body>
+</html>

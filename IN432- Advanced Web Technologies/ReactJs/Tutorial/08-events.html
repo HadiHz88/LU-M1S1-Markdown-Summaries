@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Events - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React Events</h1>
+            <p>Chapter 8 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>React Events</h2>
+            <p>Just like HTML, React can perform actions based on user events. React has the same events as HTML: click, change, mouseover, etc.</p>
+
+            <div class="info-box">
+                <strong>💡 Key Difference:</strong> React events are named using camelCase, rather than lowercase. With JSX you pass a function as the event handler, rather than a string.
+            </div>
+
+            <h2>Adding Events</h2>
+            <p>React events are written in camelCase syntax:</p>
+            <ul>
+                <li><code class="inline-code">onClick</code> instead of <code class="inline-code">onclick</code></li>
+                <li><code class="inline-code">onChange</code> instead of <code class="inline-code">onchange</code></li>
+                <li><code class="inline-code">onSubmit</code> instead of <code class="inline-code">onsubmit</code></li>
+            </ul>
+
+            <h3>HTML Example:</h3>
+            <pre><code>&lt;button onclick="shoot()"&gt;Take the shot!&lt;/button&gt;</code></pre>
+
+            <h3>React Example:</h3>
+            <pre><code>&lt;button onClick={shoot}&gt;Take the shot!&lt;/button&gt;</code></pre>
+
+            <h2>Event Handlers</h2>
+            <p>Here's a simple example of a button click event:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Football</span>() {
+  <span class="keyword">const</span> <span class="function">shoot</span> = () => {
+    <span class="function">alert</span>(<span class="string">"Great Shot!"</span>);
+  }
+
+  <span class="keyword">return</span> (
+    &lt;button onClick={shoot}&gt;Take the shot!&lt;/button&gt;
+  );
+}</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Note:</strong> Pass the function name without parentheses! <code class="inline-code">onClick={shoot}</code> not <code class="inline-code">onClick={shoot()}</code>
+            </div>
+
+            <h2>Passing Arguments</h2>
+            <p>To pass an argument to an event handler, use an arrow function:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Football</span>() {
+  <span class="keyword">const</span> <span class="function">shoot</span> = (a) => {
+    <span class="function">alert</span>(a);
+  }
+
+  <span class="keyword">return</span> (
+    &lt;button onClick={() => <span class="function">shoot</span>(<span class="string">"Goal!"</span>)}&gt;
+      Take the shot!
+    &lt;/button&gt;
+  );
+}</code></pre>
+
+            <h2>React Event Object</h2>
+            <p>Event handlers have access to the React event that triggered the function:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Football</span>() {
+  <span class="keyword">const</span> <span class="function">shoot</span> = (a, b) => {
+    <span class="function">alert</span>(b.type);
+    <span class="comment">// 'b' represents the React event</span>
+    <span class="comment">// In this case, the 'click' event</span>
+  }
+
+  <span class="keyword">return</span> (
+    &lt;button onClick={(event) => <span class="function">shoot</span>(<span class="string">"Goal!"</span>, event)}&gt;
+      Take the shot!
+    &lt;/button&gt;
+  );
+}</code></pre>
+
+            <h2>Common Event Types</h2>
+            
+            <h3>Mouse Events</h3>
+            <ul>
+                <li><code class="inline-code">onClick</code> - Fires when clicked</li>
+                <li><code class="inline-code">onDoubleClick</code> - Fires when double-clicked</li>
+                <li><code class="inline-code">onMouseEnter</code> - Fires when mouse enters</li>
+                <li><code class="inline-code">onMouseLeave</code> - Fires when mouse leaves</li>
+                <li><code class="inline-code">onMouseMove</code> - Fires when mouse moves</li>
+            </ul>
+
+            <pre><code><span class="keyword">function</span> <span class="function">MouseEvents</span>() {
+  <span class="keyword">const</span> <span class="function">handleClick</span> = () => <span class="function">console.log</span>(<span class="string">"Clicked!"</span>);
+  <span class="keyword">const</span> <span class="function">handleHover</span> = () => <span class="function">console.log</span>(<span class="string">"Hovering!"</span>);
+
+  <span class="keyword">return</span> (
+    &lt;button 
+      onClick={handleClick}
+      onMouseEnter={handleHover}
+    &gt;
+      Hover or Click Me
+    &lt;/button&gt;
+  );
+}</code></pre>
+
+            <h3>Keyboard Events</h3>
+            <ul>
+                <li><code class="inline-code">onKeyDown</code> - Fires when a key is pressed</li>
+                <li><code class="inline-code">onKeyUp</code> - Fires when a key is released</li>
+                <li><code class="inline-code">onKeyPress</code> - Fires when a key is pressed (deprecated)</li>
+            </ul>
+
+            <pre><code><span class="keyword">function</span> <span class="function">KeyboardEvents</span>() {
+  <span class="keyword">const</span> <span class="function">handleKeyPress</span> = (event) => {
+    <span class="function">console.log</span>(<span class="string">"Key pressed:"</span>, event.key);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;input 
+      type=<span class="string">"text"</span>
+      onKeyDown={handleKeyPress}
+      placeholder=<span class="string">"Type something..."</span>
+    /&gt;
+  );
+}</code></pre>
+
+            <h3>Form Events</h3>
+            <ul>
+                <li><code class="inline-code">onChange</code> - Fires when value changes</li>
+                <li><code class="inline-code">onSubmit</code> - Fires when form is submitted</li>
+                <li><code class="inline-code">onFocus</code> - Fires when element gets focus</li>
+                <li><code class="inline-code">onBlur</code> - Fires when element loses focus</li>
+            </ul>
+
+            <pre><code><span class="keyword">function</span> <span class="function">FormEvents</span>() {
+  <span class="keyword">const</span> <span class="function">handleChange</span> = (event) => {
+    <span class="function">console.log</span>(<span class="string">"Value changed:"</span>, event.target.value);
+  };
+
+  <span class="keyword">const</span> <span class="function">handleFocus</span> = () => {
+    <span class="function">console.log</span>(<span class="string">"Input focused"</span>);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;input
+      type=<span class="string">"text"</span>
+      onChange={handleChange}
+      onFocus={handleFocus}
+    /&gt;
+  );
+}</code></pre>
+
+            <h2>Event Handler with State</h2>
+            <p>Combining events with state to create interactive components:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Counter</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+
+  <span class="keyword">const</span> <span class="function">handleIncrement</span> = () => {
+    <span class="function">setCount</span>(count + <span class="number">1</span>);
+  };
+
+  <span class="keyword">const</span> <span class="function">handleDecrement</span> = () => {
+    <span class="function">setCount</span>(count - <span class="number">1</span>);
+  };
+
+  <span class="keyword">const</span> <span class="function">handleReset</span> = () => {
+    <span class="function">setCount</span>(<span class="number">0</span>);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;h1&gt;Count: {count}&lt;/h1&gt;
+      &lt;button onClick={handleIncrement}&gt;+&lt;/button&gt;
+      &lt;button onClick={handleDecrement}&gt;-&lt;/button&gt;
+      &lt;button onClick={handleReset}&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Preventing Default Behavior</h2>
+            <p>Use <code class="inline-code">event.preventDefault()</code> to prevent default browser behavior:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">MyForm</span>() {
+  <span class="keyword">const</span> <span class="function">handleSubmit</span> = (event) => {
+    event.<span class="function">preventDefault</span>();  <span class="comment">// Prevents page refresh</span>
+    <span class="function">console.log</span>(<span class="string">"Form submitted!"</span>);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input type=<span class="string">"text"</span> /&gt;
+      &lt;button type=<span class="string">"submit"</span>&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> In HTML, the default behavior of a form submit is to refresh the page. In React, we usually prevent this and handle the submission in JavaScript.
+            </div>
+
+            <h2>Event Pooling (Legacy)</h2>
+            <p>In React 16 and earlier, events were pooled for performance. In React 17+, this is no longer the case:</p>
+
+            <pre><code><span class="comment">// In React 17+, this works fine:</span>
+<span class="keyword">const</span> <span class="function">handleClick</span> = (event) => {
+  <span class="function">setTimeout</span>(() => {
+    <span class="function">console.log</span>(event.type);  <span class="comment">// Works!</span>
+  }, <span class="number">1000</span>);
+};</code></pre>
+
+            <h2>Inline Event Handlers</h2>
+            <p>You can write event handlers inline, but it's not recommended for complex logic:</p>
+
+            <pre><code><span class="comment">// Simple inline handler (OK for simple logic)</span>
+&lt;button onClick={() => <span class="function">console.log</span>(<span class="string">"Clicked"</span>)}&gt;
+  Click Me
+&lt;/button&gt;
+
+<span class="comment">// Better: Define handler separately</span>
+<span class="keyword">const</span> <span class="function">handleClick</span> = () => {
+  <span class="function">console.log</span>(<span class="string">"Clicked"</span>);
+};
+
+&lt;button onClick={handleClick}&gt;Click Me&lt;/button&gt;</code></pre>
+
+            <h2>Multiple Events on One Element</h2>
+            <p>You can attach multiple event handlers to a single element:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">MultipleEvents</span>() {
+  <span class="keyword">const</span> <span class="function">handleClick</span> = () => <span class="function">console.log</span>(<span class="string">"Clicked!"</span>);
+  <span class="keyword">const</span> <span class="function">handleMouseEnter</span> = () => <span class="function">console.log</span>(<span class="string">"Mouse entered!"</span>);
+  <span class="keyword">const</span> <span class="function">handleMouseLeave</span> = () => <span class="function">console.log</span>(<span class="string">"Mouse left!"</span>);
+
+  <span class="keyword">return</span> (
+    &lt;button
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    &gt;
+      Hover and Click Me
+    &lt;/button&gt;
+  );
+}</code></pre>
+
+            <h2>Real-World Example: Toggle Button</h2>
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">ToggleButton</span>() {
+  <span class="keyword">const</span> [isOn, setIsOn] = <span class="function">useState</span>(<span class="keyword">false</span>);
+
+  <span class="keyword">const</span> <span class="function">handleToggle</span> = () => {
+    <span class="function">setIsOn</span>(!isOn);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;button 
+        onClick={handleToggle}
+        style={{
+          backgroundColor: isOn ? <span class="string">"green"</span> : <span class="string">"gray"</span>,
+          color: <span class="string">"white"</span>,
+          padding: <span class="string">"10px 20px"</span>
+        }}
+      &gt;
+        {isOn ? <span class="string">"ON"</span> : <span class="string">"OFF"</span>}
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Real-World Example: Input with Live Feedback</h2>
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">LiveInput</span>() {
+  <span class="keyword">const</span> [text, setText] = <span class="function">useState</span>(<span class="string">""</span>);
+
+  <span class="keyword">const</span> <span class="function">handleChange</span> = (event) => {
+    <span class="function">setText</span>(event.target.value);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;input
+        type=<span class="string">"text"</span>
+        value={text}
+        onChange={handleChange}
+        placeholder=<span class="string">"Type something..."</span>
+      /&gt;
+      &lt;p&gt;You typed: {text}&lt;/p&gt;
+      &lt;p&gt;Character count: {text.length}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Event Handler Best Practices</h2>
+            <ul>
+                <li><strong>Use camelCase</strong> for event names (onClick, onChange)</li>
+                <li><strong>Pass functions</strong>, not function calls (onClick={handler}, not onClick={handler()})</li>
+                <li><strong>Use arrow functions</strong> when you need to pass arguments</li>
+                <li><strong>Prevent default</strong> when needed (e.g., form submissions)</li>
+                <li><strong>Keep handlers simple</strong> - extract complex logic to separate functions</li>
+                <li><strong>Name handlers clearly</strong> - use handle prefix (handleClick, handleSubmit)</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>💡 Naming Convention:</strong> It's common to prefix event handler functions with "handle" (e.g., handleClick, handleSubmit, handleChange).
+            </div>
+
+            <h2>What's Next?</h2>
+            <p>Now that you understand events, you're ready to learn about Forms - how to handle user input in React applications!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="07-hooks.html" class="nav-button">← Previous: Hooks</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="09-forms.html" class="nav-button">Next: Forms →</a>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React State - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React State</h1>
+            <p>Chapter 6 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>What is State?</h2>
+            <p>React components have a built-in state object. The state object is where you store property values that belong to the component. When the state object changes, the component re-renders.</p>
+
+            <div class="info-box">
+                <strong>💡 Props vs State:</strong> Props are passed from parent to child and are read-only. State is managed within the component and can be changed!
+            </div>
+
+            <h2>State in Function Components</h2>
+            <p>To use state in a function component, we use the <code class="inline-code">useState</code> Hook:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Car</span>() {
+  <span class="keyword">const</span> [brand, setBrand] = <span class="function">useState</span>(<span class="string">"Ford"</span>);
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;h1&gt;My {brand}&lt;/h1&gt;
+      &lt;button onClick={() => <span class="function">setBrand</span>(<span class="string">"Volvo"</span>)}&gt;
+        Change Brand
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <div class="success-box">
+                <strong>✨ What Happens:</strong> When you click the button, the brand changes from "Ford" to "Volvo", and React automatically re-renders the component!
+            </div>
+
+            <h2>Understanding useState</h2>
+            <p>The <code class="inline-code">useState</code> Hook returns two values:</p>
+            <ul>
+                <li><strong>Current state value</strong> - The current value of the state variable</li>
+                <li><strong>State setter function</strong> - A function to update the state</li>
+            </ul>
+
+            <pre><code><span class="keyword">const</span> [state, setState] = <span class="function">useState</span>(initialValue);</code></pre>
+
+            <h2>Reading State</h2>
+            <p>You can use the state variable directly in your JSX:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Counter</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+
+  <span class="keyword">return</span> &lt;h1&gt;Count: {count}&lt;/h1&gt;;
+}</code></pre>
+
+            <h2>Updating State</h2>
+            <p>To update state, call the setter function with the new value:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Counter</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;h1&gt;Count: {count}&lt;/h1&gt;
+      &lt;button onClick={() => <span class="function">setCount</span>(count + <span class="number">1</span>)}&gt;
+        Increment
+      &lt;/button&gt;
+      &lt;button onClick={() => <span class="function">setCount</span>(count - <span class="number">1</span>)}&gt;
+        Decrement
+      &lt;/button&gt;
+      &lt;button onClick={() => <span class="function">setCount</span>(<span class="number">0</span>)}&gt;
+        Reset
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Multiple State Variables</h2>
+            <p>You can use the <code class="inline-code">useState</code> Hook multiple times in one component:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Car</span>() {
+  <span class="keyword">const</span> [brand, setBrand] = <span class="function">useState</span>(<span class="string">"Ford"</span>);
+  <span class="keyword">const</span> [model, setModel] = <span class="function">useState</span>(<span class="string">"Mustang"</span>);
+  <span class="keyword">const</span> [year, setYear] = <span class="function">useState</span>(<span class="string">"1964"</span>);
+  <span class="keyword">const</span> [color, setColor] = <span class="function">useState</span>(<span class="string">"red"</span>);
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;My {brand}&lt;/h1&gt;
+      &lt;p&gt;
+        It is a {color} {model} from {year}.
+      &lt;/p&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h2>Using Objects in State</h2>
+            <p>You can also store objects in state:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Car</span>() {
+  <span class="keyword">const</span> [car, setCar] = <span class="function">useState</span>({
+    brand: <span class="string">"Ford"</span>,
+    model: <span class="string">"Mustang"</span>,
+    year: <span class="string">"1964"</span>,
+    color: <span class="string">"red"</span>
+  });
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;My {car.brand}&lt;/h1&gt;
+      &lt;p&gt;
+        It is a {car.color} {car.model} from {car.year}.
+      &lt;/p&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h2>Updating Objects in State</h2>
+            <p>When updating state with objects, you need to use the spread operator to preserve other properties:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Car</span>() {
+  <span class="keyword">const</span> [car, setCar] = <span class="function">useState</span>({
+    brand: <span class="string">"Ford"</span>,
+    model: <span class="string">"Mustang"</span>,
+    year: <span class="string">"1964"</span>,
+    color: <span class="string">"red"</span>
+  });
+
+  <span class="keyword">const</span> <span class="function">updateColor</span> = () => {
+    <span class="function">setCar</span>(previousState => {
+      <span class="keyword">return</span> { ...previousState, color: <span class="string">"blue"</span> };
+    });
+  }
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;My {car.brand}&lt;/h1&gt;
+      &lt;p&gt;It is a {car.color} {car.model} from {car.year}.&lt;/p&gt;
+      &lt;button onClick={updateColor}&gt;Blue&lt;/button&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> When updating state, React replaces the old state with the new state. Without the spread operator <code class="inline-code">...</code>, you would lose all other properties!
+            </div>
+
+            <h2>Using Arrays in State</h2>
+            <p>You can store arrays in state and update them:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">TodoList</span>() {
+  <span class="keyword">const</span> [todos, setTodos] = <span class="function">useState</span>([<span class="string">"Task 1"</span>, <span class="string">"Task 2"</span>]);
+
+  <span class="keyword">const</span> <span class="function">addTodo</span> = () => {
+    <span class="function">setTodos</span>([...todos, <span class="string">"New Task"</span>]);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;ul&gt;
+        {todos.<span class="function">map</span>((todo, index) => (
+          &lt;li key={index}&gt;{todo}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+      &lt;button onClick={addTodo}&gt;Add Todo&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>State in Class Components</h2>
+            <p>Before Hooks, we used class components for state. Here's how it works:</p>
+
+            <pre><code><span class="keyword">class</span> Car <span class="keyword">extends</span> React.Component {
+  <span class="function">constructor</span>(props) {
+    <span class="keyword">super</span>(props);
+    <span class="keyword">this</span>.state = {
+      brand: <span class="string">"Ford"</span>,
+      model: <span class="string">"Mustang"</span>,
+      color: <span class="string">"red"</span>,
+      year: <span class="number">1964</span>
+    };
+  }
+
+  changeColor = () => {
+    <span class="keyword">this</span>.<span class="function">setState</span>({ color: <span class="string">"blue"</span> });
+  }
+
+  <span class="function">render</span>() {
+    <span class="keyword">return</span> (
+      &lt;div&gt;
+        &lt;h1&gt;My {<span class="keyword">this</span>.state.brand}&lt;/h1&gt;
+        &lt;p&gt;
+          It is a {<span class="keyword">this</span>.state.color} {<span class="keyword">this</span>.state.model} 
+          from {<span class="keyword">this</span>.state.year}.
+        &lt;/p&gt;
+        &lt;button onClick={<span class="keyword">this</span>.changeColor}&gt;
+          Change color
+        &lt;/button&gt;
+      &lt;/div&gt;
+    );
+  }
+}</code></pre>
+
+            <div class="info-box">
+                <strong>📚 Note:</strong> Modern React apps use function components with Hooks instead of class components. Class components are still supported but not recommended for new code.
+            </div>
+
+            <h2>Functional Updates</h2>
+            <p>When updating state based on the previous state, use a function:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Counter</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+
+  <span class="keyword">const</span> <span class="function">incrementTwice</span> = () => {
+    <span class="comment">// ❌ Wrong - only increments once</span>
+    <span class="function">setCount</span>(count + <span class="number">1</span>);
+    <span class="function">setCount</span>(count + <span class="number">1</span>);
+
+    <span class="comment">// ✅ Correct - increments twice</span>
+    <span class="function">setCount</span>(prevCount => prevCount + <span class="number">1</span>);
+    <span class="function">setCount</span>(prevCount => prevCount + <span class="number">1</span>);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={incrementTwice}&gt;+2&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Real-World Example</h2>
+            <p>Here's a practical example of a form with state:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">LoginForm</span>() {
+  <span class="keyword">const</span> [username, setUsername] = <span class="function">useState</span>(<span class="string">""</span>);
+  <span class="keyword">const</span> [password, setPassword] = <span class="function">useState</span>(<span class="string">""</span>);
+  <span class="keyword">const</span> [isLoggedIn, setIsLoggedIn] = <span class="function">useState</span>(<span class="keyword">false</span>);
+
+  <span class="keyword">const</span> <span class="function">handleSubmit</span> = (e) => {
+    e.<span class="function">preventDefault</span>();
+    <span class="keyword">if</span> (username && password) {
+      <span class="function">setIsLoggedIn</span>(<span class="keyword">true</span>);
+    }
+  };
+
+  <span class="keyword">if</span> (isLoggedIn) {
+    <span class="keyword">return</span> &lt;h1&gt;Welcome, {username}!&lt;/h1&gt;;
+  }
+
+  <span class="keyword">return</span> (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        type=<span class="string">"text"</span>
+        placeholder=<span class="string">"Username"</span>
+        value={username}
+        onChange={(e) => <span class="function">setUsername</span>(e.target.value)}
+      /&gt;
+      &lt;input
+        type=<span class="string">"password"</span>
+        placeholder=<span class="string">"Password"</span>
+        value={password}
+        onChange={(e) => <span class="function">setPassword</span>(e.target.value)}
+      /&gt;
+      &lt;button type=<span class="string">"submit"</span>&gt;Login&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+
+            <h2>State Best Practices</h2>
+            <ul>
+                <li><strong>Never modify state directly</strong> - Always use the setter function</li>
+                <li><strong>State updates may be asynchronous</strong> - Don't rely on their values immediately</li>
+                <li><strong>Use functional updates</strong> when the new state depends on the old state</li>
+                <li><strong>Keep state minimal</strong> - Only store what you need</li>
+                <li><strong>Lift state up</strong> when multiple components need the same state</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>⚠️ Common Mistake:</strong>
+                <pre><code><span class="comment">// ❌ Never do this!</span>
+count = <span class="number">5</span>;  <span class="comment">// Wrong! This doesn't trigger re-render</span>
+
+<span class="comment">// ✅ Always do this:</span>
+<span class="function">setCount</span>(<span class="number">5</span>);  <span class="comment">// Correct! This triggers re-render</span></code></pre>
+            </div>
+
+            <h2>What's Next?</h2>
+            <p>Now that you understand state, you're ready to dive deeper into React Hooks, starting with a comprehensive look at the useState Hook!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="05-props.html" class="nav-button">← Previous: Props</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="07-hooks.html" class="nav-button">Next: Hooks →</a>
+        </div>
+    </div>
+</body>
+</html>
+

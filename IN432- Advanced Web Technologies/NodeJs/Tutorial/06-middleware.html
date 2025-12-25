@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 6: Middleware - Node.js Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>6️⃣ Middleware</h1>
+            <p>Functions That Run Before Your Routes</p>
+        </header>
+
+        <div class="content">
+            <h2>What is Middleware?</h2>
+            
+            <p><strong>Middleware</strong> = Functions that run before your route handlers.</p>
+
+            <div class="diagram-box">
+Request ──► Middleware ──► Route Handler ──► Response
+
+Example:
+┌─────────┐    ┌─────────────┐    ┌──────────────┐    ┌──────────┐
+│ Request │───►│ express.json│───►│ GET /products│───►│ Response │
+└─────────┘    │ (parse body)│    │ (your code)  │    └──────────┘
+               └─────────────┘    └──────────────┘
+            </div>
+
+            <h2>Built-in Middleware</h2>
+
+            <h3>1. express.json() - Parse JSON</h3>
+            
+            <p>Parses JSON data from POST/PUT requests:</p>
+
+            <pre><code><span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> app = <span class="function">express</span>();
+
+<span class="comment">// Enable JSON parsing</span>
+app.<span class="function">use</span>(express.<span class="function">json</span>());
+
+app.<span class="function">post</span>(<span class="string">'/products'</span>, (req, res) => {
+  console.<span class="function">log</span>(req.body);  <span class="comment">// { name: "Laptop", price: 999 }</span>
+  res.<span class="function">json</span>(req.body);
+});</code></pre>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> Without <code class="inline-code">express.json()</code>, req.body will be undefined!
+            </div>
+
+            <h3>2. express.static() - Serve Files</h3>
+            
+            <p>Serve HTML, CSS, images from a folder:</p>
+
+            <pre><code><span class="comment">// Serve files from 'public' folder</span>
+app.<span class="function">use</span>(express.<span class="function">static</span>(<span class="string">'public'</span>));
+
+<span class="comment">// Now these URLs work:</span>
+<span class="comment">// http://localhost:3000/index.html</span>
+<span class="comment">// http://localhost:3000/style.css</span>
+<span class="comment">// http://localhost:3000/image.png</span></code></pre>
+
+            <h2>Custom Middleware</h2>
+
+            <h3>Logger Example</h3>
+
+            <p>A middleware that logs every request:</p>
+
+            <pre><code><span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> app = <span class="function">express</span>();
+
+<span class="comment">// Custom logger middleware</span>
+<span class="keyword">function</span> <span class="function">logger</span>(req, res, next) {
+  console.<span class="function">log</span>(<span class="string">`${req.method} ${req.url}`</span>);
+  <span class="function">next</span>();  <span class="comment">// Continue to next middleware/route</span>
+}
+
+<span class="comment">// Use the middleware</span>
+app.<span class="function">use</span>(logger);
+
+app.<span class="function">get</span>(<span class="string">'/'</span>, (req, res) => {
+  res.<span class="function">send</span>(<span class="string">'Hello!'</span>);
+});
+
+app.<span class="function">listen</span>(<span class="number">3000</span>);
+
+<span class="comment">// When you visit /, console shows: GET /</span></code></pre>
+
+            <div class="info-box">
+                <strong>💡 Remember:</strong> Always call <code class="inline-code">next()</code> to continue to the next middleware or route!
+            </div>
+
+            <h2>Middleware Order</h2>
+
+            <p><strong>Critical Rule:</strong> Middleware runs <strong>in the order you define it</strong>, and runs <strong>before</strong> your route handlers. The order matters!</p>
+
+            <div class="info-box">
+                <strong>📌 Key Concept:</strong> Express processes middleware and routes in the order they are registered. If middleware sends a response (like <code class="inline-code">res.send()</code> or <code class="inline-code">res.json()</code>), the request stops there and never reaches routes defined later.
+            </div>
+
+            <h3>✅ Correct Order: Middleware Before Routes</h3>
+
+            <pre><code><span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> app = <span class="function">express</span>();
+
+<span class="comment">// 1. Parse JSON (middleware first)</span>
+app.<span class="function">use</span>(express.<span class="function">json</span>());
+
+<span class="comment">// 2. Logger middleware</span>
+app.<span class="function">use</span>((req, res, next) => {
+  console.<span class="function">log</span>(req.method, req.url);
+  <span class="function">next</span>();  <span class="comment">// Pass request to next middleware/route</span>
+});
+
+<span class="comment">// 3. Your routes (defined AFTER middleware)</span>
+app.<span class="function">get</span>(<span class="string">'/products'</span>, (req, res) => {
+  res.<span class="function">json</span>([{ name: <span class="string">'Laptop'</span> }]);
+});
+
+<span class="comment">// 4. 404 handler (last - catches unmatched routes)</span>
+app.<span class="function">use</span>((req, res) => {
+  res.<span class="function">status</span>(<span class="number">404</span>).<span class="function">json</span>({ error: <span class="string">'Not found'</span> });
+});
+
+app.<span class="function">listen</span>(<span class="number">3000</span>);</code></pre>
+
+            <div class="diagram-box">
+                <strong>Request Flow (for GET /products):</strong><br>
+                Request ──► express.json() ──► Logger ──► GET /products route ──► Response<br><br>
+                ✅ All middleware runs, then the route handler executes
+            </div>
+
+            <h3>❌ Wrong Order: Routes Before Middleware (Problematic!)</h3>
+
+            <p>Watch what happens when you define routes <strong>before</strong> middleware that should protect them:</p>
+
+            <pre><code><span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> app = <span class="function">express</span>();
+
+<span class="comment">// ⚠️ Route defined FIRST - runs BEFORE middleware below</span>
+app.<span class="function">get</span>(<span class="string">'/products'</span>, (req, res) => {
+  res.<span class="function">json</span>([{ name: <span class="string">'Laptop'</span> }]);
+  <span class="comment">// Route handler sends response and stops - middleware below NEVER runs!</span>
+});
+
+<span class="comment">// ⚠️ Authentication middleware defined AFTER route</span>
+app.<span class="function">use</span>((req, res, next) => {
+  <span class="comment">// This middleware will NEVER run for /products because the route above already handled it!</span>
+  <span class="keyword">if</span> (!req.headers.authorization) {
+    res.<span class="function">status</span>(<span class="number">401</span>).<span class="function">json</span>({ error: <span class="string">'Unauthorized'</span> });
+    <span class="keyword">return</span>;
+  }
+  <span class="function">next</span>();
+});
+
+<span class="comment">// This route WILL be protected by auth middleware (because it's defined after)</span>
+app.<span class="function">get</span>(<span class="string">'/admin'</span>, (req, res) => {
+  res.<span class="function">json</span>({ message: <span class="string">'Admin data'</span> });
+});
+
+app.<span class="function">listen</span>(<span class="number">3000</span>);</code></pre>
+
+            <div class="warning-box">
+                <strong>⚠️ Problem:</strong> When you visit <code class="inline-code">GET /products</code>:<br><br>
+                ✅ Route handler executes immediately (middleware hasn't run yet)<br>
+                ✅ Response is sent<br>
+                ❌ Auth middleware is <strong>SKIPPED</strong> - never runs!<br>
+                ❌ <code class="inline-code">/products</code> is not protected!<br><br>
+                When you visit <code class="inline-code">GET /admin</code>:<br>
+                ✅ Auth middleware runs first (it's defined before this route)<br>
+                ✅ Then route handler runs (if auth passes)<br><br>
+                <strong>Result:</strong> Inconsistent behavior! Some routes are protected, others aren't.
+            </div>
+
+            <h3>🚨 Critical Example: Middleware Stops Request Before Routes</h3>
+
+            <p>Here's what happens when middleware that stops requests is defined <strong>before</strong> routes:</p>
+
+            <pre><code><span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> app = <span class="function">express</span>();
+
+<span class="comment">// Authentication middleware defined FIRST - runs BEFORE all routes</span>
+app.<span class="function">use</span>((req, res, next) => {
+  <span class="keyword">if</span> (!req.headers.authorization) {
+    <span class="comment">// Stop here - send response, don't call next()</span>
+    res.<span class="function">status</span>(<span class="number">401</span>).<span class="function">json</span>({ error: <span class="string">'Unauthorized'</span> });
+    <span class="keyword">return</span>;  <span class="comment">// Request STOPS here - routes below NEVER reached!</span>
+  }
+  <span class="function">next</span>();  <span class="comment">// Only continue if authorized</span>
+});
+
+<span class="comment">// Routes defined AFTER middleware - only reached if middleware calls next()</span>
+app.<span class="function">get</span>(<span class="string">'/products'</span>, (req, res) => {
+  <span class="comment">// This ONLY runs if auth middleware called next()</span>
+  res.<span class="function">json</span>([{ name: <span class="string">'Laptop'</span> }]);
+});
+
+app.<span class="function">get</span>(<span class="string">'/admin'</span>, (req, res) => {
+  <span class="comment">// This ALSO only runs if auth middleware called next()</span>
+  res.<span class="function">json</span>({ secret: <span class="string">'Secret data'</span> });
+});
+
+app.<span class="function">listen</span>(<span class="number">3000</span>);</code></pre>
+
+            <div class="diagram-box">
+                <strong>Request Flow (without authorization header):</strong><br>
+                Request ──► Auth Middleware (stops, sends 401) ──► ❌ Routes NEVER reached<br><br>
+                <strong>Request Flow (with authorization header):</strong><br>
+                Request ──► Auth Middleware (calls next()) ──► Route Handler ──► Response ✅
+            </div>
+
+            <div class="info-box">
+                <strong>💡 Key Point:</strong> All routes defined <strong>after</strong> middleware that doesn't call <code class="inline-code">next()</code> will <strong>never be reached</strong> if that middleware handles the request. This is why order matters!
+            </div>
+
+            <h3>🔍 How Requests Pass Through Middleware</h3>
+
+            <p>Understanding <code class="inline-code">next()</code> vs. sending a response:</p>
+
+            <div class="diagram-box">
+                <strong>Request Flow Through Middleware Chain:</strong><br><br>
+                Request comes in<br>
+                ↓<br>
+                Middleware 1: <code class="inline-code">next()</code> called → Continue<br>
+                ↓<br>
+                Middleware 2: <code class="inline-code">res.send()</code> called → <strong>STOP! Response sent</strong><br>
+                ↓<br>
+                ❌ Middleware 3: Never reached<br>
+                ❌ Route Handler: Never reached
+            </div>
+
+            <pre><code><span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> app = <span class="function">express</span>();
+
+<span class="comment">// Middleware 1: Always calls next() - passes request along</span>
+app.<span class="function">use</span>((req, res, next) => {
+  console.<span class="function">log</span>(<span class="string">'Middleware 1: Request received'</span>);
+  <span class="function">next</span>();  <span class="comment">// ✅ Continue to next middleware</span>
+});
+
+<span class="comment">// Middleware 2: Sometimes stops the request</span>
+app.<span class="function">use</span>((req, res, next) => {
+  <span class="keyword">if</span> (req.path === <span class="string">'/blocked'</span>) {
+    console.<span class="function">log</span>(<span class="string">'Middleware 2: Blocking request'</span>);
+    res.<span class="function">status</span>(<span class="number">403</span>).<span class="function">json</span>({ error: <span class="string">'Blocked!'</span> });
+    <span class="comment">// ❌ No next() called - request STOPS here</span>
+    <span class="keyword">return</span>;
+  }
+  console.<span class="function">log</span>(<span class="string">'Middleware 2: Passing request'</span>);
+  <span class="function">next</span>();  <span class="comment">// ✅ Continue to next middleware/route</span>
+});
+
+<span class="comment">// Middleware 3: Only reached if Middleware 2 calls next()</span>
+app.<span class="function">use</span>((req, res, next) => {
+  console.<span class="function">log</span>(<span class="string">'Middleware 3: Only runs if previous middleware called next()'</span>);
+  <span class="function">next</span>();
+});
+
+<span class="comment">// Route: Only reached if ALL middleware above called next()</span>
+app.<span class="function">get</span>(<span class="string">'/allowed'</span>, (req, res) => {
+  console.<span class="function">log</span>(<span class="string">'Route handler: Finally reached!'</span>);
+  res.<span class="function">json</span>({ message: <span class="string">'Success'</span> });
+});
+
+app.<span class="function">listen</span>(<span class="number">3000</span>);
+
+<span class="comment">// Test scenarios:</span>
+<span class="comment">// GET /allowed → Middleware 1 → Middleware 2 (passes) → Middleware 3 → Route Handler ✅</span>
+<span class="comment">// GET /blocked → Middleware 1 → Middleware 2 (stops) → ❌ Middleware 3 never runs, Route never reached</span></code></pre>
+
+            <div class="info-box">
+                <strong>💡 Key Rules:</strong>
+                <ul>
+                    <li><strong><code class="inline-code">next()</code></strong> = "Continue to the next middleware/route"</li>
+                    <li><strong><code class="inline-code">res.send()</code> / <code class="inline-code">res.json()</code> / <code class="inline-code">res.status().send()</code></strong> = "Send response and STOP - don't continue"</li>
+                    <li>If middleware sends a response <strong>without calling <code class="inline-code">next()</code></strong>, the request chain stops</li>
+                    <li>Routes defined <strong>after</strong> middleware that stops requests will never be reached</li>
+                </ul>
+            </div>
+
+            <h3>✅ Best Practice: Proper Order</h3>
+
+            <pre><code><span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> app = <span class="function">express</span>();
+
+<span class="comment">// 1. Setup middleware FIRST (parsing, logging, etc.)</span>
+app.<span class="function">use</span>(express.<span class="function">json</span>());
+app.<span class="function">use</span>((req, res, next) => {
+  console.<span class="function">log</span>(req.method, req.url);
+  <span class="function">next</span>();
+});
+
+<span class="comment">// 2. Define your routes</span>
+app.<span class="function">get</span>(<span class="string">'/products'</span>, (req, res) => {
+  res.<span class="function">json</span>([{ name: <span class="string">'Laptop'</span> }]);
+});
+
+<span class="comment">// 3. Error/404 handlers LAST (catch unmatched routes)</span>
+app.<span class="function">use</span>((req, res) => {
+  res.<span class="function">status</span>(<span class="number">404</span>).<span class="function">json</span>({ error: <span class="string">'Not found'</span> });
+});
+
+app.<span class="function">listen</span>(<span class="number">3000</span>);</code></pre>
+
+            <div class="success-box">
+                <strong>🎯 Key Takeaways:</strong>
+                <ul>
+                    <li><strong>Middleware runs before routes</strong> - Define middleware first, then routes</li>
+                    <li><strong>Order matters!</strong> Middleware executes in the order you register it</li>
+                    <li><strong><code class="inline-code">next()</code></strong> = Pass request to next middleware/route</li>
+                    <li><strong>No <code class="inline-code">next()</code></strong> after <code class="inline-code">res.send()</code> = Stop the request chain</li>
+                    <li><strong>Routes after middleware</strong> that stops requests will never be reached</li>
+                    <li><code class="inline-code">express.json()</code> - Parse JSON body</li>
+                    <li><code class="inline-code">express.static('folder')</code> - Serve files</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="05-express.html" class="nav-button">← Previous: Express.js</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="07-database.html" class="nav-button">Next: Database →</a>
+        </div>
+    </div>
+</body>
+</html>

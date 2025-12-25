@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 9: React ↔ Backend Integration - Node.js Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>9️⃣ React ↔ Backend Integration</h1>
+            <p>Connecting Your Frontend to Your API</p>
+        </header>
+
+        <div class="content">
+            <h2>Using fetch in React</h2>
+            
+            <p><code class="inline-code">fetch</code> is built into JavaScript - no installation needed!</p>
+
+            <h3>GET Request - Load Data</h3>
+
+            <pre><code><span class="comment">// Simple component using only useState</span>
+<span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">ProductList</span>() {
+  <span class="keyword">const</span> [products, setProducts] = <span class="function">useState</span>([]);
+
+  <span class="comment">// Load products when button clicked</span>
+  <span class="keyword">async function</span> <span class="function">loadProducts</span>() {
+    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">'http://localhost:3000/api/products'</span>);
+    <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+    <span class="function">setProducts</span>(data);
+  }
+
+  <span class="keyword">return</span> (
+    <span class="string">&lt;div&gt;</span>
+      <span class="string">&lt;button onClick={loadProducts}&gt;Load Products&lt;/button&gt;</span>
+      <span class="string">&lt;ul&gt;</span>
+        {products.<span class="function">map</span>(p => (
+          <span class="string">&lt;li key={p._id}&gt;{p.name} - ${p.price}&lt;/li&gt;</span>
+        ))}
+      <span class="string">&lt;/ul&gt;</span>
+    <span class="string">&lt;/div&gt;</span>
+  );
+}</code></pre>
+
+            <h3>POST Request - Add Data</h3>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">AddProduct</span>() {
+  <span class="keyword">const</span> [name, setName] = <span class="function">useState</span>(<span class="string">''</span>);
+  <span class="keyword">const</span> [price, setPrice] = <span class="function">useState</span>(<span class="string">''</span>);
+
+  <span class="keyword">async function</span> <span class="function">handleSubmit</span>(e) {
+    e.<span class="function">preventDefault</span>();
+    
+    <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">'http://localhost:3000/api/products'</span>, {
+      method: <span class="string">'POST'</span>,
+      headers: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> },
+      body: JSON.<span class="function">stringify</span>({ name, price: Number(price) })
+    });
+    
+    <span class="function">alert</span>(<span class="string">'Product added!'</span>);
+    <span class="function">setName</span>(<span class="string">''</span>);
+    <span class="function">setPrice</span>(<span class="string">''</span>);
+  }
+
+  <span class="keyword">return</span> (
+    <span class="string">&lt;form onSubmit={handleSubmit}&gt;</span>
+      <span class="string">&lt;input value={name} onChange={e => setName(e.target.value)} placeholder="Name" /&gt;</span>
+      <span class="string">&lt;input value={price} onChange={e => setPrice(e.target.value)} placeholder="Price" /&gt;</span>
+      <span class="string">&lt;button type="submit"&gt;Add&lt;/button&gt;</span>
+    <span class="string">&lt;/form&gt;</span>
+  );
+}</code></pre>
+
+            <h3>DELETE Request</h3>
+
+            <pre><code><span class="keyword">async function</span> <span class="function">deleteProduct</span>(id) {
+  <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`http://localhost:3000/api/products/${id}`</span>, {
+    method: <span class="string">'DELETE'</span>
+  });
+  <span class="function">alert</span>(<span class="string">'Deleted!'</span>);
+}</code></pre>
+
+            <h2>fetch Summary</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>GET</td>
+                        <td><code>fetch(url)</code></td>
+                    </tr>
+                    <tr>
+                        <td>POST</td>
+                        <td><code>fetch(url, { method: 'POST', headers: {...}, body: JSON.stringify(data) })</code></td>
+                    </tr>
+                    <tr>
+                        <td>PUT</td>
+                        <td><code>fetch(url, { method: 'PUT', headers: {...}, body: JSON.stringify(data) })</code></td>
+                    </tr>
+                    <tr>
+                        <td>DELETE</td>
+                        <td><code>fetch(url, { method: 'DELETE' })</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>CORS - Why React Can't Connect</h2>
+
+            <div class="error-box">
+                <strong>❌ Error:</strong> Access blocked by CORS policy
+            </div>
+
+            <p><strong>Problem:</strong> Browser blocks requests between different ports.</p>
+            <p><strong>Solution:</strong> Add <code class="inline-code">cors</code> middleware to Express!</p>
+
+            <pre><code><span class="comment"># Install cors</span>
+npm install cors</code></pre>
+
+            <pre><code><span class="comment">// Add to your Express server</span>
+<span class="keyword">const</span> cors = <span class="function">require</span>(<span class="string">'cors'</span>);
+app.<span class="function">use</span>(<span class="function">cors</span>());  <span class="comment">// Now React can connect!</span></code></pre>
+
+            <div class="success-box">
+                <strong>🎯 Key Takeaways:</strong>
+                <ul>
+                    <li>Use <code class="inline-code">fetch()</code> to connect React to your API</li>
+                    <li>GET = <code class="inline-code">fetch(url)</code></li>
+                    <li>POST/PUT = add method, headers, and body</li>
+                    <li>Always add <code class="inline-code">cors()</code> to Express</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="08-api-building.html" class="nav-button">← Previous: Building API</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="10-final-project.html" class="nav-button">Next: Final Project →</a>
+        </div>
+    </div>
+</body>
+</html>

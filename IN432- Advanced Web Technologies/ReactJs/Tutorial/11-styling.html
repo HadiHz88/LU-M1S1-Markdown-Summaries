@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React CSS Styling - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React CSS Styling</h1>
+            <p>Chapter 11 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>Styling React Components</h2>
+            <p>There are many ways to style React components. Each method has its own advantages and use cases.</p>
+
+            <div class="info-box">
+                <strong>💡 Multiple Options:</strong> React doesn't enforce a specific styling method. You can choose what works best for your project!
+            </div>
+
+            <h2>1. Inline Styling</h2>
+            <p>Apply styles directly to elements using the style attribute:</p>
+
+            <pre><code><span class="keyword">const</span> <span class="function">Header</span> = () => {
+  <span class="keyword">return</span> (
+    &lt;h1 style={{color: <span class="string">"red"</span>, fontSize: <span class="string">"24px"</span>}}&gt;
+      Hello Style!
+    &lt;/h1&gt;
+  );
+}</code></pre>
+
+            <div class="warning-box">
+                <strong>⚠️ Note:</strong> Style property names use camelCase (fontSize, not font-size) and values are strings.
+            </div>
+
+            <h3>Style Object</h3>
+            <p>You can also create a style object:</p>
+
+            <pre><code><span class="keyword">const</span> <span class="function">Header</span> = () => {
+  <span class="keyword">const</span> myStyle = {
+    color: <span class="string">"white"</span>,
+    backgroundColor: <span class="string">"DodgerBlue"</span>,
+    padding: <span class="string">"10px"</span>,
+    fontFamily: <span class="string">"Sans-Serif"</span>
+  };
+  
+  <span class="keyword">return</span> (
+    &lt;h1 style={myStyle}&gt;Hello Style!&lt;/h1&gt;
+  );
+}</code></pre>
+
+            <h2>2. CSS Stylesheet</h2>
+            <p>Write CSS in a separate file and import it:</p>
+
+            <h3>App.css</h3>
+            <pre><code>.header {
+  background-color: #282c34;
+  color: white;
+  padding: 40px;
+  text-align: center;
+}
+
+.button {
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+}</code></pre>
+
+            <h3>App.jsx</h3>
+            <pre><code><span class="keyword">import</span> <span class="string">'./App.css'</span>
+
+<span class="keyword">const</span> <span class="function">App</span> = () => {
+  <span class="keyword">return</span> (
+    &lt;div className=<span class="string">"header"</span>&gt;
+      &lt;h1&gt;Hello Style!&lt;/h1&gt;
+      &lt;button className=<span class="string">"button"</span>&gt;Click Me&lt;/button&gt;
+    &lt;/div&gt;
+  )
+}
+
+<span class="keyword">export default</span> App</code></pre>
+
+            <h2>3. CSS Modules</h2>
+            <p>CSS Modules scope styles to specific components, preventing naming conflicts:</p>
+
+            <h3>my-style.module.css</h3>
+            <pre><code>.bigblue {
+  color: DodgerBlue;
+  padding: 40px;
+  font-family: Sans-Serif;
+  text-align: center;
+}
+
+.button {
+  background-color: green;
+  color: white;
+}</code></pre>
+
+            <h3>Car.jsx</h3>
+            <pre><code><span class="keyword">import</span> styles <span class="keyword">from</span> <span class="string">'./my-style.module.css'</span>
+
+<span class="keyword">const</span> <span class="function">Car</span> = () => {
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;h1 className={styles.bigblue}&gt;Hello Car!&lt;/h1&gt;
+      &lt;button className={styles.button}&gt;Click&lt;/button&gt;
+    &lt;/div&gt;
+  )
+}
+
+<span class="keyword">export default</span> Car</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Advantage:</strong> CSS Modules automatically generate unique class names, preventing style conflicts between components!
+            </div>
+
+            <h2>4. Styled Components (CSS-in-JS)</h2>
+            <p>Write CSS directly in your JavaScript files using tagged template literals:</p>
+
+            <h3>Installation</h3>
+            <pre><code>npm install styled-components</code></pre>
+
+            <h3>Usage</h3>
+            <pre><code><span class="keyword">import</span> styled <span class="keyword">from</span> <span class="string">'styled-components'</span>;
+
+<span class="comment">// Create a styled component</span>
+<span class="keyword">const</span> Button = styled.button`
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: darkblue;
+  }
+`;
+
+<span class="keyword">const</span> Container = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+`;
+
+<span class="comment">// Use the styled components</span>
+<span class="keyword">const</span> <span class="function">App</span> = () => {
+  <span class="keyword">return</span> (
+    &lt;Container&gt;
+      &lt;Button&gt;Click Me&lt;/Button&gt;
+    &lt;/Container&gt;
+  );
+}</code></pre>
+
+            <h3>Props in Styled Components</h3>
+            <pre><code><span class="keyword">const</span> Button = styled.button`
+  background-color: ${props => props.primary ? <span class="string">"blue"</span> : <span class="string">"gray"</span>};
+  color: white;
+  padding: 10px 20px;
+`;
+
+<span class="comment">// Usage</span>
+&lt;Button primary&gt;Primary Button&lt;/Button&gt;
+&lt;Button&gt;Secondary Button&lt;/Button&gt;</code></pre>
+
+            <h2>5. Sass/SCSS</h2>
+            <p>Use Sass for more powerful CSS with variables, nesting, and mixins:</p>
+
+            <h3>Installation</h3>
+            <pre><code>npm install sass</code></pre>
+
+            <h3>styles.scss</h3>
+            <pre><code>$primary-color: #667eea;
+$secondary-color: #764ba2;
+
+.header {
+  background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
+  color: white;
+  padding: 20px;
+  
+  h1 {
+    font-size: 2em;
+    margin: 0;
+  }
+  
+  .button {
+    background-color: $primary-color;
+    
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}</code></pre>
+
+            <h3>Usage</h3>
+            <pre><code><span class="keyword">import</span> <span class="string">'./styles.scss'</span>;
+
+<span class="keyword">const</span> <span class="function">App</span> = () => {
+  <span class="keyword">return</span> (
+    &lt;div className=<span class="string">"header"</span>&gt;
+      &lt;h1&gt;Hello!&lt;/h1&gt;
+      &lt;button className=<span class="string">"button"</span>&gt;Click&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>6. Tailwind CSS</h2>
+            <p>Use utility-first CSS classes directly in your JSX:</p>
+
+            <pre><code><span class="keyword">const</span> <span class="function">App</span> = () => {
+  <span class="keyword">return</span> (
+    &lt;div className=<span class="string">"bg-blue-500 text-white p-4 rounded-lg"</span>&gt;
+      &lt;h1 className=<span class="string">"text-2xl font-bold mb-4"</span>&gt;Hello!&lt;/h1&gt;
+      &lt;button className=<span class="string">"bg-green-500 hover:bg-green-700 px-4 py-2 rounded"</span>&gt;
+        Click Me
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Comparison</h2>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background-color: #f2f2f2;">
+                    <th style="border: 1px solid #ddd; padding: 12px;">Method</th>
+                    <th style="border: 1px solid #ddd; padding: 12px;">Pros</th>
+                    <th style="border: 1px solid #ddd; padding: 12px;">Cons</th>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>Inline</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Quick, dynamic</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">No pseudo-classes, verbose</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>CSS Files</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Familiar, full CSS features</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Global scope, name conflicts</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>CSS Modules</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Scoped, no conflicts</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Extra syntax</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>Styled Components</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Dynamic, props-based</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Learning curve, bundle size</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>Sass/SCSS</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Powerful features</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Build step required</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>Tailwind</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Fast, consistent</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Learning curve, HTML clutter</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 Which to Choose?</strong>
+                <ul>
+                    <li><strong>Inline:</strong> Quick prototypes, dynamic styles</li>
+                    <li><strong>CSS Files:</strong> Traditional projects, simple apps</li>
+                    <li><strong>CSS Modules:</strong> Medium to large projects</li>
+                    <li><strong>Styled Components:</strong> Component libraries, dynamic themes</li>
+                    <li><strong>Sass:</strong> Complex styling needs</li>
+                    <li><strong>Tailwind:</strong> Rapid development, design systems</li>
+                </ul>
+            </div>
+
+            <h2>What's Next?</h2>
+            <p>Now that you know how to style components, you're ready to learn about the useEffect Hook for handling side effects!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="10-router.html" class="nav-button">← Previous: Router</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="12-useeffect.html" class="nav-button">Next: useEffect →</a>
+        </div>
+    </div>
+</body>
+</html>
+

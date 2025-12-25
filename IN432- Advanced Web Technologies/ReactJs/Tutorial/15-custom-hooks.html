@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Hooks - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React Custom Hooks</h1>
+            <p>Chapter 15 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>What are Custom Hooks?</h2>
+            <p>Custom Hooks are reusable functions that contain stateful logic. When you have component logic that needs to be used by multiple components, you can extract that logic to a custom Hook.</p>
+
+            <div class="info-box">
+                <strong>💡 Key Point:</strong> Custom Hooks allow you to reuse stateful logic between components without changing your component hierarchy!
+            </div>
+
+            <h2>Naming Convention</h2>
+            <p>Custom Hooks must start with "use" (e.g., <code class="inline-code">useFetch</code>, <code class="inline-code">useLocalStorage</code>, <code class="inline-code">useAuth</code>).</p>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> The "use" prefix is required! This tells React that the function follows the rules of Hooks.
+            </div>
+
+            <h2>Creating a Custom Hook</h2>
+            <p>Let's create a custom hook for fetching data:</p>
+
+            <h3>useFetch.js</h3>
+            <pre><code><span class="keyword">import</span> { useState, useEffect } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">const</span> <span class="function">useFetch</span> = (url) => {
+  <span class="keyword">const</span> [data, setData] = <span class="function">useState</span>(<span class="keyword">null</span>);
+  <span class="keyword">const</span> [isPending, setIsPending] = <span class="function">useState</span>(<span class="keyword">true</span>);
+  <span class="keyword">const</span> [error, setError] = <span class="function">useState</span>(<span class="keyword">null</span>);
+
+  useEffect(() => {
+    <span class="function">setTimeout</span>(() => {
+      <span class="function">fetch</span>(url)
+        .<span class="function">then</span>(res => {
+          <span class="keyword">if</span> (!res.ok) {
+            <span class="keyword">throw</span> <span class="keyword">Error</span>(<span class="string">'Could not fetch the data'</span>);
+          }
+          <span class="keyword">return</span> res.<span class="function">json</span>();
+        })
+        .<span class="function">then</span>(data => {
+          <span class="function">setIsPending</span>(<span class="keyword">false</span>);
+          <span class="function">setData</span>(data);
+          <span class="function">setError</span>(<span class="keyword">null</span>);
+        })
+        .<span class="function">catch</span>(err => {
+          <span class="function">setIsPending</span>(<span class="keyword">false</span>);
+          <span class="function">setError</span>(err.message);
+        })
+    }, <span class="number">1000</span>);
+  }, [url]);
+
+  <span class="keyword">return</span> { data, isPending, error };
+}
+
+<span class="keyword">export default</span> useFetch;</code></pre>
+
+            <h2>Using a Custom Hook</h2>
+            <p>Now you can use this custom hook in any component:</p>
+
+            <h3>Home.js</h3>
+            <pre><code><span class="keyword">import</span> useFetch <span class="keyword">from</span> <span class="string">"./useFetch"</span>;
+
+<span class="keyword">const</span> <span class="function">Home</span> = () => {
+  <span class="keyword">const</span> { data: blogs, isPending, error } = <span class="function">useFetch</span>(<span class="string">'http://localhost:8000/blogs'</span>);
+
+  <span class="keyword">return</span> (
+    &lt;div className=<span class="string">"home"</span>&gt;
+      { error && &lt;div&gt;{ error }&lt;/div&gt; }
+      { isPending && &lt;div&gt;Loading...&lt;/div&gt; }
+      { blogs && &lt;BlogList blogs={blogs} /&gt; }
+    &lt;/div&gt;
+  );
+}
+
+<span class="keyword">export default</span> Home;</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Reusable:</strong> You can now use <code class="inline-code">useFetch</code> in any component that needs to fetch data!
+            </div>
+
+            <h2>More Custom Hook Examples</h2>
+
+            <h3>1. useLocalStorage</h3>
+            <p>Store and retrieve values from localStorage:</p>
+
+            <pre><code><span class="keyword">import</span> { useState, useEffect } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">useLocalStorage</span>(key, initialValue) {
+  <span class="keyword">const</span> [value, setValue] = <span class="function">useState</span>(() => {
+    <span class="keyword">const</span> item = localStorage.<span class="function">getItem</span>(key);
+    <span class="keyword">return</span> item ? JSON.<span class="function">parse</span>(item) : initialValue;
+  });
+
+  useEffect(() => {
+    localStorage.<span class="function">setItem</span>(key, JSON.<span class="function">stringify</span>(value));
+  }, [key, value]);
+
+  <span class="keyword">return</span> [value, setValue];
+}
+
+<span class="comment">// Usage</span>
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> [name, setName] = <span class="function">useLocalStorage</span>(<span class="string">'name'</span>, <span class="string">''</span>);
+
+  <span class="keyword">return</span> (
+    &lt;input
+      value={name}
+      onChange={(e) => <span class="function">setName</span>(e.target.value)}
+      placeholder=<span class="string">"Enter your name"</span>
+    /&gt;
+  );
+}</code></pre>
+
+            <h3>2. useWindowSize</h3>
+            <p>Track window dimensions:</p>
+
+            <pre><code><span class="keyword">import</span> { useState, useEffect } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">useWindowSize</span>() {
+  <span class="keyword">const</span> [windowSize, setWindowSize] = <span class="function">useState</span>({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
+
+  useEffect(() => {
+    <span class="keyword">const</span> <span class="function">handleResize</span> = () => {
+      <span class="function">setWindowSize</span>({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+
+    window.<span class="function">addEventListener</span>(<span class="string">'resize'</span>, handleResize);
+    <span class="keyword">return</span> () => window.<span class="function">removeEventListener</span>(<span class="string">'resize'</span>, handleResize);
+  }, []);
+
+  <span class="keyword">return</span> windowSize;
+}
+
+<span class="comment">// Usage</span>
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> { width, height } = <span class="function">useWindowSize</span>();
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      Window size: {width} x {height}
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h3>3. useToggle</h3>
+            <p>Simple boolean toggle:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">useToggle</span>(initialValue = <span class="keyword">false</span>) {
+  <span class="keyword">const</span> [value, setValue] = <span class="function">useState</span>(initialValue);
+
+  <span class="keyword">const</span> <span class="function">toggle</span> = () => {
+    <span class="function">setValue</span>(prev => !prev);
+  };
+
+  <span class="keyword">return</span> [value, toggle];
+}
+
+<span class="comment">// Usage</span>
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> [isVisible, toggleVisible] = <span class="function">useToggle</span>(<span class="keyword">false</span>);
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;button onClick={toggleVisible}&gt;Toggle&lt;/button&gt;
+      {isVisible && &lt;div&gt;Content is visible!&lt;/div&gt;}
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h3>4. useDebounce</h3>
+            <p>Delay updates (useful for search):</p>
+
+            <pre><code><span class="keyword">import</span> { useState, useEffect } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">useDebounce</span>(value, delay) {
+  <span class="keyword">const</span> [debouncedValue, setDebouncedValue] = <span class="function">useState</span>(value);
+
+  useEffect(() => {
+    <span class="keyword">const</span> handler = <span class="function">setTimeout</span>(() => {
+      <span class="function">setDebouncedValue</span>(value);
+    }, delay);
+
+    <span class="keyword">return</span> () => {
+      <span class="function">clearTimeout</span>(handler);
+    };
+  }, [value, delay]);
+
+  <span class="keyword">return</span> debouncedValue;
+}
+
+<span class="comment">// Usage</span>
+<span class="keyword">function</span> <span class="function">SearchComponent</span>() {
+  <span class="keyword">const</span> [searchTerm, setSearchTerm] = <span class="function">useState</span>(<span class="string">''</span>);
+  <span class="keyword">const</span> debouncedSearchTerm = <span class="function">useDebounce</span>(searchTerm, <span class="number">500</span>);
+
+  useEffect(() => {
+    <span class="keyword">if</span> (debouncedSearchTerm) {
+      <span class="comment">// API call here</span>
+      console.<span class="function">log</span>(<span class="string">'Searching for:'</span>, debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm]);
+
+  <span class="keyword">return</span> (
+    &lt;input
+      value={searchTerm}
+      onChange={(e) => <span class="function">setSearchTerm</span>(e.target.value)}
+      placeholder=<span class="string">"Search..."</span>
+    /&gt;
+  );
+}</code></pre>
+
+            <h3>5. useOnClickOutside</h3>
+            <p>Detect clicks outside an element:</p>
+
+            <pre><code><span class="keyword">import</span> { useEffect } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">useOnClickOutside</span>(ref, handler) {
+  useEffect(() => {
+    <span class="keyword">const</span> <span class="function">listener</span> = (event) => {
+      <span class="keyword">if</span> (!ref.current || ref.current.<span class="function">contains</span>(event.target)) {
+        <span class="keyword">return</span>;
+      }
+      <span class="function">handler</span>(event);
+    };
+
+    document.<span class="function">addEventListener</span>(<span class="string">'mousedown'</span>, listener);
+    document.<span class="function">addEventListener</span>(<span class="string">'touchstart'</span>, listener);
+
+    <span class="keyword">return</span> () => {
+      document.<span class="function">removeEventListener</span>(<span class="string">'mousedown'</span>, listener);
+      document.<span class="function">removeEventListener</span>(<span class="string">'touchstart'</span>, listener);
+    };
+  }, [ref, handler]);
+}
+
+<span class="comment">// Usage</span>
+<span class="keyword">function</span> <span class="function">DropdownMenu</span>() {
+  <span class="keyword">const</span> [isOpen, setIsOpen] = <span class="function">useState</span>(<span class="keyword">false</span>);
+  <span class="keyword">const</span> ref = <span class="function">useRef</span>();
+
+  <span class="function">useOnClickOutside</span>(ref, () => <span class="function">setIsOpen</span>(<span class="keyword">false</span>));
+
+  <span class="keyword">return</span> (
+    &lt;div ref={ref}&gt;
+      &lt;button onClick={() => <span class="function">setIsOpen</span>(!isOpen)}&gt;Menu&lt;/button&gt;
+      {isOpen && &lt;div&gt;Menu content&lt;/div&gt;}
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Rules for Custom Hooks</h2>
+            <ul>
+                <li>✅ Must start with "use"</li>
+                <li>✅ Can call other Hooks</li>
+                <li>✅ Can contain any logic (state, effects, etc.)</li>
+                <li>✅ Should be reusable across components</li>
+                <li>❌ Cannot be called conditionally</li>
+                <li>❌ Cannot be called in loops</li>
+            </ul>
+
+            <h2>Benefits of Custom Hooks</h2>
+
+            <div class="success-box">
+                <strong>✨ Advantages:</strong>
+                <ul>
+                    <li><strong>Reusability:</strong> Use the same logic in multiple components</li>
+                    <li><strong>Separation of Concerns:</strong> Keep logic separate from UI</li>
+                    <li><strong>Testability:</strong> Easier to test hooks in isolation</li>
+                    <li><strong>Readability:</strong> Components become cleaner and more focused</li>
+                    <li><strong>Maintainability:</strong> Update logic in one place</li>
+                </ul>
+            </div>
+
+            <h2>When to Create a Custom Hook</h2>
+
+            <div class="info-box">
+                <strong>💡 Create a custom hook when:</strong>
+                <ul>
+                    <li>You're using the same stateful logic in multiple components</li>
+                    <li>The logic is complex and clutters your component</li>
+                    <li>You want to share logic without HOCs or render props</li>
+                    <li>You need to compose multiple hooks together</li>
+                </ul>
+            </div>
+
+            <h2>Custom Hook Best Practices</h2>
+
+            <h3>1. Return Values Clearly</h3>
+            <pre><code><span class="comment">// ✅ Good - clear what's returned</span>
+<span class="keyword">return</span> { data, isLoading, error, refetch };
+
+<span class="comment">// ✅ Also good - array for simple returns</span>
+<span class="keyword">return</span> [value, setValue];</code></pre>
+
+            <h3>2. Handle Cleanup</h3>
+            <pre><code><span class="keyword">function</span> <span class="function">useEventListener</span>(event, handler) {
+  useEffect(() => {
+    window.<span class="function">addEventListener</span>(event, handler);
+    
+    <span class="comment">// ✅ Always cleanup</span>
+    <span class="keyword">return</span> () => {
+      window.<span class="function">removeEventListener</span>(event, handler);
+    };
+  }, [event, handler]);
+}</code></pre>
+
+            <h3>3. Use Descriptive Names</h3>
+            <pre><code><span class="comment">// ✅ Good names</span>
+useFetch
+useLocalStorage
+useAuth
+useWindowSize
+
+<span class="comment">// ❌ Bad names</span>
+useData
+useHelper
+useLogic</code></pre>
+
+            <h3>4. Keep Them Focused</h3>
+            <pre><code><span class="comment">// ✅ Good - does one thing</span>
+<span class="keyword">function</span> <span class="function">useFetch</span>(url) { /* ... */ }
+
+<span class="comment">// ❌ Bad - does too many things</span>
+<span class="keyword">function</span> <span class="function">useEverything</span>() {
+  <span class="comment">// fetching, auth, theme, routing...</span>
+}</code></pre>
+
+            <h2>Popular Custom Hooks Libraries</h2>
+            <ul>
+                <li><strong>react-use</strong> - Collection of essential hooks</li>
+                <li><strong>use-hooks</strong> - Modern hooks collection</li>
+                <li><strong>ahooks</strong> - High-quality hooks library</li>
+                <li><strong>react-hookz</strong> - Comprehensive hooks collection</li>
+            </ul>
+
+            <h2>Complete Example</h2>
+            <p>Here's a complete example showing how custom hooks simplify components:</p>
+
+            <h3>Before (without custom hook)</h3>
+            <pre><code><span class="keyword">function</span> <span class="function">UserProfile</span>() {
+  <span class="keyword">const</span> [user, setUser] = <span class="function">useState</span>(<span class="keyword">null</span>);
+  <span class="keyword">const</span> [loading, setLoading] = <span class="function">useState</span>(<span class="keyword">true</span>);
+  <span class="keyword">const</span> [error, setError] = <span class="function">useState</span>(<span class="keyword">null</span>);
+
+  useEffect(() => {
+    <span class="function">fetch</span>(<span class="string">'/api/user'</span>)
+      .<span class="function">then</span>(res => res.<span class="function">json</span>())
+      .<span class="function">then</span>(data => {
+        <span class="function">setUser</span>(data);
+        <span class="function">setLoading</span>(<span class="keyword">false</span>);
+      })
+      .<span class="function">catch</span>(err => {
+        <span class="function">setError</span>(err);
+        <span class="function">setLoading</span>(<span class="keyword">false</span>);
+      });
+  }, []);
+
+  <span class="keyword">if</span> (loading) <span class="keyword">return</span> &lt;div&gt;Loading...&lt;/div&gt;;
+  <span class="keyword">if</span> (error) <span class="keyword">return</span> &lt;div&gt;Error: {error.message}&lt;/div&gt;;
+  <span class="keyword">return</span> &lt;div&gt;{user.name}&lt;/div&gt;;
+}</code></pre>
+
+            <h3>After (with custom hook)</h3>
+            <pre><code><span class="keyword">function</span> <span class="function">UserProfile</span>() {
+  <span class="keyword">const</span> { data: user, loading, error } = <span class="function">useFetch</span>(<span class="string">'/api/user'</span>);
+
+  <span class="keyword">if</span> (loading) <span class="keyword">return</span> &lt;div&gt;Loading...&lt;/div&gt;;
+  <span class="keyword">if</span> (error) <span class="keyword">return</span> &lt;div&gt;Error: {error.message}&lt;/div&gt;;
+  <span class="keyword">return</span> &lt;div&gt;{user.name}&lt;/div&gt;;
+}</code></pre>
+
+            <div class="success-box">
+                <strong>🎉 Much Cleaner!</strong> The component is now focused on rendering, while the hook handles the data fetching logic.
+            </div>
+
+            <h2>Congratulations! 🎉</h2>
+            <p>You've completed the React tutorial! You now know:</p>
+            <ul>
+                <li>✅ React fundamentals (JSX, Components, Props, State)</li>
+                <li>✅ React Hooks (useState, useEffect, useContext, useRef)</li>
+                <li>✅ Event handling and Forms</li>
+                <li>✅ Routing and Navigation</li>
+                <li>✅ Styling methods</li>
+                <li>✅ Creating Custom Hooks</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>📚 Keep Learning:</strong>
+                <ul>
+                    <li>Build real projects to practice</li>
+                    <li>Explore advanced patterns</li>
+                    <li>Learn state management (Redux, Zustand)</li>
+                    <li>Study Next.js for server-side rendering</li>
+                    <li>Contribute to open source</li>
+                </ul>
+            </div>
+
+            <h2>Next Steps</h2>
+            <p>Now that you've mastered React, start building your own projects! The best way to learn is by doing.</p>
+        </div>
+
+        <div class="navigation">
+            <a href="14-useref.html" class="nav-button">← Previous: useRef</a>
+            <a href="index.html" class="home-button">🏠 Back to Home</a>
+            <a href="index.html" class="nav-button">🎉 Tutorial Complete!</a>
+        </div>
+    </div>
+</body>
+</html>
+

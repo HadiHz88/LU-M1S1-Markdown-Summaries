@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Basics</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .output {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #2196F3;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>JavaScript Variables & Output</h1>
+        <button onclick="showVariables()">Show Variables</button>
+        <button onclick="showDataTypes()">Show Data Types</button>
+        <button onclick="clearOutput()">Clear</button>
+        <div id="output" class="output"></div>
+    </div>
+
+    <script>
+        const name = "Hadi";
+        const age = 22;
+        const isStudent = true;
+
+        const output = document.getElementById('output');
+
+        // Your JavaScript code here
+        function showVariables() {
+            output.innerHTML = `
+                <h3>Variables:</h3>
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Age:</strong> ${age}</p>
+                <p><strong>Is Student:</strong> ${isStudent}</p>
+            `;
+        }
+
+        function showDataTypes() {
+            output.innerHTML = `
+                <h3>Data Types:</h3>
+                <p><strong>name</strong> - Type: ${typeof name} - Value: ${name}</p>
+                <p><strong>age</strong> - Type: ${typeof age} - Value: ${age}</p>
+                <p><strong>isStudent</strong> - Type: ${typeof isStudent} - Value: ${isStudent}</p>
+            `;
+        }
+
+        function clearOutput() {
+            output.innerHTML = '';
+        }
+    </script>
+</body>
+
+</html>

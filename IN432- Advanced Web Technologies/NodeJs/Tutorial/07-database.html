@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 7: Database Connection - Node.js Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>7️⃣ Connecting to a Database</h1>
+            <p>MongoDB with Mongoose</p>
+        </header>
+
+        <div class="content">
+            <h2>Why MongoDB?</h2>
+            
+            <p>MongoDB is a <strong>NoSQL database</strong> that stores data as JSON-like documents. Perfect for JavaScript developers!</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>SQL (MySQL)</th>
+                        <th>MongoDB</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tables</td>
+                        <td>Collections</td>
+                    </tr>
+                    <tr>
+                        <td>Rows</td>
+                        <td>Documents</td>
+                    </tr>
+                    <tr>
+                        <td>Columns</td>
+                        <td>Fields</td>
+                    </tr>
+                    <tr>
+                        <td>SQL queries</td>
+                        <td>JavaScript methods</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>MongoDB Document Example</h3>
+            <pre><code><span class="comment">// A document in the "users" collection</span>
+{
+  <span class="string">"_id"</span>: <span class="string">"507f1f77bcf86cd799439011"</span>,
+  <span class="string">"name"</span>: <span class="string">"John Doe"</span>,
+  <span class="string">"email"</span>: <span class="string">"john@example.com"</span>,
+  <span class="string">"age"</span>: <span class="number">28</span>,
+  <span class="string">"hobbies"</span>: [<span class="string">"coding"</span>, <span class="string">"gaming"</span>],
+  <span class="string">"address"</span>: {
+    <span class="string">"city"</span>: <span class="string">"Beirut"</span>,
+    <span class="string">"country"</span>: <span class="string">"Lebanon"</span>
+  },
+  <span class="string">"createdAt"</span>: <span class="string">"2024-01-15T10:30:00Z"</span>
+}</code></pre>
+
+            <h2>Setting Up MongoDB</h2>
+
+            <h3>Option 1: MongoDB Atlas (Cloud - Recommended)</h3>
+            <div class="step">
+                <span class="step-number">1</span>
+                Go to <a href="https://www.mongodb.com/atlas" target="_blank">mongodb.com/atlas</a> and create a free account
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                Create a free cluster (M0 Sandbox)
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                Create a database user with password
+            </div>
+            <div class="step">
+                <span class="step-number">4</span>
+                Whitelist your IP address (or 0.0.0.0/0 for all IPs)
+            </div>
+            <div class="step">
+                <span class="step-number">5</span>
+                Get your connection string (looks like: <code class="inline-code">mongodb+srv://user:pass@cluster.mongodb.net/mydb</code>)
+            </div>
+
+            <h3>Option 2: Local MongoDB</h3>
+            <pre><code><span class="comment"># Install MongoDB locally (or use Docker)</span>
+<span class="comment"># Connection string: mongodb://localhost:27017/mydb</span></code></pre>
+
+            <h2>Mongoose - MongoDB ODM</h2>
+            
+            <p><strong>Mongoose</strong> is an Object Data Modeling (ODM) library that makes working with MongoDB easier.</p>
+
+            <h3>Install Mongoose</h3>
+            
+            <p><strong>Important:</strong> Mongoose must be installed in every project that uses MongoDB. It gets added to your <code class="inline-code">package.json</code> file as a dependency.</p>
+
+            <pre><code><span class="comment"># In your project directory, run:</span>
+npm install mongoose</code></pre>
+
+            <div class="info-box">
+                <strong>📦 About npm install:</strong>
+                <ul>
+                    <li><strong>Adds mongoose to <code class="inline-code">package.json</code>:</strong> This file lists all your project's dependencies (packages you need)</li>
+                    <li><strong>Creates <code class="inline-code">node_modules</code> folder:</strong> This is where all installed packages are stored</li>
+                    <li><strong>Should be in every MongoDB project:</strong> If you're using MongoDB with Node.js, you need mongoose installed</li>
+                    <li><strong>Once installed:</strong> You can use <code class="inline-code">require('mongoose')</code> in your code</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Don't forget:</strong> If you clone a project from GitHub or share it with others, they need to run <code class="inline-code">npm install</code> to install all dependencies (including mongoose) listed in <code class="inline-code">package.json</code>.
+            </div>
+
+            <h3>Connect to MongoDB</h3>
+
+            <pre><code><span class="comment">// db.js - Database connection</span>
+<span class="keyword">const</span> mongoose = <span class="function">require</span>(<span class="string">'mongoose'</span>);
+
+<span class="comment">// Connection string (use environment variable in production!)</span>
+<span class="keyword">const</span> MONGODB_URI = <span class="string">'mongodb://localhost:27017/myapp'</span>;
+<span class="comment">// Or for Atlas: 'mongodb+srv://user:pass@cluster.mongodb.net/myapp'</span>
+
+<span class="keyword">async function</span> <span class="function">connectDB</span>() {
+  <span class="keyword">try</span> {
+    <span class="keyword">await</span> mongoose.<span class="function">connect</span>(MONGODB_URI);
+    console.<span class="function">log</span>(<span class="string">'✅ Connected to MongoDB'</span>);
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="function">error</span>(<span class="string">'❌ MongoDB connection error:'</span>, error.message);
+    process.<span class="function">exit</span>(<span class="number">1</span>);
+  }
+}
+
+module.exports = connectDB;</code></pre>
+
+            <h2>7.1 Creating a Model (Schema)</h2>
+
+            <p>A <strong>Schema</strong> defines the structure of documents in a collection:</p>
+
+            <pre><code><span class="comment">// models/User.js</span>
+<span class="keyword">const</span> mongoose = <span class="function">require</span>(<span class="string">'mongoose'</span>);
+
+<span class="comment">// Define the schema</span>
+<span class="keyword">const</span> userSchema = <span class="keyword">new</span> mongoose.<span class="function">Schema</span>({
+  name: {
+    type: String,
+    required: [<span class="keyword">true</span>, <span class="string">'Name is required'</span>],
+    trim: <span class="keyword">true</span>
+  },
+  email: {
+    type: String,
+    required: [<span class="keyword">true</span>, <span class="string">'Email is required'</span>],
+    unique: <span class="keyword">true</span>,
+    lowercase: <span class="keyword">true</span>
+  },
+  age: {
+    type: Number,
+    min: [<span class="number">0</span>, <span class="string">'Age cannot be negative'</span>],
+    max: [<span class="number">150</span>, <span class="string">'Age too high'</span>]
+  },
+  role: {
+    type: String,
+    enum: [<span class="string">'user'</span>, <span class="string">'admin'</span>],
+    default: <span class="string">'user'</span>
+  },
+  isActive: {
+    type: Boolean,
+    default: <span class="keyword">true</span>
+  }
+}, {
+  timestamps: <span class="keyword">true</span>  <span class="comment">// Adds createdAt and updatedAt</span>
+});
+
+<span class="comment">// Create and export the model</span>
+module.exports = mongoose.<span class="function">model</span>(<span class="string">'User'</span>, userSchema);</code></pre>
+
+            <h3>Common Schema Types</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>String</td>
+                        <td>Text</td>
+                        <td><code>"John"</code></td>
+                    </tr>
+                    <tr>
+                        <td>Number</td>
+                        <td>Integers, floats</td>
+                        <td><code>25</code>, <code>99.99</code></td>
+                    </tr>
+                    <tr>
+                        <td>Boolean</td>
+                        <td>true/false</td>
+                        <td><code>true</code></td>
+                    </tr>
+                    <tr>
+                        <td>Date</td>
+                        <td>Dates</td>
+                        <td><code>new Date()</code></td>
+                    </tr>
+                    <tr>
+                        <td>Array</td>
+                        <td>Lists</td>
+                        <td><code>[String]</code></td>
+                    </tr>
+                    <tr>
+                        <td>ObjectId</td>
+                        <td>References</td>
+                        <td><code>mongoose.Schema.Types.ObjectId</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>7.2 Methods Available After Creating a Model ⭐</h2>
+            
+            <p>Once you create a model with <code class="inline-code">mongoose.model('User', userSchema)</code>, you get access to many methods for database operations.</p>
+
+            <h3>📌 CREATE Methods</h3>
+
+            <h4>1. <code class="inline-code">Model.create(data)</code> - Create one or multiple documents</h4>
+
+            <pre><code><span class="comment">// Create a single document</span>
+<span class="keyword">const</span> user = <span class="keyword">await</span> User.<span class="function">create</span>({
+  name: <span class="string">'John Doe'</span>,
+  email: <span class="string">'john@example.com'</span>,
+  age: <span class="number">28</span>
+});
+<span class="comment">// Returns the created document</span>
+
+<span class="comment">// Create multiple documents at once</span>
+<span class="keyword">const</span> users = <span class="keyword">await</span> User.<span class="function">create</span>([
+  { name: <span class="string">'Alice'</span>, email: <span class="string">'alice@example.com'</span> },
+  { name: <span class="string">'Bob'</span>, email: <span class="string">'bob@example.com'</span> }
+]);
+<span class="comment">// Returns an array of created documents</span></code></pre>
+
+            <h4>2. <code class="inline-code">new Model(data)</code> + <code class="inline-code">.save()</code> - Create with more control</h4>
+
+            <pre><code><span class="comment">// Create instance, modify it, then save</span>
+<span class="keyword">const</span> user = <span class="keyword">new</span> <span class="function">User</span>({
+  name: <span class="string">'John Doe'</span>,
+  email: <span class="string">'john@example.com'</span>
+});
+
+<span class="comment">// You can modify before saving</span>
+user.age = <span class="number">28</span>;
+user.role = <span class="string">'admin'</span>;
+
+<span class="comment">// Save to database</span>
+<span class="keyword">const</span> savedUser = <span class="keyword">await</span> user.<span class="function">save</span>();
+<span class="comment">// Returns the saved document</span></code></pre>
+
+            <div class="info-box">
+                <strong>When to use:</strong><br>
+                • <code class="inline-code">create()</code> - Simple, direct creation<br>
+                • <code class="inline-code">new Model()</code> + <code class="inline-code">save()</code> - When you need to modify or validate before saving
+            </div>
+
+            <h3>📖 READ Methods</h3>
+
+            <h4>1. <code class="inline-code">Model.find(filter)</code> - Find multiple documents</h4>
+
+            <p><strong>How <code class="inline-code">find()</code> works:</strong> The <code class="inline-code">find()</code> method searches for documents in the database collection and returns an array of all matching documents. If no filter is provided, it returns all documents.</p>
+
+            <pre><code><span class="comment">// Find all users (no filter = returns everything)</span>
+<span class="keyword">const</span> allUsers = <span class="keyword">await</span> User.<span class="function">find</span>();
+<span class="comment">// Returns: [{...}, {...}, {...}] - array of all users</span>
+
+<span class="comment">// Find with conditions (filter object)</span>
+<span class="keyword">const</span> adults = <span class="keyword">await</span> User.<span class="function">find</span>({ age: { $gte: <span class="number">18</span> } });
+<span class="comment">// Returns: [{...}, {...}] - array of users with age >= 18</span>
+<span class="comment">// $gte means "greater than or equal to"</span>
+
+<span class="comment">// Find with multiple conditions (AND logic)</span>
+<span class="keyword">const</span> activeAdmins = <span class="keyword">await</span> User.<span class="function">find</span>({
+  role: <span class="string">'admin'</span>,        <span class="comment">// Must be admin</span>
+  isActive: <span class="keyword">true</span>      <span class="comment">// AND must be active</span>
+});
+<span class="comment">// Returns: [{...}] - array of users who are both admin AND active</span>
+
+<span class="comment">// Find returns empty array if nothing matches</span>
+<span class="keyword">const</span> noResults = <span class="keyword">await</span> User.<span class="function">find</span>({ age: <span class="number">999</span> });
+<span class="comment">// Returns: [] - empty array (no users with age 999)</span></code></pre>
+
+            <div class="success-box">
+                <strong>Common Query Operators:</strong>
+                <ul>
+                    <li><code class="inline-code">$gte</code> - Greater than or equal</li>
+                    <li><code class="inline-code">$lte</code> - Less than or equal</li>
+                    <li><code class="inline-code">$gt</code> - Greater than</li>
+                    <li><code class="inline-code">$lt</code> - Less than</li>
+                    <li><code class="inline-code">$ne</code> - Not equal</li>
+                    <li><code class="inline-code">$in</code> - In array</li>
+                    <li><code class="inline-code">$regex</code> - Regular expression</li>
+                </ul>
+            </div>
+
+            <h4>2. <code class="inline-code">Model.findOne(filter)</code> - Find one document</h4>
+
+            <pre><code><span class="comment">// Find one user by email</span>
+<span class="keyword">const</span> user = <span class="keyword">await</span> User.<span class="function">findOne</span>({ email: <span class="string">'john@example.com'</span> });
+<span class="comment">// Returns the first matching document or null</span>
+
+<span class="comment">// Find one with conditions</span>
+<span class="keyword">const</span> admin = <span class="keyword">await</span> User.<span class="function">findOne</span>({ role: <span class="string">'admin'</span>, isActive: <span class="keyword">true</span> });</code></pre>
+
+            <h4>3. <code class="inline-code">Model.findById(id)</code> - Find by ID</h4>
+
+            <pre><code><span class="comment">// Find user by MongoDB _id</span>
+<span class="keyword">const</span> user = <span class="keyword">await</span> User.<span class="function">findById</span>(<span class="string">'507f1f77bcf86cd799439011'</span>);
+<span class="comment">// Returns the document or null if not found</span>
+
+<span class="comment">// Shorthand for: User.findOne({ _id: id })</span></code></pre>
+
+            <h4>4. Query Chain Methods (Chaining After <code class="inline-code">find()</code>)</h4>
+
+            <p><strong>What is chaining?</strong> After calling <code class="inline-code">find()</code>, you can chain additional methods to refine, sort, and limit your query results. These methods modify the query before it executes.</p>
+
+            <div class="info-box">
+                <strong>💡 Key Concept:</strong> Methods like <code class="inline-code">.select()</code>, <code class="inline-code">.sort()</code>, <code class="inline-code">.limit()</code>, and <code class="inline-code">.skip()</code> can be chained together because <code class="inline-code">find()</code> returns a Query object, not the results immediately. The query only executes when you use <code class="inline-code">await</code>.
+            </div>
+
+            <pre><code><span class="comment">// 1. Select specific fields only (return only name and email)</span>
+<span class="keyword">const</span> users = <span class="keyword">await</span> User.<span class="function">find</span>()
+  .<span class="function">select</span>(<span class="string">'name email'</span>);
+<span class="comment">// Result: [{ name: "John", email: "john@example.com" }, ...]</span>
+<span class="comment">// Note: Only name and email fields are returned, other fields are excluded</span>
+
+<span class="comment">// 2. Exclude fields (return everything EXCEPT password and __v)</span>
+<span class="keyword">const</span> users = <span class="keyword">await</span> User.<span class="function">find</span>()
+  .<span class="function">select</span>(<span class="string">'-password -__v'</span>);
+<span class="comment">// Use minus (-) prefix to exclude fields</span>
+<span class="comment">// Result: All fields except password and __v</span>
+
+<span class="comment">// 3. Sort results (order the results)</span>
+<span class="keyword">const</span> users = <span class="keyword">await</span> User.<span class="function">find</span>()
+  .<span class="function">sort</span>({ createdAt: -<span class="number">1</span> });
+<span class="comment">// -1 = descending (newest first: 2024, 2023, 2022...)</span>
+<span class="comment">// 1 = ascending (oldest first: 2022, 2023, 2024...)</span>
+<span class="comment">// Result: Users sorted by creation date, newest first</span>
+
+<span class="comment">// 4. Limit number of results (only get first N documents)</span>
+<span class="keyword">const</span> users = <span class="keyword">await</span> User.<span class="function">find</span>()
+  .<span class="function">limit</span>(<span class="number">10</span>);
+<span class="comment">// Result: Only the first 10 users (or less if fewer exist)</span>
+
+<span class="comment">// 5. Skip documents (for pagination - skip first N documents)</span>
+<span class="keyword">const</span> users = <span class="keyword">await</span> User.<span class="function">find</span>()
+  .<span class="function">skip</span>(<span class="number">10</span>)    <span class="comment">// Skip the first 10 users</span>
+  .<span class="function">limit</span>(<span class="number">10</span>);  <span class="comment">// Return the next 10 users</span>
+<span class="comment">// Useful for pagination: page 2 of results (skip 10, limit 10)</span>
+<span class="comment">// Page 1: skip(0).limit(10)  → users 1-10</span>
+<span class="comment">// Page 2: skip(10).limit(10) → users 11-20</span>
+<span class="comment">// Page 3: skip(20).limit(10) → users 21-30</span>
+
+<span class="comment">// 6. Combine multiple chain methods (most powerful!)</span>
+<span class="keyword">const</span> recentActiveUsers = <span class="keyword">await</span> User.<span class="function">find</span>({ isActive: <span class="keyword">true</span> })  <span class="comment">// Filter: only active users</span>
+  .<span class="function">select</span>(<span class="string">'name email'</span>)                        <span class="comment">// Only return name and email</span>
+  .<span class="function">sort</span>({ createdAt: -<span class="number">1</span> })                    <span class="comment">// Sort by newest first</span>
+  .<span class="function">limit</span>(<span class="number">10</span>);                              <span class="comment">// Only return 10 results</span>
+<span class="comment">// Result: 10 newest active users with only name and email fields</span>
+<span class="comment">// Query executes only when await is used at the end!</span></code></pre>
+
+            <div class="success-box">
+                <strong>📝 Chaining Order:</strong> While the order of chained methods usually doesn't matter much, a common pattern is:
+                <ol>
+                    <li>Start with <code class="inline-code">find(filter)</code> to filter documents</li>
+                    <li>Use <code class="inline-code">.select()</code> to choose fields</li>
+                    <li>Use <code class="inline-code">.sort()</code> to order results</li>
+                    <li>Use <code class="inline-code">.skip()</code> and <code class="inline-code">.limit()</code> for pagination</li>
+                    <li>Use <code class="inline-code">await</code> to execute the query</li>
+                </ol>
+            </div>
+
+            <h4>5. <code class="inline-code">Model.countDocuments(filter)</code> - Count documents</h4>
+
+            <p><strong>What does it do?</strong> Counts how many documents match the filter criteria. Returns a number (not the actual documents). Useful for getting statistics or checking how many records exist.</p>
+
+            <pre><code><span class="comment">// Count all users in the collection</span>
+<span class="keyword">const</span> total = <span class="keyword">await</span> User.<span class="function">countDocuments</span>();
+<span class="comment">// Returns: 150 (a number, not an array of documents!)</span>
+<span class="comment">// This is more efficient than User.find().length because it doesn't load all documents</span>
+
+<span class="comment">// Count with filter conditions (same syntax as find())</span>
+<span class="keyword">const</span> activeCount = <span class="keyword">await</span> User.<span class="function">countDocuments</span>({ isActive: <span class="keyword">true</span> });
+<span class="comment">// Returns: 120 (number of users where isActive is true)</span>
+
+<span class="comment">// Count with multiple conditions</span>
+<span class="keyword">const</span> adminCount = <span class="keyword">await</span> User.<span class="function">countDocuments</span>({ 
+  role: <span class="string">'admin'</span>, 
+  isActive: <span class="keyword">true</span> 
+});
+<span class="comment">// Returns: 5 (number of active admin users)</span>
+
+<span class="comment">// Common use cases:</span>
+<span class="comment">// 1. Check if collection is empty</span>
+<span class="keyword">const</span> count = <span class="keyword">await</span> User.<span class="function">countDocuments</span>();
+<span class="keyword">if</span> (count === <span class="number">0</span>) {
+  console.<span class="function">log</span>(<span class="string">'No users found!'</span>);
+}
+
+<span class="comment">// 2. Display statistics</span>
+<span class="keyword">const</span> totalUsers = <span class="keyword">await</span> User.<span class="function">countDocuments</span>();
+<span class="keyword">const</span> activeUsers = <span class="keyword">await</span> User.<span class="function">countDocuments</span>({ isActive: <span class="keyword">true</span> });
+console.<span class="function">log</span>(<span class="string">`Total: ${totalUsers}, Active: ${activeUsers}`</span>);
+<span class="comment">// Output: Total: 150, Active: 120</span>
+
+<span class="comment">// 3. For pagination (calculate total pages)</span>
+<span class="keyword">const</span> total = <span class="keyword">await</span> User.<span class="function">countDocuments</span>({ isActive: <span class="keyword">true</span> });
+<span class="keyword">const</span> itemsPerPage = <span class="number">10</span>;
+<span class="keyword">const</span> totalPages = <span class="function">Math.ceil</span>(total / itemsPerPage);
+<span class="comment">// If total = 150, itemsPerPage = 10, then totalPages = 15</span></code></pre>
+
+            <div class="info-box">
+                <strong>💡 Important Notes:</strong>
+                <ul>
+                    <li><code class="inline-code">countDocuments()</code> returns a <strong>number</strong>, not documents or an array</li>
+                    <li>Much more efficient than <code class="inline-code">User.find().length</code> because it doesn't load all documents into memory</li>
+                    <li>Uses the same filter syntax as <code class="inline-code">find()</code></li>
+                    <li>If no documents match, returns <code class="inline-code">0</code></li>
+                </ul>
+            </div>
+
+            <h4>6. <code class="inline-code">Model.exists(filter)</code> - Check if document exists</h4>
+
+            <pre><code><span class="comment">// Check if user exists</span>
+<span class="keyword">const</span> exists = <span class="keyword">await</span> User.<span class="function">exists</span>({ email: <span class="string">'john@example.com'</span> });
+<span class="comment">// Returns { _id: '...' } if exists, null if not</span>
+
+<span class="comment">// Use in conditionals</span>
+<span class="keyword">if</span> (<span class="keyword">await</span> User.<span class="function">exists</span>({ email: <span class="string">'john@example.com'</span> })) {
+  console.<span class="function">log</span>(<span class="string">'User already exists!'</span>);
+}</code></pre>
+
+            <h3>✏️ UPDATE Methods</h3>
+
+            <h4>1. <code class="inline-code">Model.findByIdAndUpdate(id, update, options)</code> - Update by ID</h4>
+
+            <pre><code><span class="comment">// Update user by ID</span>
+<span class="keyword">const</span> updated = <span class="keyword">await</span> User.<span class="function">findByIdAndUpdate</span>(
+  <span class="string">'507f1f77bcf86cd799439011'</span>,
+  { age: <span class="number">29</span> },  <span class="comment">// Update data</span>
+  { new: <span class="keyword">true</span> }  <span class="comment">// Return updated document (default: returns old document)</span>
+);
+<span class="comment">// Returns the updated user</span>
+
+<span class="comment">// With validation</span>
+<span class="keyword">const</span> updated = <span class="keyword">await</span> User.<span class="function">findByIdAndUpdate</span>(
+  id,
+  { age: <span class="number">29</span> },
+  {
+    new: <span class="keyword">true</span>,              <span class="comment">// Return updated document</span>
+    runValidators: <span class="keyword">true</span>    <span class="comment">// Run schema validators</span>
+  }
+);</code></pre>
+
+            <h4>2. <code class="inline-code">Model.findOneAndUpdate(filter, update, options)</code> - Update one</h4>
+
+            <pre><code><span class="comment">// Update by email</span>
+<span class="keyword">const</span> updated = <span class="keyword">await</span> User.<span class="function">findOneAndUpdate</span>(
+  { email: <span class="string">'john@example.com'</span> },  <span class="comment">// Filter</span>
+  { age: <span class="number">30</span> },                      <span class="comment">// Update</span>
+  { new: <span class="keyword">true</span> }                     <span class="comment">// Options</span>
+);</code></pre>
+
+            <h4>3. <code class="inline-code">Model.updateOne(filter, update)</code> - Update one (no return)</h4>
+
+            <pre><code><span class="comment">// Update one document (doesn't return the document)</span>
+<span class="keyword">await</span> User.<span class="function">updateOne</span>(
+  { email: <span class="string">'john@example.com'</span> },  <span class="comment">// Filter</span>
+  { $set: { age: <span class="number">30</span> } }             <span class="comment">// Update operator</span>
+);
+<span class="comment">// Returns: { acknowledged: true, modifiedCount: 1 }</span>
+
+<span class="comment">// Update operators:</span>
+<span class="comment">// $set - Set field value</span>
+<span class="comment">// $inc - Increment number</span>
+<span class="comment">// $push - Add to array</span>
+<span class="comment">// $pull - Remove from array</span></code></pre>
+
+            <h4>4. <code class="inline-code">Model.updateMany(filter, update)</code> - Update multiple</h4>
+
+            <pre><code><span class="comment">// Update all matching documents</span>
+<span class="keyword">await</span> User.<span class="function">updateMany</span>(
+  { role: <span class="string">'user'</span> },           <span class="comment">// Filter</span>
+  { $set: { isActive: <span class="keyword">true</span> } } <span class="comment">// Update</span>
+);
+<span class="comment">// Returns: { acknowledged: true, modifiedCount: 25 }</span></code></pre>
+
+            <h4>5. Instance <code class="inline-code">.save()</code> - Update existing document</h4>
+
+            <p><strong>How it works:</strong> When you find an existing document and modify it, calling <code class="inline-code">.save()</code> updates that same document in the database with the same <code class="inline-code">_id</code>. It does <strong>NOT</strong> create a new document.</p>
+
+            <pre><code><span class="comment">// Step 1: Find an existing document (user already exists in database)</span>
+<span class="keyword">const</span> user = <span class="keyword">await</span> User.<span class="function">findById</span>(id);
+<span class="comment">// user = { _id: "507f1f77bcf86cd799439011", name: "John", age: 28, ... }</span>
+
+<span class="comment">// Step 2: Modify the document (changes are only in memory, not saved yet)</span>
+user.age = <span class="number">29</span>;                      <span class="comment">// Change age from 28 to 29</span>
+user.name = <span class="string">'John Updated'</span>;         <span class="comment">// Change name from "John" to "John Updated"</span>
+<span class="comment">// At this point, changes exist only in the 'user' variable, NOT in the database!</span>
+
+<span class="comment">// Step 3: Save the changes to the database</span>
+<span class="keyword">await</span> user.<span class="function">save</span>();  
+<span class="comment">// ✅ Updates the SAME document with the SAME _id in the database</span>
+<span class="comment">// ✅ Does NOT create a new document</span>
+<span class="comment">// ✅ Returns the updated document</span>
+
+<span class="comment">// Result in database:</span>
+<span class="comment">// Same document, updated fields:</span>
+<span class="comment">// { _id: "507f1f77bcf86cd799439011", name: "John Updated", age: 29, ... }</span>
+<span class="comment">//                                 ↑ Same ID          ↑ Updated values</span></code></pre>
+
+            <div class="info-box">
+                <strong>💡 Key Points:</strong>
+                <ul>
+                    <li><strong>Same <code class="inline-code">_id</code>:</strong> The document keeps its original <code class="inline-code">_id</code> - it's an UPDATE, not a CREATE</li>
+                    <li><strong>No new document:</strong> <code class="inline-code">.save()</code> on an existing document updates it in place</li>
+                    <li><strong>All changes saved:</strong> Only the fields you modify are updated; other fields remain unchanged</li>
+                    <li><strong>Validation runs:</strong> Schema validators are automatically checked before saving</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Important Distinction:</strong>
+                <ul>
+                    <li><strong><code class="inline-code">user.save()</code></strong> on an existing document → <strong>UPDATES</strong> the same document</li>
+                    <li><strong><code class="inline-code">new User({...}).save()</code></strong> on a new instance → <strong>CREATES</strong> a new document</li>
+                </ul>
+            </div>
+
+            <pre><code><span class="comment">// Comparison Example:</span>
+
+<span class="comment">// UPDATE existing document (same _id)</span>
+<span class="keyword">const</span> existingUser = <span class="keyword">await</span> User.<span class="function">findById</span>(<span class="string">'507f1f77bcf86cd799439011'</span>);
+<span class="comment">// existingUser._id = "507f1f77bcf86cd799439011" (already has an ID)</span>
+existingUser.age = <span class="number">30</span>;
+<span class="keyword">await</span> existingUser.<span class="function">save</span>();
+<span class="comment">// ✅ Updates document with _id "507f1f77bcf86cd799439011"</span>
+
+<span class="comment">// CREATE new document (new _id)</span>
+<span class="keyword">const</span> newUser = <span class="keyword">new</span> <span class="function">User</span>({ name: <span class="string">'Jane'</span>, age: <span class="number">25</span> });
+<span class="comment">// newUser._id = undefined (no ID yet - new document)</span>
+<span class="keyword">await</span> newUser.<span class="function">save</span>();
+<span class="comment">// ✅ Creates NEW document with a NEW _id (e.g., "507f1f77bcf86cd799439012")</span></code></pre>
+
+            <h3>🗑️ DELETE Methods</h3>
+
+            <h4>1. <code class="inline-code">Model.findByIdAndDelete(id)</code> - Delete by ID</h4>
+
+            <pre><code><span class="comment">// Delete user by ID</span>
+<span class="keyword">const</span> deleted = <span class="keyword">await</span> User.<span class="function">findByIdAndDelete</span>(<span class="string">'507f1f77bcf86cd799439011'</span>);
+<span class="comment">// Returns the deleted document or null</span></code></pre>
+
+            <h4>2. <code class="inline-code">Model.findOneAndDelete(filter)</code> - Delete one</h4>
+
+            <pre><code><span class="comment">// Delete by email</span>
+<span class="keyword">const</span> deleted = <span class="keyword">await</span> User.<span class="function">findOneAndDelete</span>({ email: <span class="string">'john@example.com'</span> });
+<span class="comment">// Returns the deleted document or null</span></code></pre>
+
+            <h4>3. <code class="inline-code">Model.deleteOne(filter)</code> - Delete one (no return)</h4>
+
+            <pre><code><span class="comment">// Delete one document (doesn't return the document)</span>
+<span class="keyword">await</span> User.<span class="function">deleteOne</span>({ email: <span class="string">'john@example.com'</span> });
+<span class="comment">// Returns: { acknowledged: true, deletedCount: 1 }</span></code></pre>
+
+            <h4>4. <code class="inline-code">Model.deleteMany(filter)</code> - Delete multiple</h4>
+
+            <pre><code><span class="comment">// Delete all matching documents</span>
+<span class="keyword">await</span> User.<span class="function">deleteMany</span>({ isActive: <span class="keyword">false</span> });
+<span class="comment">// Returns: { acknowledged: true, deletedCount: 10 }</span>
+<span class="comment">// Deletes all inactive users</span></code></pre>
+
+            <h3>📊 Method Summary Table</h3>
+
+            <table style="width:100%; border-collapse: collapse; margin: 15px 0;">
+                <thead>
+                    <tr style="background: #2d2d2d;">
+                        <th style="padding: 10px; border: 1px solid #444;">Category</th>
+                        <th style="padding: 10px; border: 1px solid #444;">Method</th>
+                        <th style="padding: 10px; border: 1px solid #444;">Returns</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;" rowspan="2"><strong>CREATE</strong></td>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.create(data)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Created document(s)</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>new Model(data).save()</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Saved document</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;" rowspan="6"><strong>READ</strong></td>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.find(filter)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Array of documents</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.findOne(filter)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Document or null</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.findById(id)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Document or null</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.countDocuments(filter)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Number</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.exists(filter)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>{ _id }</code> or null</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>.select()</code>, <code>.sort()</code>, <code>.limit()</code>, <code>.skip()</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Query chain</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;" rowspan="5"><strong>UPDATE</strong></td>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.findByIdAndUpdate(id, update)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Updated document</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.findOneAndUpdate(filter, update)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Updated document</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.updateOne(filter, update)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Update result</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.updateMany(filter, update)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Update result</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>instance.save()</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Saved document</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;" rowspan="4"><strong>DELETE</strong></td>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.findByIdAndDelete(id)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Deleted document</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.findOneAndDelete(filter)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Deleted document</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.deleteOne(filter)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Delete result</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #444;"><code>Model.deleteMany(filter)</code></td>
+                        <td style="padding: 10px; border: 1px solid #444;">Delete result</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Complete Example: Express + MongoDB</h2>
+
+            <div class="file-tree">
+📁 my-api/
+├── 📄 index.js          (main server)
+├── 📄 db.js             (database connection)
+├── 📁 models/
+│   └── 📄 User.js       (User model)
+├── 📁 routes/
+│   └── 📄 users.js      (User routes)
+└── 📄 package.json
+            </div>
+
+            <h3>index.js - Main Server</h3>
+
+            <pre><code><span class="comment">// index.js</span>
+<span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> connectDB = <span class="function">require</span>(<span class="string">'./db'</span>);
+<span class="keyword">const</span> userRoutes = <span class="function">require</span>(<span class="string">'./routes/users'</span>);
+
+<span class="keyword">const</span> app = <span class="function">express</span>();
+
+<span class="comment">// Connect to database</span>
+<span class="function">connectDB</span>();
+
+<span class="comment">// Middleware</span>
+app.<span class="function">use</span>(express.<span class="function">json</span>());
+
+<span class="comment">// Routes</span>
+app.<span class="function">use</span>(<span class="string">'/api/users'</span>, userRoutes);
+
+<span class="comment">// Start server</span>
+app.<span class="function">listen</span>(<span class="number">3000</span>, () => {
+  console.<span class="function">log</span>(<span class="string">'Server running on port 3000'</span>);
+});</code></pre>
+
+            <h3>routes/users.js - User Routes</h3>
+
+            <pre><code><span class="comment">// routes/users.js</span>
+<span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> router = express.<span class="function">Router</span>();
+<span class="keyword">const</span> User = <span class="function">require</span>(<span class="string">'../models/User'</span>);
+
+<span class="comment">// GET /api/users - Get all users</span>
+router.<span class="function">get</span>(<span class="string">'/'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> users = <span class="keyword">await</span> User.<span class="function">find</span>();
+    res.<span class="function">json</span>(users);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">500</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+<span class="comment">// GET /api/users/:id - Get one user</span>
+router.<span class="function">get</span>(<span class="string">'/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> user = <span class="keyword">await</span> User.<span class="function">findById</span>(req.params.id);
+    
+    <span class="keyword">if</span> (!user) {
+      <span class="keyword">return</span> res.<span class="function">status</span>(<span class="number">404</span>).<span class="function">json</span>({ error: <span class="string">'User not found'</span> });
+    }
+    
+    res.<span class="function">json</span>(user);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">500</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+<span class="comment">// POST /api/users - Create user</span>
+router.<span class="function">post</span>(<span class="string">'/'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> user = <span class="keyword">await</span> User.<span class="function">create</span>(req.body);
+    res.<span class="function">status</span>(<span class="number">201</span>).<span class="function">json</span>(user);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">400</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+<span class="comment">// PUT /api/users/:id - Update user</span>
+router.<span class="function">put</span>(<span class="string">'/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> user = <span class="keyword">await</span> User.<span class="function">findByIdAndUpdate</span>(
+      req.params.id,
+      req.body,
+      { new: <span class="keyword">true</span>, runValidators: <span class="keyword">true</span> }
+    );
+    
+    <span class="keyword">if</span> (!user) {
+      <span class="keyword">return</span> res.<span class="function">status</span>(<span class="number">404</span>).<span class="function">json</span>({ error: <span class="string">'User not found'</span> });
+    }
+    
+    res.<span class="function">json</span>(user);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">400</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+<span class="comment">// DELETE /api/users/:id - Delete user</span>
+router.<span class="function">delete</span>(<span class="string">'/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> user = <span class="keyword">await</span> User.<span class="function">findByIdAndDelete</span>(req.params.id);
+    
+    <span class="keyword">if</span> (!user) {
+      <span class="keyword">return</span> res.<span class="function">status</span>(<span class="number">404</span>).<span class="function">json</span>({ error: <span class="string">'User not found'</span> });
+    }
+    
+    res.<span class="function">json</span>({ message: <span class="string">'User deleted'</span> });
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">500</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+module.exports = router;</code></pre>
+
+            <div class="success-box">
+                <strong>🎯 Key Takeaways:</strong>
+                <ul>
+                    <li>MongoDB stores JSON-like documents in collections</li>
+                    <li>Mongoose provides schema validation and easy queries</li>
+                    <li>Always use <code class="inline-code">async/await</code> with <code class="inline-code">try/catch</code></li>
+                    <li>Use <code class="inline-code">findById</code>, <code class="inline-code">findOne</code>, <code class="inline-code">find</code> for reading</li>
+                    <li>Use <code class="inline-code">create</code>, <code class="inline-code">findByIdAndUpdate</code>, <code class="inline-code">findByIdAndDelete</code></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="06-middleware.html" class="nav-button">← Previous: Middleware</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="08-api-building.html" class="nav-button">Next: Building API →</a>
+        </div>
+    </div>
+</body>
+</html>

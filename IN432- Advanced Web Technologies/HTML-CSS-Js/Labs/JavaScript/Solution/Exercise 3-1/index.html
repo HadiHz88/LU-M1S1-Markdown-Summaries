@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, select {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .students-table th,
+        .students-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .students-table th {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+        .students-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        .students-table tr:hover {
+            background: #e3f2fd;
+        }
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .search-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #e8f4fd;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #333;">Student Management System</h1>
+        
+        <!-- Add Student Form -->
+        <div class="form-section">
+            <h2>Add New Student</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="studentName">Name:</label>
+                    <input type="text" id="studentName" placeholder="Enter student name">
+                </div>
+                <div class="form-group">
+                    <label for="studentAge">Age:</label>
+                    <input type="number" id="studentAge" min="15" max="25" placeholder="Enter age">
+                </div>
+                <div class="form-group">
+                    <label for="studentGrade">Grade:</label>
+                    <input type="number" id="studentGrade" min="0" max="100" placeholder="Enter grade">
+                </div>
+                <div class="form-group">
+                    <label for="studentSubject">Subject:</label>
+                    <select id="studentSubject">
+                        <option value="">Select Subject</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Science">Science</option>
+                        <option value="English">English</option>
+                        <option value="History">History</option>
+                        <option value="Programming">Programming</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="addStudent()">Add Student</button>
+            <button class="btn btn-warning" onclick="clearForm()">Clear Form</button>
+        </div>
+        
+        <!-- Search Section -->
+        <div class="search-section">
+            <h3>Search & Filter Students</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="searchName">Search by Name:</label>
+                    <input type="text" id="searchName" placeholder="Enter name to search" onkeyup="searchStudents()">
+                </div>
+                <div class="form-group">
+                    <label for="filterSubject">Filter by Subject:</label>
+                    <select id="filterSubject" onchange="filterStudents()">
+                        <option value="">All Subjects</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Science">Science</option>
+                        <option value="English">English</option>
+                        <option value="History">History</option>
+                        <option value="Programming">Programming</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-success" onclick="sortStudents('name')">Sort by Name</button>
+            <button class="btn btn-success" onclick="sortStudents('grade')">Sort by Grade</button>
+            <button class="btn btn-danger" onclick="clearFilters()">Clear Filters</button>
+        </div>
+        
+        <!-- Statistics -->
+        <div class="statistics">
+            <div class="stat-card">
+                <div class="stat-number" id="totalStudents">0</div>
+                <div>Total Students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="averageGrade">0</div>
+                <div>Average Grade</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="highestGrade">0</div>
+                <div>Highest Grade</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="lowestGrade">0</div>
+                <div>Lowest Grade</div>
+            </div>
+        </div>
+        
+        <!-- Students Table -->
+        <table class="students-table" id="studentsTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Subject</th>
+                    <th>Grade</th>
+                    <th>Letter Grade</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+                <!-- Students will be added here dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Global array to store students
+        let students = [];
+        let studentIdCounter = 1;
+        
+        function addStudent() {
+            const name = document.getElementById('studentName').value.trim();
+            const age = parseInt(document.getElementById('studentAge').value);
+            const grade = parseFloat(document.getElementById('studentGrade').value);
+            const subject = document.getElementById('studentSubject').value;
+
+            if (!name || isNaN(age) || isNaN(grade) || !subject) {
+                alert('Please fill in all fields correctly!');
+                return;
+            }
+
+            const student = {
+                id: studentIdCounter++,
+                name: name,
+                age: age,
+                grade: grade,
+                subject: subject
+            };
+
+            students.push(student);
+            displayStudents();
+            updateStatistics();
+            clearForm();
+        }
+        
+        function deleteStudent(id) {
+            students = students.filter(student => student.id !== id);
+            displayStudents();
+            updateStatistics();
+        }
+        
+        function editStudent(id) {
+            const student = students.find(s => s.id === id);
+            if (student) {
+                document.getElementById('studentName').value = student.name;
+                document.getElementById('studentAge').value = student.age;
+                document.getElementById('studentGrade').value = student.grade;
+                document.getElementById('studentSubject').value = student.subject;
+                deleteStudent(id);
+            }
+        }
+        
+        function displayStudents(studentsToShow = students) {
+            const tbody = document.getElementById('studentsTableBody');
+            
+            if (studentsToShow.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No students found</td></tr>';
+                return;
+            }
+
+            let html = '';
+            studentsToShow.forEach(student => {
+                html += `
+                    <tr>
+                        <td>${student.id}</td>
+                        <td>${student.name}</td>
+                        <td>${student.age}</td>
+                        <td>${student.subject}</td>
+                        <td>${student.grade}</td>
+                        <td>${getLetterGrade(student.grade)}</td>
+                        <td>
+                            <button class="btn btn-warning" onclick="editStudent(${student.id})">Edit</button>
+                            <button class="btn btn-danger" onclick="deleteStudent(${student.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+        
+        function updateStatistics() {
+            const total = students.length;
+            document.getElementById('totalStudents').textContent = total;
+
+            if (total === 0) {
+                document.getElementById('averageGrade').textContent = '0';
+                document.getElementById('highestGrade').textContent = '0';
+                document.getElementById('lowestGrade').textContent = '0';
+                return;
+            }
+
+            const grades = students.map(s => s.grade);
+            const average = (grades.reduce((sum, grade) => sum + grade, 0) / total).toFixed(2);
+            const highest = Math.max(...grades);
+            const lowest = Math.min(...grades);
+
+            document.getElementById('averageGrade').textContent = average;
+            document.getElementById('highestGrade').textContent = highest;
+            document.getElementById('lowestGrade').textContent = lowest;
+        }
+        
+        function searchStudents() {
+            const searchTerm = document.getElementById('searchName').value.toLowerCase();
+            const filtered = students.filter(student => 
+                student.name.toLowerCase().includes(searchTerm)
+            );
+            displayStudents(filtered);
+        }
+        
+        function filterStudents() {
+            const subject = document.getElementById('filterSubject').value;
+            if (!subject) {
+                displayStudents();
+                return;
+            }
+            const filtered = students.filter(student => student.subject === subject);
+            displayStudents(filtered);
+        }
+        
+        function sortStudents(criteria) {
+            let sorted = [...students];
+            if (criteria === 'name') {
+                sorted.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (criteria === 'grade') {
+                sorted.sort((a, b) => b.grade - a.grade);
+            }
+            displayStudents(sorted);
+        }
+        
+        function getLetterGrade(numericGrade) {
+            if (numericGrade >= 90) return 'A';
+            if (numericGrade >= 80) return 'B';
+            if (numericGrade >= 70) return 'C';
+            if (numericGrade >= 60) return 'D';
+            return 'F';
+        }
+        
+        function clearForm() {
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentAge').value = '';
+            document.getElementById('studentGrade').value = '';
+            document.getElementById('studentSubject').value = '';
+        }
+        
+        function clearFilters() {
+            document.getElementById('searchName').value = '';
+            document.getElementById('filterSubject').value = '';
+            displayStudents();
+        }
+        
+        // Initialize with sample data
+        function initializeSampleData() {
+            students = [
+                {id: studentIdCounter++, name: 'Alice Johnson', age: 20, grade: 92, subject: 'Mathematics'},
+                {id: studentIdCounter++, name: 'Bob Smith', age: 19, grade: 85, subject: 'Science'},
+                {id: studentIdCounter++, name: 'Charlie Brown', age: 21, grade: 78, subject: 'English'},
+                {id: studentIdCounter++, name: 'Diana Prince', age: 20, grade: 95, subject: 'Programming'},
+                {id: studentIdCounter++, name: 'Eve Wilson', age: 22, grade: 88, subject: 'History'}
+            ];
+            displayStudents();
+            updateStatistics();
+        }
+        
+        // Call initialization when page loads
+        window.onload = function() {
+            initializeSampleData();
+        };
+    </script>
+</body>
+</html>

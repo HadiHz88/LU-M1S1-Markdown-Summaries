@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Router - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React Router</h1>
+            <p>Chapter 10 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>What is React Router?</h2>
+            <p>React Router is a standard library for routing in React. It enables the navigation among views of various components in a React Application, allows changing the browser URL, and keeps the UI in sync with the URL.</p>
+
+            <div class="info-box">
+                <strong>💡 Why React Router?</strong> Single-page applications need a way to handle multiple "pages" without refreshing. React Router makes this possible!
+            </div>
+
+            <h2>Installation</h2>
+            <p>To use React Router, first install the package:</p>
+
+            <pre><code>npm install react-router-dom</code></pre>
+
+            <h2>Basic Routing</h2>
+            <p>Here's a complete example of basic routing:</p>
+
+            <pre><code><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">"react"</span>;
+<span class="keyword">import</span> { BrowserRouter, Routes, Route } <span class="keyword">from</span> <span class="string">"react-router-dom"</span>;
+<span class="keyword">import</span> Layout <span class="keyword">from</span> <span class="string">"./pages/Layout"</span>;
+<span class="keyword">import</span> Home <span class="keyword">from</span> <span class="string">"./pages/Home"</span>;
+<span class="keyword">import</span> About <span class="keyword">from</span> <span class="string">"./pages/About"</span>;
+<span class="keyword">import</span> Contact <span class="keyword">from</span> <span class="string">"./pages/Contact"</span>;
+<span class="keyword">import</span> NoPage <span class="keyword">from</span> <span class="string">"./pages/NoPage"</span>;
+
+<span class="keyword">export default function</span> <span class="function">App</span>() {
+  <span class="keyword">return</span> (
+    &lt;BrowserRouter&gt;
+      &lt;Routes&gt;
+        &lt;Route path=<span class="string">"/"</span> element={&lt;Layout /&gt;}&gt;
+          &lt;Route index element={&lt;Home /&gt;} /&gt;
+          &lt;Route path=<span class="string">"about"</span> element={&lt;About /&gt;} /&gt;
+          &lt;Route path=<span class="string">"contact"</span> element={&lt;Contact /&gt;} /&gt;
+          &lt;Route path=<span class="string">"*"</span> element={&lt;NoPage /&gt;} /&gt;
+        &lt;/Route&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  );
+}</code></pre>
+
+            <h2>Key Components</h2>
+
+            <h3>BrowserRouter</h3>
+            <p>Wraps your entire application and enables routing:</p>
+            <pre><code>&lt;BrowserRouter&gt;
+  &lt;App /&gt;
+&lt;/BrowserRouter&gt;</code></pre>
+
+            <h3>Routes and Route</h3>
+            <p>Define your application's routes:</p>
+            <pre><code>&lt;Routes&gt;
+  &lt;Route path=<span class="string">"/"</span> element={&lt;Home /&gt;} /&gt;
+  &lt;Route path=<span class="string">"/about"</span> element={&lt;About /&gt;} /&gt;
+&lt;/Routes&gt;</code></pre>
+
+            <h3>Link</h3>
+            <p>Create navigation links without page refresh:</p>
+            <pre><code><span class="keyword">import</span> { Link } <span class="keyword">from</span> <span class="string">"react-router-dom"</span>;
+
+&lt;Link to=<span class="string">"/"</span>&gt;Home&lt;/Link&gt;
+&lt;Link to=<span class="string">"/about"</span>&gt;About&lt;/Link&gt;</code></pre>
+
+            <h2>Layout Component</h2>
+            <p>The Layout component includes navigation and uses Outlet to render child routes:</p>
+
+            <pre><code><span class="keyword">import</span> { Outlet, Link } <span class="keyword">from</span> <span class="string">"react-router-dom"</span>;
+
+<span class="keyword">const</span> <span class="function">Layout</span> = () => {
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;nav&gt;
+        &lt;ul&gt;
+          &lt;li&gt;&lt;Link to=<span class="string">"/"</span>&gt;Home&lt;/Link&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;Link to=<span class="string">"/about"</span>&gt;About&lt;/Link&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;Link to=<span class="string">"/contact"</span>&gt;Contact&lt;/Link&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/nav&gt;
+      
+      &lt;Outlet /&gt;
+    &lt;&gt;
+  );
+};
+
+<span class="keyword">export default</span> Layout;</code></pre>
+
+            <h2>Page Components</h2>
+
+            <h3>Home Page</h3>
+            <pre><code><span class="keyword">const</span> <span class="function">Home</span> = () => {
+  <span class="keyword">return</span> &lt;h1&gt;Home Page&lt;/h1&gt;;
+};
+
+<span class="keyword">export default</span> Home;</code></pre>
+
+            <h3>About Page</h3>
+            <pre><code><span class="keyword">const</span> <span class="function">About</span> = () => {
+  <span class="keyword">return</span> &lt;h1&gt;About Us&lt;/h1&gt;;
+};
+
+<span class="keyword">export default</span> About;</code></pre>
+
+            <h3>404 Page</h3>
+            <pre><code><span class="keyword">const</span> <span class="function">NoPage</span> = () => {
+  <span class="keyword">return</span> &lt;h1&gt;404 - Page Not Found&lt;/h1&gt;;
+};
+
+<span class="keyword">export default</span> NoPage;</code></pre>
+
+            <h2>URL Parameters</h2>
+            <p>You can pass parameters in the URL:</p>
+
+            <pre><code><span class="comment">// Define route with parameter</span>
+&lt;Route path=<span class="string">"/user/:id"</span> element={&lt;User /&gt;} /&gt;
+
+<span class="comment">// Access parameter in component</span>
+<span class="keyword">import</span> { useParams } <span class="keyword">from</span> <span class="string">"react-router-dom"</span>;
+
+<span class="keyword">function</span> <span class="function">User</span>() {
+  <span class="keyword">const</span> { id } = <span class="function">useParams</span>();
+  <span class="keyword">return</span> &lt;h1&gt;User ID: {id}&lt;/h1&gt;;
+}</code></pre>
+
+            <h2>Programmatic Navigation</h2>
+            <p>Navigate programmatically using the useNavigate hook:</p>
+
+            <pre><code><span class="keyword">import</span> { useNavigate } <span class="keyword">from</span> <span class="string">"react-router-dom"</span>;
+
+<span class="keyword">function</span> <span class="function">MyComponent</span>() {
+  <span class="keyword">const</span> navigate = <span class="function">useNavigate</span>();
+  
+  <span class="keyword">const</span> <span class="function">goToAbout</span> = () => {
+    <span class="function">navigate</span>(<span class="string">"/about"</span>);
+  };
+  
+  <span class="keyword">return</span> &lt;button onClick={goToAbout}&gt;Go to About&lt;/button&gt;;
+}</code></pre>
+
+            <h2>Nested Routes</h2>
+            <p>You can nest routes for complex layouts:</p>
+
+            <pre><code>&lt;Route path=<span class="string">"/"</span> element={&lt;Layout /&gt;}&gt;
+  &lt;Route index element={&lt;Home /&gt;} /&gt;
+  
+  &lt;Route path=<span class="string">"products"</span> element={&lt;Products /&gt;}&gt;
+    &lt;Route path=<span class="string">":id"</span> element={&lt;ProductDetail /&gt;} /&gt;
+    &lt;Route path=<span class="string">"new"</span> element={&lt;NewProduct /&gt;} /&gt;
+  &lt;/Route&gt;
+&lt;/Route&gt;</code></pre>
+
+            <h2>Active Links</h2>
+            <p>Use NavLink for links that show active state:</p>
+
+            <pre><code><span class="keyword">import</span> { NavLink } <span class="keyword">from</span> <span class="string">"react-router-dom"</span>;
+
+&lt;NavLink 
+  to=<span class="string">"/about"</span>
+  className={({ isActive }) => isActive ? <span class="string">"active"</span> : <span class="string">""</span>}
+&gt;
+  About
+&lt;/NavLink&gt;</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Best Practices:</strong>
+                <ul>
+                    <li>Use BrowserRouter at the root of your app</li>
+                    <li>Define routes in a central location</li>
+                    <li>Use Link/NavLink instead of &lt;a&gt; tags</li>
+                    <li>Implement a 404 page with path="*"</li>
+                    <li>Use nested routes for related pages</li>
+                </ul>
+            </div>
+
+            <h2>What's Next?</h2>
+            <p>Now that you understand routing, you're ready to learn about different ways to style your React components!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="09-forms.html" class="nav-button">← Previous: Forms</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="11-styling.html" class="nav-button">Next: Styling →</a>
+        </div>
+    </div>
+</body>
+</html>
+

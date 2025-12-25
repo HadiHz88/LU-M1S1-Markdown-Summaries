@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 5: Introduction to Express.js - Node.js Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>5️⃣ Introduction to Express.js</h1>
+            <p>The Most Popular Node.js Framework</p>
+        </header>
+
+        <div class="content">
+            <h2>5.1 Why Express?</h2>
+            
+            <p>Express.js is a <strong>minimal, flexible web framework</strong> for Node.js. It simplifies building APIs.</p>
+
+            <h3>Without Express vs With Express</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Without Express ❌</th>
+                        <th>With Express ✅</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Manual URL parsing</td>
+                        <td>Simple routing (<code>app.get()</code>)</td>
+                    </tr>
+                    <tr>
+                        <td>Complex response handling</td>
+                        <td><code>res.json()</code>, <code>res.send()</code></td>
+                    </tr>
+                    <tr>
+                        <td>No middleware system</td>
+                        <td>Built-in middleware support</td>
+                    </tr>
+                    <tr>
+                        <td>Lots of boilerplate</td>
+                        <td>Clean, minimal code</td>
+                    </tr>
+                    <tr>
+                        <td>DIY error handling</td>
+                        <td>Structured error handling</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Express is the Industry Standard</h3>
+            <ul>
+                <li>📦 <strong>30M+ weekly downloads</strong></li>
+                <li>🏢 Used by <strong>Netflix, PayPal, Uber, IBM</strong></li>
+                <li>📚 <strong>Huge ecosystem</strong> of middleware and plugins</li>
+                <li>🎓 <strong>Easy to learn</strong>, powerful to use</li>
+            </ul>
+
+            <h2>5.2 Setting up Express</h2>
+
+            <h3>Step 1: Create Project Folder</h3>
+
+            <pre><code><span class="comment"># Create and enter project folder</span>
+mkdir my-api
+cd my-api</code></pre>
+
+            <h3>Step 2: Initialize npm</h3>
+
+            <pre><code><span class="comment"># Create package.json</span>
+npm init -y</code></pre>
+
+            <p>This creates <code class="inline-code">package.json</code>:</p>
+            <pre><code>{
+  <span class="string">"name"</span>: <span class="string">"my-api"</span>,
+  <span class="string">"version"</span>: <span class="string">"1.0.0"</span>,
+  <span class="string">"main"</span>: <span class="string">"index.js"</span>,
+  <span class="string">"scripts"</span>: {
+    <span class="string">"start"</span>: <span class="string">"node index.js"</span>
+  }
+}</code></pre>
+
+            <h3>Step 3: Install Express</h3>
+
+            <pre><code>npm install express</code></pre>
+
+            <h3>Step 4: Create Basic Server</h3>
+
+            <p>Create <code class="inline-code">index.js</code>:</p>
+
+            <pre><code><span class="comment">// index.js - Basic Express server</span>
+<span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> app = <span class="function">express</span>();
+
+<span class="comment">// Middleware to parse JSON body</span>
+app.<span class="function">use</span>(express.<span class="function">json</span>());
+
+<span class="comment">// Basic route</span>
+app.<span class="function">get</span>(<span class="string">'/'</span>, (req, res) => {
+  res.<span class="function">send</span>(<span class="string">'Hello from Express!'</span>);
+});
+
+<span class="comment">// JSON route</span>
+app.<span class="function">get</span>(<span class="string">'/api'</span>, (req, res) => {
+  res.<span class="function">json</span>({ message: <span class="string">'Welcome to our API!'</span> });
+});
+
+<span class="comment">// Start server</span>
+<span class="keyword">const</span> PORT = <span class="number">3000</span>;
+app.<span class="function">listen</span>(PORT, () => {
+  console.<span class="function">log</span>(<span class="string">`Server running at http://localhost:${PORT}`</span>);
+});</code></pre>
+
+            <h3>Step 5: Run the Server</h3>
+
+            <pre><code>node index.js
+<span class="comment"># Server running at http://localhost:3000</span></code></pre>
+
+            <p>Visit <code class="inline-code">http://localhost:3000</code> in your browser!</p>
+
+            <div class="success-box">
+                <strong>🎉 You just created your first Express server!</strong>
+            </div>
+
+            <h2>5.3 Routing</h2>
+            
+            <p>Routes define how your API responds to different URLs and HTTP methods.</p>
+
+            <h3>HTTP Methods</h3>
+
+            <pre><code><span class="comment">// routes.js - Full CRUD example</span>
+<span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> app = <span class="function">express</span>();
+app.<span class="function">use</span>(express.<span class="function">json</span>());
+
+<span class="comment">// In-memory data (replace with database later)</span>
+<span class="keyword">let</span> products = [
+  { id: <span class="number">1</span>, name: <span class="string">'Laptop'</span>, price: <span class="number">999</span> },
+  { id: <span class="number">2</span>, name: <span class="string">'Phone'</span>, price: <span class="number">699</span> }
+];
+
+<span class="comment">// GET - Read all products</span>
+app.<span class="function">get</span>(<span class="string">'/products'</span>, (req, res) => {
+  res.<span class="function">json</span>(products);
+});
+
+<span class="comment">// GET - Read one product by ID</span>
+app.<span class="function">get</span>(<span class="string">'/products/:id'</span>, (req, res) => {
+  <span class="keyword">const</span> product = products.<span class="function">find</span>(p => p.id === <span class="function">parseInt</span>(req.params.id));
+  
+  <span class="keyword">if</span> (!product) {
+    <span class="keyword">return</span> res.<span class="function">status</span>(<span class="number">404</span>).<span class="function">json</span>({ error: <span class="string">'Product not found'</span> });
+  }
+  
+  res.<span class="function">json</span>(product);
+});
+
+<span class="comment">// POST - Create a new product</span>
+app.<span class="function">post</span>(<span class="string">'/products'</span>, (req, res) => {
+  <span class="keyword">const</span> newProduct = {
+    id: products.length + <span class="number">1</span>,
+    name: req.body.name,
+    price: req.body.price
+  };
+  
+  products.<span class="function">push</span>(newProduct);
+  res.<span class="function">status</span>(<span class="number">201</span>).<span class="function">json</span>(newProduct);
+});
+
+<span class="comment">// PUT - Update a product</span>
+app.<span class="function">put</span>(<span class="string">'/products/:id'</span>, (req, res) => {
+  <span class="keyword">const</span> product = products.<span class="function">find</span>(p => p.id === <span class="function">parseInt</span>(req.params.id));
+  
+  <span class="keyword">if</span> (!product) {
+    <span class="keyword">return</span> res.<span class="function">status</span>(<span class="number">404</span>).<span class="function">json</span>({ error: <span class="string">'Product not found'</span> });
+  }
+  
+  product.name = req.body.name || product.name;
+  product.price = req.body.price || product.price;
+  
+  res.<span class="function">json</span>(product);
+});
+
+<span class="comment">// DELETE - Remove a product</span>
+app.<span class="function">delete</span>(<span class="string">'/products/:id'</span>, (req, res) => {
+  <span class="keyword">const</span> index = products.<span class="function">findIndex</span>(p => p.id === <span class="function">parseInt</span>(req.params.id));
+  
+  <span class="keyword">if</span> (index === -<span class="number">1</span>) {
+    <span class="keyword">return</span> res.<span class="function">status</span>(<span class="number">404</span>).<span class="function">json</span>({ error: <span class="string">'Product not found'</span> });
+  }
+  
+  products.<span class="function">splice</span>(index, <span class="number">1</span>);
+  res.<span class="function">json</span>({ message: <span class="string">'Product deleted'</span> });
+});
+
+app.<span class="function">listen</span>(<span class="number">3000</span>, () => console.<span class="function">log</span>(<span class="string">'Server on port 3000'</span>));</code></pre>
+
+            <h3>URL Parameters</h3>
+            
+            <p>Parameters are parts of the URL path:</p>
+
+            <pre><code><span class="comment">// URL: /users/42</span>
+app.<span class="function">get</span>(<span class="string">'/users/:id'</span>, (req, res) => {
+  <span class="keyword">const</span> userId = req.params.id;  <span class="comment">// "42"</span>
+  res.<span class="function">json</span>({ userId });
+});
+
+<span class="comment">// URL: /products/electronics/laptops</span>
+app.<span class="function">get</span>(<span class="string">'/products/:category/:type'</span>, (req, res) => {
+  <span class="keyword">const</span> { category, type } = req.params;
+  <span class="comment">// category = "electronics", type = "laptops"</span>
+  res.<span class="function">json</span>({ category, type });
+});</code></pre>
+
+            <h3>Query Parameters</h3>
+            
+            <p>Query parameters come after <code class="inline-code">?</code> in the URL:</p>
+
+            <pre><code><span class="comment">// URL: /search?q=laptop&sort=price&limit=10</span>
+app.<span class="function">get</span>(<span class="string">'/search'</span>, (req, res) => {
+  <span class="keyword">const</span> query = req.query.q;       <span class="comment">// "laptop"</span>
+  <span class="keyword">const</span> sort = req.query.sort;     <span class="comment">// "price"</span>
+  <span class="keyword">const</span> limit = req.query.limit;   <span class="comment">// "10" (string!)</span>
+  
+  res.<span class="function">json</span>({ 
+    searchQuery: query,
+    sortBy: sort,
+    limit: <span class="function">parseInt</span>(limit) || <span class="number">10</span>
+  });
+});
+
+<span class="comment">// URL: /products?category=phones&minPrice=500</span>
+app.<span class="function">get</span>(<span class="string">'/products'</span>, (req, res) => {
+  <span class="keyword">let</span> filtered = products;
+  
+  <span class="keyword">if</span> (req.query.category) {
+    filtered = filtered.<span class="function">filter</span>(p => p.category === req.query.category);
+  }
+  
+  <span class="keyword">if</span> (req.query.minPrice) {
+    filtered = filtered.<span class="function">filter</span>(p => p.price >= <span class="function">parseInt</span>(req.query.minPrice));
+  }
+  
+  res.<span class="function">json</span>(filtered);
+});</code></pre>
+
+            <div class="info-box">
+                <strong>💡 URL Params vs Query Params:</strong>
+                <ul>
+                    <li><strong>URL Params</strong> (<code>/users/:id</code>) - Required, identifies a specific resource</li>
+                    <li><strong>Query Params</strong> (<code>?sort=price</code>) - Optional, filters or modifies the response</li>
+                </ul>
+            </div>
+
+            <h2>5.4 async/await in Express Routes</h2>
+            
+            <p>Most real routes need to do async operations (database, external APIs).</p>
+
+            <h3>The Standard Pattern ⭐</h3>
+
+            <pre><code><span class="comment">// async-routes.js</span>
+<span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> app = <span class="function">express</span>();
+app.<span class="function">use</span>(express.<span class="function">json</span>());
+
+<span class="comment">// Simulate database function</span>
+<span class="keyword">function</span> <span class="function">findUserById</span>(id) {
+  <span class="keyword">return new</span> <span class="function">Promise</span>((resolve, reject) => {
+    <span class="function">setTimeout</span>(() => {
+      <span class="keyword">const</span> users = [
+        { id: <span class="number">1</span>, name: <span class="string">'Alice'</span>, email: <span class="string">'alice@mail.com'</span> },
+        { id: <span class="number">2</span>, name: <span class="string">'Bob'</span>, email: <span class="string">'bob@mail.com'</span> }
+      ];
+      <span class="keyword">const</span> user = users.<span class="function">find</span>(u => u.id === id);
+      
+      <span class="keyword">if</span> (user) {
+        resolve(user);
+      } <span class="keyword">else</span> {
+        reject(<span class="keyword">new</span> <span class="function">Error</span>(<span class="string">'User not found'</span>));
+      }
+    }, <span class="number">500</span>);
+  });
+}
+
+<span class="comment">// ✅ Async route with try/catch</span>
+app.<span class="function">get</span>(<span class="string">'/users/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> userId = <span class="function">parseInt</span>(req.params.id);
+    <span class="keyword">const</span> user = <span class="keyword">await</span> <span class="function">findUserById</span>(userId);
+    res.<span class="function">json</span>(user);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">404</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+<span class="comment">// ✅ POST with validation</span>
+app.<span class="function">post</span>(<span class="string">'/users'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> { name, email } = req.body;
+    
+    <span class="comment">// Validation</span>
+    <span class="keyword">if</span> (!name || !email) {
+      <span class="keyword">return</span> res.<span class="function">status</span>(<span class="number">400</span>).<span class="function">json</span>({ 
+        error: <span class="string">'Name and email are required'</span> 
+      });
+    }
+    
+    <span class="comment">// Create user (would save to DB)</span>
+    <span class="keyword">const</span> newUser = { id: Date.<span class="function">now</span>(), name, email };
+    
+    res.<span class="function">status</span>(<span class="number">201</span>).<span class="function">json</span>(newUser);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">500</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+app.<span class="function">listen</span>(<span class="number">3000</span>, () => console.<span class="function">log</span>(<span class="string">'Server running on port 3000'</span>));</code></pre>
+
+            <h3>HTTP Status Codes</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Meaning</th>
+                        <th>When to Use</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-green">200</span></td>
+                        <td>OK</td>
+                        <td>Successful GET, PUT</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-green">201</span></td>
+                        <td>Created</td>
+                        <td>Successful POST (new resource)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-orange">400</span></td>
+                        <td>Bad Request</td>
+                        <td>Invalid data sent by client</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-orange">401</span></td>
+                        <td>Unauthorized</td>
+                        <td>Not logged in</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-orange">404</span></td>
+                        <td>Not Found</td>
+                        <td>Resource doesn't exist</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background-color: #dc3545; color: white;">500</span></td>
+                        <td>Server Error</td>
+                        <td>Something broke on server</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Testing Your API</h2>
+
+            <p>Use these tools to test your API:</p>
+
+            <h3>1. Browser (GET only)</h3>
+            <p>Just visit <code class="inline-code">http://localhost:3000/products</code></p>
+
+            <h3>2. PowerShell (Windows Command Line)</h3>
+            <pre><code><span class="comment"># GET request</span>
+Invoke-RestMethod -Uri http://localhost:3000/products -Method Get
+
+<span class="comment"># POST request</span>
+$body = @{
+    name = "Tablet"
+    price = 499
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri http://localhost:3000/products -Method Post -Body $body -ContentType "application/json"
+
+<span class="comment"># PUT request</span>
+$body = @{
+    price = 899
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri http://localhost:3000/products/1 -Method Put -Body $body -ContentType "application/json"
+
+<span class="comment"># DELETE request</span>
+Invoke-RestMethod -Uri http://localhost:3000/products/1 -Method Delete</code></pre>
+
+            <div class="info-box">
+                <strong>💡 PowerShell Notes:</strong>
+                <ul>
+                    <li><code class="inline-code">Invoke-RestMethod</code> is the PowerShell command for HTTP requests</li>
+                    <li>Use <code class="inline-code">-Method</code> to specify GET, POST, PUT, DELETE</li>
+                    <li>Create a hash table with <code class="inline-code">@{}</code>, then convert to JSON</li>
+                    <li>PowerShell automatically displays JSON responses in a readable format</li>
+                </ul>
+            </div>
+
+            <h3>3. VS Code Extension: REST Client</h3>
+            <p>Create a file <code class="inline-code">test.http</code>:</p>
+            <pre><code>### Get all products
+GET http://localhost:3000/products
+
+### Get one product
+GET http://localhost:3000/products/1
+
+### Create product
+POST http://localhost:3000/products
+Content-Type: application/json
+
+{
+  "name": "Tablet",
+  "price": 499
+}
+
+### Delete product
+DELETE http://localhost:3000/products/1</code></pre>
+
+            <div class="success-box">
+                <strong>🎯 Key Takeaways:</strong>
+                <ul>
+                    <li>Express simplifies Node.js web development</li>
+                    <li>Use <code class="inline-code">app.get/post/put/delete()</code> for routing</li>
+                    <li><code class="inline-code">req.params</code> for URL parameters (/users/:id)</li>
+                    <li><code class="inline-code">req.query</code> for query strings (?sort=price)</li>
+                    <li><code class="inline-code">req.body</code> for POST/PUT data</li>
+                    <li>Always use <code class="inline-code">async/await</code> with <code class="inline-code">try/catch</code></li>
+                    <li>Return appropriate HTTP status codes</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="04-events.html" class="nav-button">← Previous: Events</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="06-middleware.html" class="nav-button">Next: Middleware →</a>
+        </div>
+    </div>
+</body>
+</html>

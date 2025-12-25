@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 8: Building a Simple API - Node.js Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>8️⃣ Building a Simple API</h1>
+            <p>Complete REST API for React Frontend</p>
+        </header>
+
+        <div class="content">
+            <h2>What We're Building</h2>
+            
+            <p>A simple API with products and users:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>/api/products</td>
+                        <td>GET</td>
+                        <td>Get all products</td>
+                    </tr>
+                    <tr>
+                        <td>/api/products/:id</td>
+                        <td>GET</td>
+                        <td>Get one product</td>
+                    </tr>
+                    <tr>
+                        <td>/api/products</td>
+                        <td>POST</td>
+                        <td>Create product</td>
+                    </tr>
+                    <tr>
+                        <td>/api/products/:id</td>
+                        <td>PUT</td>
+                        <td>Update product</td>
+                    </tr>
+                    <tr>
+                        <td>/api/products/:id</td>
+                        <td>DELETE</td>
+                        <td>Delete product</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Project Structure</h2>
+
+            <div class="file-tree">
+📁 my-api/
+├── 📄 index.js
+├── 📄 package.json
+└── 📁 models/
+    └── 📄 Product.js
+            </div>
+
+            <h2>Step 1: Setup</h2>
+
+            <pre><code>mkdir my-api
+cd my-api
+npm init -y
+npm install express mongoose cors</code></pre>
+
+            <h2>Step 2: Product Model</h2>
+
+            <pre><code><span class="comment">// models/Product.js</span>
+<span class="keyword">const</span> mongoose = <span class="function">require</span>(<span class="string">'mongoose'</span>);
+
+<span class="keyword">const</span> productSchema = <span class="keyword">new</span> mongoose.<span class="function">Schema</span>({
+  name: { type: String, required: <span class="keyword">true</span> },
+  price: { type: Number, required: <span class="keyword">true</span> },
+  category: { type: String, default: <span class="string">'general'</span> },
+  inStock: { type: Boolean, default: <span class="keyword">true</span> }
+}, { timestamps: <span class="keyword">true</span> });
+
+module.exports = mongoose.<span class="function">model</span>(<span class="string">'Product'</span>, productSchema);</code></pre>
+
+            <h2>Step 3: Main Server</h2>
+
+            <pre><code><span class="comment">// index.js</span>
+<span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> mongoose = <span class="function">require</span>(<span class="string">'mongoose'</span>);
+<span class="keyword">const</span> cors = <span class="function">require</span>(<span class="string">'cors'</span>);
+<span class="keyword">const</span> Product = <span class="function">require</span>(<span class="string">'./models/Product'</span>);
+
+<span class="keyword">const</span> app = <span class="function">express</span>();
+
+<span class="comment">// Middleware</span>
+app.<span class="function">use</span>(<span class="function">cors</span>());
+app.<span class="function">use</span>(express.<span class="function">json</span>());
+
+<span class="comment">// Connect to MongoDB (using async/await with try/catch - better practice!)</span>
+<span class="keyword">async function</span> <span class="function">connectDB</span>() {
+  <span class="keyword">try</span> {
+    <span class="keyword">await</span> mongoose.<span class="function">connect</span>(<span class="string">'mongodb://localhost:27017/myapi'</span>);
+    console.<span class="function">log</span>(<span class="string">'✅ Connected to MongoDB'</span>);
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="function">error</span>(<span class="string">'❌ MongoDB connection error:'</span>, error.message);
+    process.<span class="function">exit</span>(<span class="number">1</span>);  <span class="comment">// Exit if database connection fails</span>
+  }
+}
+
+<span class="function">connectDB</span>();  <span class="comment">// Call the function to connect</span>
+
+<span class="comment">// GET all products</span>
+app.<span class="function">get</span>(<span class="string">'/api/products'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> products = <span class="keyword">await</span> Product.<span class="function">find</span>();
+    res.<span class="function">json</span>(products);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">500</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+<span class="comment">// GET one product</span>
+app.<span class="function">get</span>(<span class="string">'/api/products/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> product = <span class="keyword">await</span> Product.<span class="function">findById</span>(req.params.id);
+    <span class="keyword">if</span> (!product) {
+      <span class="keyword">return</span> res.<span class="function">status</span>(<span class="number">404</span>).<span class="function">json</span>({ error: <span class="string">'Product not found'</span> });
+    }
+    res.<span class="function">json</span>(product);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">500</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+<span class="comment">// POST create product</span>
+app.<span class="function">post</span>(<span class="string">'/api/products'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> product = <span class="keyword">await</span> Product.<span class="function">create</span>(req.body);
+    res.<span class="function">status</span>(<span class="number">201</span>).<span class="function">json</span>(product);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">400</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+<span class="comment">// PUT update product</span>
+app.<span class="function">put</span>(<span class="string">'/api/products/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> product = <span class="keyword">await</span> Product.<span class="function">findByIdAndUpdate</span>(
+      req.params.id,
+      req.body,
+      { new: <span class="keyword">true</span> }
+    );
+    <span class="keyword">if</span> (!product) {
+      <span class="keyword">return</span> res.<span class="function">status</span>(<span class="number">404</span>).<span class="function">json</span>({ error: <span class="string">'Product not found'</span> });
+    }
+    res.<span class="function">json</span>(product);
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">400</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+<span class="comment">// DELETE product</span>
+app.<span class="function">delete</span>(<span class="string">'/api/products/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> product = <span class="keyword">await</span> Product.<span class="function">findByIdAndDelete</span>(req.params.id);
+    <span class="keyword">if</span> (!product) {
+      <span class="keyword">return</span> res.<span class="function">status</span>(<span class="number">404</span>).<span class="function">json</span>({ error: <span class="string">'Product not found'</span> });
+    }
+    res.<span class="function">json</span>({ message: <span class="string">'Product deleted'</span> });
+  } <span class="keyword">catch</span> (error) {
+    res.<span class="function">status</span>(<span class="number">500</span>).<span class="function">json</span>({ error: error.message });
+  }
+});
+
+<span class="comment">// Start server</span>
+app.<span class="function">listen</span>(<span class="number">3000</span>, () => {
+  console.<span class="function">log</span>(<span class="string">'Server running on http://localhost:3000'</span>);
+});</code></pre>
+
+            <h2>Testing the API</h2>
+
+            <p><strong>Using PowerShell (Windows):</strong></p>
+
+            <pre><code><span class="comment"># Get all products</span>
+Invoke-RestMethod -Uri http://localhost:3000/api/products -Method Get
+
+<span class="comment"># Create product</span>
+$body = @{
+    name = "Laptop"
+    price = 999
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri http://localhost:3000/api/products -Method Post -Body $body -ContentType "application/json"
+
+<span class="comment"># Update product (replace ID_HERE with actual product ID)</span>
+$body = @{
+    price = 899
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri http://localhost:3000/api/products/ID_HERE -Method Put -Body $body -ContentType "application/json"
+
+<span class="comment"># Delete product (replace ID_HERE with actual product ID)</span>
+Invoke-RestMethod -Uri http://localhost:3000/api/products/ID_HERE -Method Delete</code></pre>
+
+            <div class="info-box">
+                <strong>💡 PowerShell Tips:</strong>
+                <ul>
+                    <li><code class="inline-code">Invoke-RestMethod</code> is the PowerShell equivalent of curl</li>
+                    <li><code class="inline-code">-Method</code> specifies GET, POST, PUT, DELETE</li>
+                    <li><code class="inline-code">-Body</code> with <code class="inline-code">ConvertTo-Json</code> sends JSON data</li>
+                    <li><code class="inline-code">-ContentType</code> tells the server you're sending JSON</li>
+                    <li>PowerShell automatically parses JSON responses for you</li>
+                </ul>
+            </div>
+
+            <div class="success-box">
+                <strong>🎯 Key Takeaways:</strong>
+                <ul>
+                    <li>Use <code class="inline-code">cors()</code> to allow React to connect</li>
+                    <li>Use <code class="inline-code">express.json()</code> to parse request body</li>
+                    <li>Always use try/catch in async routes</li>
+                    <li>Return appropriate status codes (200, 201, 404, 500)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="07-database.html" class="nav-button">← Previous: Database</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="09-react-integration.html" class="nav-button">Next: React Integration →</a>
+        </div>
+    </div>
+</body>
+</html>

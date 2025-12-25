@@ -1,0 +1,24 @@
+{
+  "name": "book-library-api",
+  "version": "1.0.0",
+  "description": "Lab 05-08: Book Library REST API - Express, Middleware, MongoDB, Mongoose",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "express",
+    "mongodb",
+    "mongoose",
+    "rest-api",
+    "middleware"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^8.0.3",
+    "cors": "^2.8.5"
+  }
+}

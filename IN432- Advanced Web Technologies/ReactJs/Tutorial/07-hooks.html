@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Hooks - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React Hooks</h1>
+            <p>Chapter 7 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>What are Hooks?</h2>
+            <p>Hooks allow function components to have access to state and other React features. Because of this, class components are generally no longer needed.</p>
+
+            <div class="info-box">
+                <strong>💡 History:</strong> Hooks were introduced in React 16.8 (February 2019) and revolutionized how we write React components!
+            </div>
+
+            <h2>Why Hooks?</h2>
+            <p>Before Hooks, you had to use class components to use state and lifecycle methods. Hooks allow you to use these features in function components, which are:</p>
+            <ul>
+                <li>Simpler and easier to understand</li>
+                <li>Less code to write</li>
+                <li>Easier to test</li>
+                <li>Better for reusing stateful logic</li>
+            </ul>
+
+            <h2>Hooks Rules</h2>
+            <p>There are 3 important rules for using hooks:</p>
+            <ol>
+                <li><strong>Hooks can only be called inside React function components</strong></li>
+                <li><strong>Hooks can only be called at the top level of a component</strong></li>
+                <li><strong>Hooks cannot be conditional</strong></li>
+            </ol>
+
+            <div class="warning-box">
+                <strong>⚠️ Invalid Hook Calls:</strong>
+                <pre><code><span class="comment">// ❌ Don't call Hooks inside loops</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+}
+
+<span class="comment">// ❌ Don't call Hooks inside conditions</span>
+<span class="keyword">if</span> (someCondition) {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+}
+
+<span class="comment">// ❌ Don't call Hooks inside nested functions</span>
+<span class="keyword">function</span> <span class="function">handleClick</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+}</code></pre>
+            </div>
+
+            <h2>Built-in Hooks</h2>
+            <p>React provides several built-in hooks:</p>
+            <ul>
+                <li><strong>useState</strong> - Manage state in function components</li>
+                <li><strong>useEffect</strong> - Perform side effects</li>
+                <li><strong>useContext</strong> - Access React Context</li>
+                <li><strong>useRef</strong> - Reference DOM elements or persist values</li>
+                <li><strong>useReducer</strong> - Alternative to useState for complex state logic</li>
+                <li><strong>useCallback</strong> - Memoize functions</li>
+                <li><strong>useMemo</strong> - Memoize values</li>
+                <li>And more!</li>
+            </ul>
+
+            <h2>The useState Hook</h2>
+            <p>The <code class="inline-code">useState</code> Hook allows us to track state in a function component.</p>
+
+            <h3>Import useState</h3>
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;</code></pre>
+
+            <h3>Initialize useState</h3>
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">FavoriteColor</span>() {
+  <span class="keyword">const</span> [color, setColor] = <span class="function">useState</span>(<span class="string">"red"</span>);
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;My favorite color is {color}!&lt;/h1&gt;
+      &lt;button onClick={() => <span class="function">setColor</span>(<span class="string">"blue"</span>)}&gt;
+        Blue
+      &lt;/button&gt;
+      &lt;button onClick={() => <span class="function">setColor</span>(<span class="string">"green"</span>)}&gt;
+        Green
+      &lt;/button&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h3>What Does useState Return?</h3>
+            <p>useState returns an array with two values:</p>
+            <ul>
+                <li><strong>Index 0:</strong> The current state</li>
+                <li><strong>Index 1:</strong> A function that updates the state</li>
+            </ul>
+
+            <pre><code><span class="keyword">const</span> [state, setState] = <span class="function">useState</span>(initialValue);</code></pre>
+
+            <h2>Multiple State Hooks</h2>
+            <p>You can use multiple useState Hooks in a single component:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Car</span>() {
+  <span class="keyword">const</span> [brand, setBrand] = <span class="function">useState</span>(<span class="string">"Ford"</span>);
+  <span class="keyword">const</span> [model, setModel] = <span class="function">useState</span>(<span class="string">"Mustang"</span>);
+  <span class="keyword">const</span> [year, setYear] = <span class="function">useState</span>(<span class="string">"1964"</span>);
+  <span class="keyword">const</span> [color, setColor] = <span class="function">useState</span>(<span class="string">"red"</span>);
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;My {brand}&lt;/h1&gt;
+      &lt;p&gt;
+        It is a {color} {model} from {year}.
+      &lt;/p&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h2>State with Objects</h2>
+            <p>You can use objects with useState to organize related data:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Car</span>() {
+  <span class="keyword">const</span> [car, setCar] = <span class="function">useState</span>({
+    brand: <span class="string">"Ford"</span>,
+    model: <span class="string">"Mustang"</span>,
+    year: <span class="string">"1964"</span>,
+    color: <span class="string">"red"</span>
+  });
+
+  <span class="keyword">const</span> <span class="function">updateColor</span> = () => {
+    <span class="function">setCar</span>(previousState => {
+      <span class="keyword">return</span> { ...previousState, color: <span class="string">"blue"</span> };
+    });
+  }
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;My {car.brand}&lt;/h1&gt;
+      &lt;p&gt;It is a {car.color} {car.model} from {car.year}.&lt;/p&gt;
+      &lt;button onClick={updateColor}&gt;Blue&lt;/button&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Remember:</strong> When updating objects in state, use the spread operator <code class="inline-code">...</code> to keep all other properties intact!
+            </div>
+
+            <h2>Toggle Example</h2>
+            <p>A common use case is toggling boolean values:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Toggle</span>() {
+  <span class="keyword">const</span> [isOn, setIsOn] = <span class="function">useState</span>(<span class="keyword">false</span>);
+
+  <span class="keyword">const</span> <span class="function">toggle</span> = () => {
+    <span class="function">setIsOn</span>(prevState => !prevState);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;p&gt;The light is {isOn ? <span class="string">"ON"</span> : <span class="string">"OFF"</span>}&lt;/p&gt;
+      &lt;button onClick={toggle}&gt;
+        {isOn ? <span class="string">"Turn OFF"</span> : <span class="string">"Turn ON"</span>}
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Counter Example</h2>
+            <p>A classic example demonstrating state updates:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Counter</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;h1&gt;Counter: {count}&lt;/h1&gt;
+      &lt;button onClick={() => <span class="function">setCount</span>(count + <span class="number">1</span>)}&gt;
+        Increment
+      &lt;/button&gt;
+      &lt;button onClick={() => <span class="function">setCount</span>(count - <span class="number">1</span>)}&gt;
+        Decrement
+      &lt;/button&gt;
+      &lt;button onClick={() => <span class="function">setCount</span>(<span class="number">0</span>)}&gt;
+        Reset
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Array State Example</h2>
+            <p>Managing lists with useState:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">ShoppingList</span>() {
+  <span class="keyword">const</span> [items, setItems] = <span class="function">useState</span>([<span class="string">"Milk"</span>, <span class="string">"Bread"</span>, <span class="string">"Eggs"</span>]);
+  <span class="keyword">const</span> [newItem, setNewItem] = <span class="function">useState</span>(<span class="string">""</span>);
+
+  <span class="keyword">const</span> <span class="function">addItem</span> = () => {
+    <span class="keyword">if</span> (newItem.<span class="function">trim</span>()) {
+      <span class="function">setItems</span>([...items, newItem]);
+      <span class="function">setNewItem</span>(<span class="string">""</span>);
+    }
+  };
+
+  <span class="keyword">const</span> <span class="function">removeItem</span> = (index) => {
+    <span class="function">setItems</span>(items.<span class="function">filter</span>((_, i) => i !== index));
+  };
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      &lt;h2&gt;Shopping List&lt;/h2&gt;
+      &lt;ul&gt;
+        {items.<span class="function">map</span>((item, index) => (
+          &lt;li key={index}&gt;
+            {item}
+            &lt;button onClick={() => <span class="function">removeItem</span>(index)}&gt;
+              Remove
+            &lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+      &lt;input
+        type=<span class="string">"text"</span>
+        value={newItem}
+        onChange={(e) => <span class="function">setNewItem</span>(e.target.value)}
+        placeholder=<span class="string">"Add new item"</span>
+      /&gt;
+      &lt;button onClick={addItem}&gt;Add&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Lazy Initial State</h2>
+            <p>If the initial state is expensive to compute, you can pass a function:</p>
+
+            <pre><code><span class="keyword">const</span> [state, setState] = <span class="function">useState</span>(() => {
+  <span class="keyword">const</span> initialState = <span class="function">expensiveComputation</span>();
+  <span class="keyword">return</span> initialState;
+});
+
+<span class="comment">// This is more efficient than:</span>
+<span class="keyword">const</span> [state, setState] = <span class="function">useState</span>(<span class="function">expensiveComputation</span>());
+<span class="comment">// Because the function only runs once</span></code></pre>
+
+            <h2>Comparing to Class Components</h2>
+            <p>Here's how useState compares to class component state:</p>
+
+            <h3>Function Component with useState</h3>
+            <pre><code><span class="keyword">function</span> <span class="function">Example</span>() {
+  <span class="keyword">const</span> [count, setCount] = <span class="function">useState</span>(<span class="number">0</span>);
+  
+  <span class="keyword">return</span> (
+    &lt;button onClick={() => <span class="function">setCount</span>(count + <span class="number">1</span>)}&gt;
+      Clicked {count} times
+    &lt;/button&gt;
+  );
+}</code></pre>
+
+            <h3>Class Component</h3>
+            <pre><code><span class="keyword">class</span> Example <span class="keyword">extends</span> React.Component {
+  <span class="function">constructor</span>(props) {
+    <span class="keyword">super</span>(props);
+    <span class="keyword">this</span>.state = { count: <span class="number">0</span> };
+  }
+
+  <span class="function">render</span>() {
+    <span class="keyword">return</span> (
+      &lt;button onClick={() => <span class="keyword">this</span>.<span class="function">setState</span>({ count: <span class="keyword">this</span>.state.count + <span class="number">1</span> })}&gt;
+        Clicked {<span class="keyword">this</span>.state.count} times
+      &lt;/button&gt;
+    );
+  }
+}</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Much Cleaner:</strong> The function component with useState is much shorter and easier to read!
+            </div>
+
+            <h2>Common Patterns</h2>
+
+            <h3>Form Handling</h3>
+            <pre><code><span class="keyword">function</span> <span class="function">ContactForm</span>() {
+  <span class="keyword">const</span> [formData, setFormData] = <span class="function">useState</span>({
+    name: <span class="string">""</span>,
+    email: <span class="string">""</span>,
+    message: <span class="string">""</span>
+  });
+
+  <span class="keyword">const</span> <span class="function">handleChange</span> = (e) => {
+    <span class="function">setFormData</span>({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  <span class="keyword">return</span> (
+    &lt;form&gt;
+      &lt;input name=<span class="string">"name"</span> value={formData.name} onChange={handleChange} /&gt;
+      &lt;input name=<span class="string">"email"</span> value={formData.email} onChange={handleChange} /&gt;
+      &lt;textarea name=<span class="string">"message"</span> value={formData.message} onChange={handleChange} /&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+
+            <h2>Best Practices</h2>
+            <ul>
+                <li>Keep related state together in an object</li>
+                <li>Use multiple state variables for unrelated data</li>
+                <li>Use functional updates when new state depends on old state</li>
+                <li>Don't call hooks inside conditions, loops, or nested functions</li>
+                <li>Always call hooks at the top level of your component</li>
+            </ul>
+
+            <h2>What's Next?</h2>
+            <p>Now that you've mastered useState, you're ready to learn about Events - how to handle user interactions in React!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="06-state.html" class="nav-button">← Previous: State</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="08-events.html" class="nav-button">Next: Events →</a>
+        </div>
+    </div>
+</body>
+</html>
+

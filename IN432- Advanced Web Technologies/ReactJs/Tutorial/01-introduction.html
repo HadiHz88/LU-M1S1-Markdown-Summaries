@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to React - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ Introduction to React</h1>
+            <p>Chapter 1 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>What is React?</h2>
+            <p>React is a JavaScript library for building user interfaces, particularly single-page applications where you need a fast, interactive user experience.</p>
+
+            <div class="info-box">
+                <strong>💡 Did You Know?</strong> React was created by Facebook (now Meta) and is maintained by Facebook and a community of individual developers and companies.
+            </div>
+
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Declarative:</strong> React makes it painless to create interactive UIs. Design simple views for each state in your application, and React will efficiently update and render just the right components when your data changes.</li>
+                <li><strong>Component-Based:</strong> Build encapsulated components that manage their own state, then compose them to make complex UIs. Since component logic is written in JavaScript instead of templates, you can easily pass rich data through your app and keep state out of the DOM.</li>
+                <li><strong>Learn Once, Write Anywhere:</strong> You can develop new features in React without rewriting existing code. React can also render on the server using Node and power mobile apps using React Native.</li>
+            </ul>
+
+            <h2>Why Use React?</h2>
+            <ul>
+                <li><strong>Fast:</strong> React creates an in-memory data structure cache, computes the resulting differences, and then updates the browser's displayed DOM efficiently. This allows the programmer to write code as if the entire page is rendered on each change, while React only renders subcomponents that actually change.</li>
+                <li><strong>Simple:</strong> React uses JSX which allows you to write HTML in JavaScript. This makes the code easier to understand and debug.</li>
+                <li><strong>Scalable:</strong> React can be used for large applications where data changes over time. It's designed to handle complex UIs with ease.</li>
+                <li><strong>Versatile:</strong> React can be used for mobile app development through React Native, making it a versatile choice for developers.</li>
+            </ul>
+
+            <h2>How Does React Work?</h2>
+            <p>React creates a <strong>VIRTUAL DOM</strong> in memory. Instead of manipulating the browser's DOM directly, React creates a virtual DOM in memory, where it does all the necessary manipulating, before making the changes in the browser DOM.</p>
+
+            <div class="success-box">
+                <strong>✨ Key Concept:</strong> React only changes what needs to be changed! React finds out what changes have been made, and changes only what needs to be changed. This makes React applications incredibly fast.
+            </div>
+
+            <h3>The Virtual DOM Process</h3>
+            <ol>
+                <li>When data changes in a React app, React creates a new Virtual DOM representation</li>
+                <li>React compares the new Virtual DOM with the previous Virtual DOM snapshot</li>
+                <li>React calculates the most efficient way to update the actual DOM</li>
+                <li>Only the changed elements are updated in the real DOM</li>
+            </ol>
+
+            <h2>React History</h2>
+            <p>React was first created by Jordan Walke, a software engineer at Facebook. It was first deployed on Facebook's newsfeed in 2011 and later on Instagram in 2012.</p>
+            
+            <p>React was open-sourced at JSConf US in May 2013, and it has since become one of the most popular JavaScript libraries for building user interfaces.</p>
+
+            <div class="info-box">
+                <strong>📈 Popularity:</strong> React is used by major companies including Facebook, Instagram, Netflix, Airbnb, Twitter, Uber, and many more!
+            </div>
+
+            <h2>What You'll Learn</h2>
+            <p>In this tutorial, you will learn:</p>
+            <ul>
+                <li>How to set up a React development environment</li>
+                <li>JSX syntax and how to use it</li>
+                <li>Creating and using components</li>
+                <li>Managing state and props</li>
+                <li>Working with React Hooks</li>
+                <li>Handling events and forms</li>
+                <li>Routing and navigation</li>
+                <li>Styling React components</li>
+                <li>And much more!</li>
+            </ul>
+
+            <div class="warning-box">
+                <strong>⚠️ Prerequisites:</strong> Before starting with React, you should have a good understanding of HTML, CSS, and JavaScript (ES6+). Knowledge of JavaScript concepts like arrow functions, classes, and modules will be very helpful.
+            </div>
+
+            <h2>Ready to Start?</h2>
+            <p>In the next chapter, we'll dive into setting up your React development environment and creating your first React application. Let's get started!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="index.html" class="nav-button">← Back to Home</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="02-getting-started.html" class="nav-button">Next: Getting Started →</a>
+        </div>
+    </div>
+</body>
+</html>
+

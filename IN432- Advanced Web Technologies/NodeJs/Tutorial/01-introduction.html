@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1: Introduction to Backend - Node.js Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>1️⃣ Introduction to Backend for React</h1>
+            <p>Why React Apps Need a Backend Server</p>
+        </header>
+
+        <div class="content">
+            <h2>Why React Apps Need a Backend</h2>
+            
+            <p>React runs in the browser (client-side). It <strong>cannot</strong>:</p>
+            
+            <ul>
+                <li>🗄️ <strong>Store data permanently</strong> (needs a database)</li>
+                <li>📧 <strong>Send emails</strong> (requires server-side code)</li>
+                <li>💳 <strong>Process payments</strong> (security requirement)</li>
+                <li>🔐 <strong>Keep secrets</strong> (API keys, passwords must be hidden)</li>
+                <li>🔒 <strong>Authenticate users</strong> (verify identity securely)</li>
+            </ul>
+
+            <div class="info-box">
+                <strong>💡 Key Insight:</strong> Everything in the browser is visible to users. You need a backend server to handle sensitive operations securely.
+            </div>
+
+            <h3>The Client-Server Architecture</h3>
+            
+            <div class="diagram-box">
+┌─────────────────┐         HTTP Request         ┌─────────────────┐
+│                 │  ─────────────────────────►  │                 │
+│   React App     │        (JSON data)           │   Node.js       │
+│   (Browser)     │                              │   Server        │
+│                 │  ◄─────────────────────────  │                 │
+└─────────────────┘         HTTP Response        └────────┬────────┘
+     Frontend               (JSON data)                   │
+                                                          │
+                                                          ▼
+                                                 ┌─────────────────┐
+                                                 │    Database     │
+                                                 │    (MongoDB)    │
+                                                 └─────────────────┘
+            </div>
+
+            <h2>API Concept (REST & JSON)</h2>
+            
+            <h3>What is an API?</h3>
+            <p><strong>API (Application Programming Interface)</strong> - A way for programs to communicate with each other. Think of it as a waiter in a restaurant: you tell the waiter what you want, and they bring it from the kitchen.</p>
+
+            <h3>REST API</h3>
+            <p><strong>REST (Representational State Transfer)</strong> uses HTTP methods to perform actions on resources:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>HTTP Method</th>
+                        <th>Action</th>
+                        <th>Example URL</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="badge badge-green">GET</span></td>
+                        <td>Read</td>
+                        <td>/api/products</td>
+                        <td>Get all products</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-blue">POST</span></td>
+                        <td>Create</td>
+                        <td>/api/products</td>
+                        <td>Add a new product</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-orange">PUT</span></td>
+                        <td>Update</td>
+                        <td>/api/products/1</td>
+                        <td>Edit product #1</td>
+                    </tr>
+                    <tr>
+                        <td><span class="badge" style="background-color: #dc3545; color: white;">DELETE</span></td>
+                        <td>Delete</td>
+                        <td>/api/products/1</td>
+                        <td>Remove product #1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>JSON (JavaScript Object Notation)</h3>
+            <p>The standard format for sending data between frontend and backend:</p>
+
+            <pre><code><span class="comment">// JSON Response from API</span>
+{
+  <span class="string">"id"</span>: <span class="number">1</span>,
+  <span class="string">"name"</span>: <span class="string">"iPhone 15"</span>,
+  <span class="string">"price"</span>: <span class="number">999</span>,
+  <span class="string">"inStock"</span>: <span class="keyword">true</span>,
+  <span class="string">"categories"</span>: [<span class="string">"electronics"</span>, <span class="string">"phones"</span>]
+}</code></pre>
+
+            <pre><code><span class="comment">// Array of products</span>
+[
+  { <span class="string">"id"</span>: <span class="number">1</span>, <span class="string">"name"</span>: <span class="string">"Laptop"</span>, <span class="string">"price"</span>: <span class="number">999</span> },
+  { <span class="string">"id"</span>: <span class="number">2</span>, <span class="string">"name"</span>: <span class="string">"Phone"</span>, <span class="string">"price"</span>: <span class="number">699</span> },
+  { <span class="string">"id"</span>: <span class="number">3</span>, <span class="string">"name"</span>: <span class="string">"Tablet"</span>, <span class="string">"price"</span>: <span class="number">499</span> }
+]</code></pre>
+
+            <h2>Overview of MERN Stack</h2>
+            
+            <p>MERN is a popular full-stack JavaScript solution:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Letter</th>
+                        <th>Technology</th>
+                        <th>Role</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong style="color: #3c873a;">M</strong></td>
+                        <td>MongoDB</td>
+                        <td>Database</td>
+                        <td>Stores data as JSON-like documents</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: #3c873a;">E</strong></td>
+                        <td>Express.js</td>
+                        <td>Backend Framework</td>
+                        <td>Handles HTTP requests, routing</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: #61dafb;">R</strong></td>
+                        <td>React</td>
+                        <td>Frontend Library</td>
+                        <td>Builds the user interface</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: #3c873a;">N</strong></td>
+                        <td>Node.js</td>
+                        <td>Runtime</td>
+                        <td>Runs JavaScript on the server</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="diagram-box">
+┌────────────────────────────────────────────────────────────────────┐
+│                         MERN Stack                                  │
+├────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│   ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐    │
+│   │  React   │───►│ Express  │───►│  Node.js │───►│ MongoDB  │    │
+│   │ Frontend │◄───│   API    │◄───│  Runtime │◄───│ Database │    │
+│   └──────────┘    └──────────┘    └──────────┘    └──────────┘    │
+│                                                                     │
+│   Browser         Server          Server          Cloud/Local      │
+│                                                                     │
+└────────────────────────────────────────────────────────────────────┘
+            </div>
+
+            <h3>Why MERN?</h3>
+            <ul>
+                <li>✅ <strong>JavaScript Everywhere</strong> - Same language frontend & backend</li>
+                <li>✅ <strong>Fast Development</strong> - Rapid prototyping and iteration</li>
+                <li>✅ <strong>Large Community</strong> - Tons of resources and packages</li>
+                <li>✅ <strong>JSON Native</strong> - Data flows naturally between all layers</li>
+                <li>✅ <strong>Industry Standard</strong> - Used by Netflix, Uber, PayPal</li>
+            </ul>
+
+            <h2>How React Communicates with Backend</h2>
+
+            <pre><code><span class="comment">// React component fetching data from Node.js API</span>
+<span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">ProductList</span>() {
+  <span class="keyword">const</span> [products, setProducts] = <span class="function">useState</span>([]);
+  <span class="keyword">const</span> [loading, setLoading] = <span class="function">useState</span>(<span class="keyword">false</span>);
+
+  <span class="comment">// Async function to fetch data from our Node.js backend</span>
+  <span class="keyword">async</span> <span class="keyword">function</span> <span class="function">fetchProducts</span>() {
+    <span class="function">setLoading</span>(<span class="keyword">true</span>);
+    <span class="keyword">try</span> {
+      <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">'http://localhost:3000/api/products'</span>);
+      <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+      <span class="function">setProducts</span>(data);
+    } <span class="keyword">catch</span> (error) {
+      <span class="function">console</span>.<span class="function">error</span>(<span class="string">'Error fetching products:'</span>, error);
+    } <span class="keyword">finally</span> {
+      <span class="function">setLoading</span>(<span class="keyword">false</span>);
+    }
+  }
+
+  <span class="keyword">return</span> (
+    <span class="string">&lt;div&gt;</span>
+      <span class="string">&lt;button onClick={fetchProducts}&gt;</span>
+        {loading ? <span class="string">'Loading...'</span> : <span class="string">'Load Products'</span>}
+      <span class="string">&lt;/button&gt;</span>
+      
+      {loading && <span class="string">&lt;p&gt;Loading...&lt;/p&gt;</span>}
+      
+      <span class="string">&lt;ul&gt;</span>
+        {products.<span class="function">map</span>(product => (
+          <span class="string">&lt;li key={product.id}&gt;</span>
+            {product.name} - ${product.price}
+          <span class="string">&lt;/li&gt;</span>
+        ))}
+      <span class="string">&lt;/ul&gt;</span>
+    <span class="string">&lt;/div&gt;</span>
+  );
+}</code></pre>
+
+            <div class="success-box">
+                <strong>🎯 Summary:</strong>
+                <ul>
+                    <li>React handles the UI (what users see)</li>
+                    <li>Node.js handles the logic (data, security, business rules)</li>
+                    <li>They communicate via REST API using JSON</li>
+                    <li>MERN stack gives you JavaScript everywhere</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="index.html" class="nav-button">← Back to Contents</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="02-nodejs-fundamentals.html" class="nav-button">Next: Node.js Fundamentals →</a>
+        </div>
+    </div>
+</body>
+</html>

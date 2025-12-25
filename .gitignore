@@ -1,0 +1,24 @@
+# Draft Files
+*.draft.*
+/draft
+/other
+
+# markdown pre-generated files
+*.local.md
+
+# markdown customization files
+/.markdownlint.yaml
+/.crossnote
+
+# Keys
+*.key
+*.pem
+*.pub
+*.asc
+
+# temporary files/folders
+/IN400- Math & statistics
+/IN402- Machine Learning
+
+# node modules
+/node_modules

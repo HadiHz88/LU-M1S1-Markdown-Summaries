@@ -1,0 +1,80 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build project
+        run: npm run build
+
+      - name: Generate build log
+        run: |
+          mkdir -p logs
+          echo "Build completed at $(date)" > logs/build.log
+
+      - name: Upload build logs
+        uses: actions/upload-artifact@v6
+        with:
+          name: build-logs
+          path: logs/
+
+      - name: Upload demo site
+        uses: actions/upload-artifact@v6
+        with:
+          name: demo-site
+          path: demo/
+
+  cd:
+    name: CD
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Download demo artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: demo-site
+          path: demo
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: demo
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

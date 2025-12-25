@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>useContext Hook - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React useContext Hook</h1>
+            <p>Chapter 13 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>What is useContext?</h2>
+            <p>React Context is a way to manage state globally. It can be used together with the useState Hook to share state between deeply nested components more easily than with useState alone.</p>
+
+            <div class="info-box">
+                <strong>💡 The Problem:</strong> Prop drilling - passing props through many levels of components that don't need them, just to reach a deeply nested component.
+            </div>
+
+            <h2>The Prop Drilling Problem</h2>
+            <p>Without Context, you might have to pass props through many levels:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> [user, setUser] = <span class="function">useState</span>(<span class="string">"John"</span>);
+  
+  <span class="keyword">return</span> &lt;Component1 user={user} /&gt;;
+}
+
+<span class="keyword">function</span> <span class="function">Component1</span>({ user }) {
+  <span class="keyword">return</span> &lt;Component2 user={user} /&gt;;
+}
+
+<span class="keyword">function</span> <span class="function">Component2</span>({ user }) {
+  <span class="keyword">return</span> &lt;Component3 user={user} /&gt;;
+}
+
+<span class="keyword">function</span> <span class="function">Component3</span>({ user }) {
+  <span class="keyword">return</span> &lt;h1&gt;Hello {user}!&lt;/h1&gt;;
+}</code></pre>
+
+            <div class="warning-box">
+                <strong>⚠️ Problem:</strong> Component1 and Component2 don't use <code class="inline-code">user</code>, they just pass it along!
+            </div>
+
+            <h2>The Solution: Context</h2>
+            <p>Context allows you to share values between components without explicitly passing props:</p>
+
+            <h3>Step 1: Create Context</h3>
+            <pre><code><span class="keyword">import</span> { createContext } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">const</span> UserContext = <span class="function">createContext</span>();</code></pre>
+
+            <h3>Step 2: Provide Context</h3>
+            <pre><code><span class="keyword">import</span> { useState, createContext } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">const</span> UserContext = <span class="function">createContext</span>();
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> [user, setUser] = <span class="function">useState</span>(<span class="string">"John"</span>);
+
+  <span class="keyword">return</span> (
+    &lt;UserContext.Provider value={user}&gt;
+      &lt;Component1 /&gt;
+    &lt;/UserContext.Provider&gt;
+  );
+}</code></pre>
+
+            <h3>Step 3: Use Context</h3>
+            <pre><code><span class="keyword">import</span> { useContext } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">function</span> <span class="function">Component1</span>() {
+  <span class="keyword">return</span> &lt;Component2 /&gt;;
+}
+
+<span class="keyword">function</span> <span class="function">Component2</span>() {
+  <span class="keyword">return</span> &lt;Component3 /&gt;;
+}
+
+<span class="keyword">function</span> <span class="function">Component3</span>() {
+  <span class="keyword">const</span> user = <span class="function">useContext</span>(UserContext);
+  
+  <span class="keyword">return</span> &lt;h1&gt;Hello {user}!&lt;/h1&gt;;
+}</code></pre>
+
+            <div class="success-box">
+                <strong>✨ No More Prop Drilling:</strong> Component1 and Component2 don't need to know about <code class="inline-code">user</code>!
+            </div>
+
+            <h2>Complete Example</h2>
+            <pre><code><span class="keyword">import</span> { useState, createContext, useContext } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="comment">// 1. Create Context</span>
+<span class="keyword">const</span> UserContext = <span class="function">createContext</span>();
+
+<span class="comment">// 2. Provider Component</span>
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> [user, setUser] = <span class="function">useState</span>(<span class="string">"Jesse Hall"</span>);
+
+  <span class="keyword">return</span> (
+    &lt;UserContext.Provider value={user}&gt;
+      &lt;h1&gt;{`Hello ${user}!`}&lt;/h1&gt;
+      &lt;Component2 /&gt;
+    &lt;/UserContext.Provider&gt;
+  );
+}
+
+<span class="keyword">function</span> <span class="function">Component2</span>() {
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;Component 2&lt;/h1&gt;
+      &lt;Component3 /&gt;
+    &lt;/&gt;
+  );
+}
+
+<span class="keyword">function</span> <span class="function">Component3</span>() {
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;Component 3&lt;/h1&gt;
+      &lt;Component4 /&gt;
+    &lt;/&gt;
+  );
+}
+
+<span class="keyword">function</span> <span class="function">Component4</span>() {
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;Component 4&lt;/h1&gt;
+      &lt;Component5 /&gt;
+    &lt;/&gt;
+  );
+}
+
+<span class="comment">// 3. Use Context</span>
+<span class="keyword">function</span> <span class="function">Component5</span>() {
+  <span class="keyword">const</span> user = <span class="function">useContext</span>(UserContext);
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1&gt;Component 5&lt;/h1&gt;
+      &lt;h2&gt;{`Hello ${user} again!`}&lt;/h2&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h2>Context with Multiple Values</h2>
+            <p>You can pass an object with multiple values:</p>
+
+            <pre><code><span class="keyword">const</span> ThemeContext = <span class="function">createContext</span>();
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> [theme, setTheme] = <span class="function">useState</span>(<span class="string">"light"</span>);
+  <span class="keyword">const</span> [user, setUser] = <span class="function">useState</span>(<span class="string">"John"</span>);
+
+  <span class="keyword">const</span> value = {
+    theme,
+    setTheme,
+    user,
+    setUser
+  };
+
+  <span class="keyword">return</span> (
+    &lt;ThemeContext.Provider value={value}&gt;
+      &lt;Page /&gt;
+    &lt;/ThemeContext.Provider&gt;
+  );
+}
+
+<span class="keyword">function</span> <span class="function">Page</span>() {
+  <span class="keyword">const</span> { theme, setTheme, user } = <span class="function">useContext</span>(ThemeContext);
+
+  <span class="keyword">return</span> (
+    &lt;div className={theme}&gt;
+      &lt;h1&gt;Welcome, {user}!&lt;/h1&gt;
+      &lt;button onClick={() => <span class="function">setTheme</span>(theme === <span class="string">"light"</span> ? <span class="string">"dark"</span> : <span class="string">"light"</span>)}&gt;
+        Toggle Theme
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Custom Context Provider</h2>
+            <p>Create a reusable provider component:</p>
+
+            <pre><code><span class="keyword">import</span> { createContext, useState, useContext } <span class="keyword">from</span> <span class="string">"react"</span>;
+
+<span class="keyword">const</span> AuthContext = <span class="function">createContext</span>();
+
+<span class="comment">// Custom Provider</span>
+<span class="keyword">export function</span> <span class="function">AuthProvider</span>({ children }) {
+  <span class="keyword">const</span> [user, setUser] = <span class="function">useState</span>(<span class="keyword">null</span>);
+
+  <span class="keyword">const</span> <span class="function">login</span> = (username) => {
+    <span class="function">setUser</span>({ username });
+  };
+
+  <span class="keyword">const</span> <span class="function">logout</span> = () => {
+    <span class="function">setUser</span>(<span class="keyword">null</span>);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;AuthContext.Provider value={{ user, login, logout }}&gt;
+      {children}
+    &lt;/AuthContext.Provider&gt;
+  );
+}
+
+<span class="comment">// Custom Hook</span>
+<span class="keyword">export function</span> <span class="function">useAuth</span>() {
+  <span class="keyword">return</span> <span class="function">useContext</span>(AuthContext);
+}
+
+<span class="comment">// Usage</span>
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">return</span> (
+    &lt;AuthProvider&gt;
+      &lt;Dashboard /&gt;
+    &lt;/AuthProvider&gt;
+  );
+}
+
+<span class="keyword">function</span> <span class="function">Dashboard</span>() {
+  <span class="keyword">const</span> { user, login, logout } = <span class="function">useAuth</span>();
+
+  <span class="keyword">return</span> (
+    &lt;div&gt;
+      {user ? (
+        &lt;&gt;
+          &lt;h1&gt;Welcome, {user.username}!&lt;/h1&gt;
+          &lt;button onClick={logout}&gt;Logout&lt;/button&gt;
+        &lt;/&gt;
+      ) : (
+        &lt;button onClick={() => <span class="function">login</span>(<span class="string">"John"</span>)}&gt;Login&lt;/button&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+            <h2>Multiple Contexts</h2>
+            <p>You can use multiple contexts in the same app:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">return</span> (
+    &lt;ThemeProvider&gt;
+      &lt;AuthProvider&gt;
+        &lt;LanguageProvider&gt;
+          &lt;Dashboard /&gt;
+        &lt;/LanguageProvider&gt;
+      &lt;/AuthProvider&gt;
+    &lt;/ThemeProvider&gt;
+  );
+}</code></pre>
+
+            <h2>When to Use Context</h2>
+
+            <div class="success-box">
+                <strong>✅ Good Use Cases:</strong>
+                <ul>
+                    <li>Theme (light/dark mode)</li>
+                    <li>User authentication</li>
+                    <li>Language/localization</li>
+                    <li>Shopping cart</li>
+                    <li>Global settings</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ When NOT to Use:</strong>
+                <ul>
+                    <li>Frequently changing values (causes many re-renders)</li>
+                    <li>Simple prop drilling (1-2 levels deep)</li>
+                    <li>Local component state</li>
+                </ul>
+            </div>
+
+            <h2>Best Practices</h2>
+            <ul>
+                <li>Create separate contexts for different concerns</li>
+                <li>Use custom providers and hooks for cleaner code</li>
+                <li>Place providers as low as possible in the tree</li>
+                <li>Memoize context values to avoid unnecessary re-renders</li>
+                <li>Consider using a state management library for complex state</li>
+            </ul>
+
+            <h2>Context vs Props</h2>
+
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <tr style="background-color: #f2f2f2;">
+                    <th style="border: 1px solid #ddd; padding: 12px;">Feature</th>
+                    <th style="border: 1px solid #ddd; padding: 12px;">Props</th>
+                    <th style="border: 1px solid #ddd; padding: 12px;">Context</th>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>Passing Data</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Explicit, parent to child</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Implicit, through tree</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>Best For</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Component-specific data</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Global/shared data</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 12px;"><strong>Reusability</strong></td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">More reusable</td>
+                    <td style="border: 1px solid #ddd; padding: 12px;">Less reusable</td>
+                </tr>
+            </table>
+
+            <h2>What's Next?</h2>
+            <p>Now that you understand useContext, you're ready to learn about useRef for accessing DOM elements and persisting values!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="12-useeffect.html" class="nav-button">← Previous: useEffect</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="14-useref.html" class="nav-button">Next: useRef →</a>
+        </div>
+    </div>
+</body>
+</html>
+

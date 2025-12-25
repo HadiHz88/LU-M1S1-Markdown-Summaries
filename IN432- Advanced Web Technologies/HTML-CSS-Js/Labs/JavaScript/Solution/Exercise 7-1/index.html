@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Types Showcase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-card h2 {
+            color: #2575fc;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .demo-area {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            min-height: 150px;
+            border: 2px dashed #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .demo-area.active {
+            border-color: #2575fc;
+            background: #e3f2fd;
+        }
+
+        .event-log {
+            background: #1e1e1e;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .event-log-entry {
+            margin: 3px 0;
+            padding: 3px;
+        }
+
+        .event-log-entry.mouse {
+            color: #00ff00;
+        }
+
+        .event-log-entry.keyboard {
+            color: #00ffff;
+        }
+
+        .event-log-entry.form {
+            color: #ffff00;
+        }
+
+        .event-log-entry.window {
+            color: #ff00ff;
+        }
+
+        .interactive-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .interactive-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .interactive-box:active {
+            transform: scale(0.95);
+        }
+
+        .draggable-item {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            cursor: move;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .draggable-item:hover {
+            background: #ff5252;
+        }
+
+        .draggable-item.dragging {
+            opacity: 0.5;
+            transform: scale(1.1);
+        }
+
+        .drop-zone {
+            background: #f8f9fa;
+            border: 3px dashed #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 150px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #2575fc;
+            background: #e3f2fd;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #2575fc;
+            outline: none;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-clear {
+            background: #dc3545;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-clear:hover {
+            background: #c82333;
+        }
+
+        .coordinate-display {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+        }
+
+        .key-display {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin: 5px;
+            font-weight: bold;
+            min-width: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Event Types Showcase</h1>
+            <p>Explore and Master JavaScript Events</p>
+        </div>
+
+        <div class="event-grid">
+            <!-- Mouse Events -->
+            <div class="event-card">
+                <h2>🖱️ Mouse Events</h2>
+                <div class="demo-area" id="mouseDemo">
+                    <div class="interactive-box" id="mouseBox">
+                        Interact with me!
+                        <br><small>Click, Double-click, Right-click, Hover</small>
+                    </div>
+                    <div class="coordinate-display" id="mouseCoords">
+                        X: 0, Y: 0
+                    </div>
+                </div>
+                <div class="event-log" id="mouseLog">
+                    <div class="event-log-entry mouse">Mouse events will appear here...</div>
+                </div>
+                <button class="btn btn-clear" onclick="clearLog('mouseLog')">Clear Log</button>
+            </div>
+
+            <!-- Keyboard Events -->
+            <div class="event-card">
+                <h2>⌨️ Keyboard Events</h2>
+                <div class="demo-area" id="keyboardDemo">
+                    <div class="form-group">
+                        <label for="keyInput">Type here to test keyboard events:</label>
+                        <input type="text" id="keyInput" placeholder="Start typing...">
+                    </div>
+                    <div>
+                        <strong>Last Key:</strong>
+                        <span class="key-display" id="lastKey">-</span>
+                    </div>
+                    <div>
+                        <strong>Key Code:</strong>
+                        <span class="key-display" id="keyCode">-</span>
+                    </div>
+                </div>
+                <div class="event-log" id="keyboardLog">
+                    <div class="event-log-entry keyboard">Keyboard events will appear here...</div>
+                </div>
+                <button class="btn btn-clear" onclick="clearLog('keyboardLog')">Clear Log</button>
+            </div>
+
+            <!-- Form Events -->
+            <div class="event-card">
+                <h2>📝 Form Events</h2>
+                <div class="demo-area" id="formDemo">
+                    <form id="demoForm">
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" placeholder="Enter username">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" placeholder="Enter email">
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Country:</label>
+                            <select id="country">
+                                <option value="">Select country</option>
+                                <option value="usa">USA</option>
+                                <option value="uk">UK</option>
+                                <option value="canada">Canada</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn" style="background: #28a745; color: white; width: 100%;">Submit
+                            Form</button>
+                    </form>
+                </div>
+                <div class="event-log" id="formLog">
+                    <div class="event-log-entry form">Form events will appear here...</div>
+                </div>
+                <button class="btn btn-clear" onclick="clearLog('formLog')">Clear Log</button>
+            </div>
+
+            <!-- Drag and Drop Events -->
+            <div class="event-card">
+                <h2>🎯 Drag & Drop Events</h2>
+                <div class="demo-area" id="dragDemo">
+                    <div>
+                        <strong>Draggable Items:</strong>
+                        <div class="draggable-item" draggable="true">Item 1</div>
+                        <div class="draggable-item" draggable="true">Item 2</div>
+                        <div class="draggable-item" draggable="true">Item 3</div>
+                    </div>
+                    <div class="drop-zone" id="dropZone">
+                        Drop items here
+                    </div>
+                </div>
+                <div class="event-log" id="dragLog">
+                    <div class="event-log-entry">Drag events will appear here...</div>
+                </div>
+                <button class="btn btn-clear" onclick="clearLog('dragLog')">Clear Log</button>
+            </div>
+
+            <!-- Focus Events -->
+            <div class="event-card">
+                <h2>🎯 Focus Events</h2>
+                <div class="demo-area" id="focusDemo">
+                    <div class="form-group">
+                        <label for="field1">Field 1:</label>
+                        <input type="text" id="field1" class="focus-field" placeholder="Click to focus">
+                    </div>
+                    <div class="form-group">
+                        <label for="field2">Field 2:</label>
+                        <input type="text" id="field2" class="focus-field" placeholder="Click to focus">
+                    </div>
+                    <div class="form-group">
+                        <label for="field3">Field 3:</label>
+                        <input type="text" id="field3" class="focus-field" placeholder="Click to focus">
+                    </div>
+                </div>
+                <div class="event-log" id="focusLog">
+                    <div class="event-log-entry">Focus events will appear here...</div>
+                </div>
+                <button class="btn btn-clear" onclick="clearLog('focusLog')">Clear Log</button>
+            </div>
+
+            <!-- Window Events -->
+            <div class="event-card">
+                <h2>🪟 Window Events</h2>
+                <div class="demo-area" id="windowDemo">
+                    <p><strong>Window Width:</strong> <span id="windowWidth">-</span>px</p>
+                    <p><strong>Window Height:</strong> <span id="windowHeight">-</span>px</p>
+                    <p><strong>Scroll Position:</strong> <span id="scrollPos">-</span>px</p>
+                    <p><small>Try resizing window or scrolling</small></p>
+                </div>
+                <div class="event-log" id="windowLog">
+                    <div class="event-log-entry window">Window events will appear here...</div>
+                </div>
+                <button class="btn btn-clear" onclick="clearLog('windowLog')">Clear Log</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Utility Functions
+        function logEvent(logId, message, className = '') {
+            const log = document.getElementById(logId);
+            const entry = document.createElement('div');
+            entry.className = 'event-log-entry ' + className;
+            entry.textContent = formatTime() + ' - ' + message;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+            // Limit number of entries (max 50)
+            while (log.children.length > 50) {
+                log.removeChild(log.firstChild);
+            }
+        }
+
+        function clearLog(logId) {
+            const log = document.getElementById(logId);
+            log.innerHTML = '';
+        }
+
+        function formatTime() {
+            const now = new Date();
+            return now.toLocaleTimeString();
+        }
+
+        // Mouse Events Implementation
+        function setupMouseEvents() {
+            const box = document.getElementById('mouseBox');
+            const coords = document.getElementById('mouseCoords');
+
+            box.addEventListener('click', (e) => {
+                logEvent('mouseLog', 'Click at (' + e.clientX + ', ' + e.clientY + ')', 'mouse');
+            });
+
+            box.addEventListener('dblclick', (e) => {
+                logEvent('mouseLog', 'Double-click', 'mouse');
+            });
+
+            box.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                logEvent('mouseLog', 'Right-click (context menu)', 'mouse');
+            });
+
+            box.addEventListener('mouseenter', () => {
+                logEvent('mouseLog', 'Mouse entered', 'mouse');
+            });
+
+            box.addEventListener('mouseleave', () => {
+                logEvent('mouseLog', 'Mouse left', 'mouse');
+            });
+
+            box.addEventListener('mousedown', (e) => {
+                logEvent('mouseLog', 'Mouse down (button ' + e.button + ')', 'mouse');
+            });
+
+            box.addEventListener('mouseup', (e) => {
+                logEvent('mouseLog', 'Mouse up (button ' + e.button + ')', 'mouse');
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                coords.textContent = 'X: ' + e.clientX + ', Y: ' + e.clientY;
+            });
+        }
+
+        // Keyboard Events Implementation
+        function setupKeyboardEvents() {
+            const input = document.getElementById('keyInput');
+            const lastKey = document.getElementById('lastKey');
+            const keyCode = document.getElementById('keyCode');
+
+            input.addEventListener('keydown', (e) => {
+                lastKey.textContent = e.key;
+                keyCode.textContent = e.keyCode;
+                let msg = 'Key down: ' + e.key + ' (code: ' + e.keyCode + ')';
+                if (e.ctrlKey) msg += ' + Ctrl';
+                if (e.altKey) msg += ' + Alt';
+                if (e.shiftKey) msg += ' + Shift';
+                logEvent('keyboardLog', msg, 'keyboard');
+            });
+
+            input.addEventListener('keyup', (e) => {
+                logEvent('keyboardLog', 'Key up: ' + e.key, 'keyboard');
+            });
+
+            input.addEventListener('keypress', (e) => {
+                logEvent('keyboardLog', 'Key press: ' + e.key, 'keyboard');
+            });
+        }
+
+        // Form Events Implementation
+        function setupFormEvents() {
+            const form = document.getElementById('demoForm');
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                logEvent('formLog', 'Form submitted', 'form');
+                // Basic validation
+                const username = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                if (!username) {
+                    logEvent('formLog', 'Username is required', 'form');
+                }
+                if (!email) {
+                    logEvent('formLog', 'Email is required', 'form');
+                }
+            });
+
+            const inputs = form.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    logEvent('formLog', 'Input changed: ' + e.target.id + ' = ' + e.target.value, 'form');
+                });
+                input.addEventListener('change', (e) => {
+                    logEvent('formLog', 'Change: ' + e.target.id + ' = ' + e.target.value, 'form');
+                });
+                input.addEventListener('focus', (e) => {
+                    logEvent('formLog', 'Focus on ' + e.target.id, 'form');
+                });
+                input.addEventListener('blur', (e) => {
+                    logEvent('formLog', 'Blur from ' + e.target.id, 'form');
+                });
+            });
+        }
+
+        // Drag and Drop Events Implementation
+        function setupDragDropEvents() {
+            const draggables = document.querySelectorAll('.draggable-item');
+            const dropZone = document.getElementById('dropZone');
+
+            draggables.forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', e.target.textContent);
+                    e.target.classList.add('dragging');
+                    logEvent('dragLog', 'Drag started: ' + e.target.textContent);
+                });
+
+                item.addEventListener('dragend', (e) => {
+                    e.target.classList.remove('dragging');
+                    logEvent('dragLog', 'Drag ended: ' + e.target.textContent);
+                });
+            });
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('drag-over');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                const data = e.dataTransfer.getData('text/plain');
+                logEvent('dragLog', 'Dropped: ' + data);
+                // Add to drop zone
+                const droppedItem = document.createElement('div');
+                droppedItem.textContent = data;
+                droppedItem.style.background = '#4CAF50';
+                droppedItem.style.color = 'white';
+                droppedItem.style.padding = '10px';
+                droppedItem.style.borderRadius = '5px';
+                droppedItem.style.margin = '5px';
+                dropZone.appendChild(droppedItem);
+            });
+        }
+
+        // Focus Events Implementation
+        function setupFocusEvents() {
+            const fields = document.querySelectorAll('.focus-field');
+
+            fields.forEach(field => {
+                field.addEventListener('focus', (e) => {
+                    e.target.style.borderColor = '#2575fc';
+                    logEvent('focusLog', 'Focus on ' + e.target.id);
+                });
+
+                field.addEventListener('blur', (e) => {
+                    e.target.style.borderColor = '#ddd';
+                    logEvent('focusLog', 'Blur from ' + e.target.id);
+                });
+
+                field.addEventListener('focusin', (e) => {
+                    logEvent('focusLog', 'Focus in on ' + e.target.id);
+                });
+
+                field.addEventListener('focusout', (e) => {
+                    logEvent('focusLog', 'Focus out from ' + e.target.id);
+                });
+            });
+        }
+
+        // Window Events Implementation
+        function setupWindowEvents() {
+            const widthSpan = document.getElementById('windowWidth');
+            const heightSpan = document.getElementById('windowHeight');
+            const scrollSpan = document.getElementById('scrollPos');
+
+            function updateDimensions() {
+                widthSpan.textContent = window.innerWidth;
+                heightSpan.textContent = window.innerHeight;
+            }
+
+            function updateScroll() {
+                scrollSpan.textContent = window.scrollY;
+            }
+
+            window.addEventListener('resize', () => {
+                updateDimensions();
+                logEvent('windowLog', 'Window resized to ' + window.innerWidth + 'x' + window.innerHeight, 'window');
+            });
+
+            window.addEventListener('scroll', () => {
+                updateScroll();
+                // Throttle logging
+                clearTimeout(window.scrollTimeout);
+                window.scrollTimeout = setTimeout(() => {
+                    logEvent('windowLog', 'Scroll position: ' + window.scrollY, 'window');
+                }, 100);
+            });
+
+            window.addEventListener('load', () => {
+                updateDimensions();
+                updateScroll();
+                logEvent('windowLog', 'Window loaded', 'window');
+            });
+        }
+
+        // Initialize all event listeners when DOM is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            setupMouseEvents();
+            setupKeyboardEvents();
+            setupFormEvents();
+            setupDragDropEvents();
+            setupFocusEvents();
+            setupWindowEvents();
+        });
+    </script>
+</body>
+
+</html>

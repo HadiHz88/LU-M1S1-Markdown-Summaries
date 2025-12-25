@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Content Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            height: fit-content;
+        }
+
+        .control-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+        }
+
+        .control-section h3 {
+            color: #f5576c;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #f5576c;
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .canvas {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            min-height: 600px;
+        }
+
+        .canvas h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #f5576c;
+        }
+
+        #dynamicContent {
+            min-height: 400px;
+        }
+
+        .generated-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .generated-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .generated-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .generated-card p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .generated-card .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .generated-card button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .generated-card button:hover {
+            transform: scale(1.1);
+        }
+
+        .generated-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .generated-list li {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .generated-list li:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+
+        .generated-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .generated-table th,
+        .generated-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .generated-table th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        .generated-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .generated-table tr:hover {
+            background: #e3f2fd;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Dynamic Content Generator</h1>
+            <p>Create, Modify, and Remove DOM Elements</p>
+        </div>
+
+        <div class="workspace">
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <!-- Create Card -->
+                <div class="control-section">
+                    <h3>➕ Create Card</h3>
+                    <div class="form-group">
+                        <label for="cardTitle">Card Title:</label>
+                        <input type="text" id="cardTitle" placeholder="Enter card title">
+                    </div>
+                    <div class="form-group">
+                        <label for="cardContent">Card Content:</label>
+                        <textarea id="cardContent" placeholder="Enter card content"></textarea>
+                    </div>
+                    <button class="btn btn-success" onclick="createCard()">Create Card</button>
+                </div>
+
+                <!-- Create List -->
+                <div class="control-section">
+                    <h3>📝 Create List Item</h3>
+                    <div class="form-group">
+                        <label for="listItem">List Item Text:</label>
+                        <input type="text" id="listItem" placeholder="Enter list item">
+                    </div>
+                    <button class="btn btn-primary" onclick="addListItem()">Add to List</button>
+                </div>
+
+                <!-- Create Table Row -->
+                <div class="control-section">
+                    <h3>📊 Add Table Row</h3>
+                    <div class="form-group">
+                        <label for="rowName">Name:</label>
+                        <input type="text" id="rowName" placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                        <label for="rowEmail">Email:</label>
+                        <input type="email" id="rowEmail" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="rowRole">Role:</label>
+                        <select id="rowRole">
+                            <option value="Admin">Admin</option>
+                            <option value="User">User</option>
+                            <option value="Guest">Guest</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-info" onclick="addTableRow()">Add Row</button>
+                </div>
+
+                <!-- Bulk Actions -->
+                <div class="control-section">
+                    <h3>⚡ Bulk Actions</h3>
+                    <button class="btn btn-warning" onclick="modifyAllCards()">Modify All Cards</button>
+                    <button class="btn btn-danger" onclick="clearAll()">Clear All Content</button>
+                </div>
+            </div>
+
+            <!-- Canvas Area -->
+            <div class="canvas">
+                <h2>📱 Generated Content</h2>
+
+                <div id="dynamicContent">
+                    <h3 style="color: #666; margin: 20px 0;">Cards Section</h3>
+                    <div id="cardsContainer">
+                        <!-- Cards will be added here -->
+                    </div>
+
+                    <h3 style="color: #666; margin: 20px 0;">List Section</h3>
+                    <ul id="listContainer" class="generated-list">
+                        <!-- List items will be added here -->
+                    </ul>
+
+                    <h3 style="color: #666; margin: 20px 0;">Table Section</h3>
+                    <table id="tableContainer" class="generated-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Table rows will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="cardCount">0</div>
+                        <div class="stat-label">Cards</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="listCount">0</div>
+                        <div class="stat-label">List Items</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="tableCount">0</div>
+                        <div class="stat-label">Table Rows</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        let cardCounter = 0;
+        let listCounter = 0;
+        let tableCounter = 0;
+
+        // Create a new card element and append to container
+        function createCard() {
+            // Get input values
+            const titleInput = document.getElementById('cardTitle');
+            const contentInput = document.getElementById('cardContent');
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!title || !content) {
+                showNotification('Please fill in both title and content!', 'error');
+                return;
+            }
+
+            // Create card element using createElement
+            const card = document.createElement('div');
+            card.className = 'generated-card';
+            cardCounter++;
+            
+            // Set attributes for the card
+            setElementAttributes(card, {
+                'data-card-id': cardCounter,
+                'data-created': new Date().toISOString(),
+                'id': `card-${cardCounter}`
+            });
+
+            // Create child elements
+            const cardTitle = document.createElement('h3');
+            cardTitle.textContent = title;
+            
+            const cardContent = document.createElement('p');
+            cardContent.textContent = content;
+            
+            const cardActions = document.createElement('div');
+            cardActions.className = 'card-actions';
+            
+            // Create edit button
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Edit';
+            editBtn.style.background = '#ffc107';
+            editBtn.style.color = '#333';
+            
+            // Create delete button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.style.background = '#dc3545';
+            deleteBtn.style.color = 'white';
+            
+            // Create clone button
+            const cloneBtn = document.createElement('button');
+            cloneBtn.textContent = 'Clone';
+            cloneBtn.style.background = '#17a2b8';
+            cloneBtn.style.color = 'white';
+
+            // Add event listeners for edit/delete/clone buttons
+            editBtn.addEventListener('click', function() {
+                editCard(card);
+            });
+            
+            deleteBtn.addEventListener('click', function() {
+                deleteCard(card);
+            });
+            
+            cloneBtn.addEventListener('click', function() {
+                cloneCard(card);
+            });
+
+            // Append buttons to actions container
+            cardActions.appendChild(editBtn);
+            cardActions.appendChild(deleteBtn);
+            cardActions.appendChild(cloneBtn);
+
+            // Append all elements to card
+            card.appendChild(cardTitle);
+            card.appendChild(cardContent);
+            card.appendChild(cardActions);
+
+            // Append card to cardsContainer
+            const cardsContainer = document.getElementById('cardsContainer');
+            cardsContainer.appendChild(card);
+
+            // Update statistics
+            updateStats();
+
+            // Clear input fields
+            clearInputs(['cardTitle', 'cardContent']);
+            
+            showNotification('Card created successfully!', 'success');
+        }
+
+        function addListItem() {
+            // Get input value
+            const listItemInput = document.getElementById('listItem');
+            const itemText = listItemInput.value.trim();
+
+            if (!itemText) {
+                showNotification('Please enter list item text!', 'error');
+                return;
+            }
+
+            // Create li element
+            const li = document.createElement('li');
+            listCounter++;
+            
+            // Set attributes
+            setElementAttributes(li, {
+                'data-item-id': listCounter,
+                'id': `list-item-${listCounter}`
+            });
+
+            // Create text span
+            const textSpan = document.createElement('span');
+            textSpan.textContent = itemText;
+
+            // Create delete button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = '❌ Delete';
+            deleteBtn.style.background = '#dc3545';
+            deleteBtn.style.color = 'white';
+            deleteBtn.style.padding = '5px 10px';
+            deleteBtn.style.border = 'none';
+            deleteBtn.style.borderRadius = '5px';
+            deleteBtn.style.cursor = 'pointer';
+
+            // Add event listener to delete button
+            deleteBtn.addEventListener('click', function() {
+                deleteListItem(li);
+            });
+
+            // Append elements to li
+            li.appendChild(textSpan);
+            li.appendChild(deleteBtn);
+
+            // Append li to listContainer
+            const listContainer = document.getElementById('listContainer');
+            listContainer.appendChild(li);
+
+            // Update statistics
+            updateStats();
+
+            // Clear input field
+            clearInputs(['listItem']);
+            
+            showNotification('List item added successfully!', 'success');
+        }
+
+        function addTableRow() {
+            // Get input values
+            const nameInput = document.getElementById('rowName');
+            const emailInput = document.getElementById('rowEmail');
+            const roleInput = document.getElementById('rowRole');
+            
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+            const role = roleInput.value;
+
+            if (!name || !email) {
+                showNotification('Please fill in name and email!', 'error');
+                return;
+            }
+
+            // Create tr element
+            const tr = document.createElement('tr');
+            tableCounter++;
+            
+            // Set attributes
+            setElementAttributes(tr, {
+                'data-row-id': tableCounter,
+                'id': `table-row-${tableCounter}`
+            });
+
+            // Create td elements
+            const tdId = document.createElement('td');
+            tdId.textContent = tableCounter;
+
+            const tdName = document.createElement('td');
+            tdName.textContent = name;
+
+            const tdEmail = document.createElement('td');
+            tdEmail.textContent = email;
+
+            const tdRole = document.createElement('td');
+            tdRole.textContent = role;
+
+            const tdActions = document.createElement('td');
+
+            // Create action buttons (edit/delete)
+            const editBtn = document.createElement('button');
+            editBtn.textContent = '✏️ Edit';
+            editBtn.style.background = '#ffc107';
+            editBtn.style.color = '#333';
+            editBtn.style.padding = '5px 10px';
+            editBtn.style.border = 'none';
+            editBtn.style.borderRadius = '5px';
+            editBtn.style.cursor = 'pointer';
+            editBtn.style.marginRight = '5px';
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = '🗑️ Delete';
+            deleteBtn.style.background = '#dc3545';
+            deleteBtn.style.color = 'white';
+            deleteBtn.style.padding = '5px 10px';
+            deleteBtn.style.border = 'none';
+            deleteBtn.style.borderRadius = '5px';
+            deleteBtn.style.cursor = 'pointer';
+
+            // Add event listeners
+            editBtn.addEventListener('click', function() {
+                editTableRow(tr);
+            });
+
+            deleteBtn.addEventListener('click', function() {
+                deleteTableRow(tr);
+            });
+
+            // Append buttons to actions cell
+            tdActions.appendChild(editBtn);
+            tdActions.appendChild(deleteBtn);
+
+            // Append all td elements to tr
+            tr.appendChild(tdId);
+            tr.appendChild(tdName);
+            tr.appendChild(tdEmail);
+            tr.appendChild(tdRole);
+            tr.appendChild(tdActions);
+
+            // Append tr to tableBody
+            const tableBody = document.getElementById('tableBody');
+            tableBody.appendChild(tr);
+
+            // Update statistics
+            updateStats();
+
+            // Clear input fields
+            clearInputs(['rowName', 'rowEmail']);
+            
+            showNotification('Table row added successfully!', 'success');
+        }
+
+        // Edit card using contenteditable
+        function editCard(cardElement) {
+            // Get current card content elements
+            const cardTitle = cardElement.querySelector('h3');
+            const cardContent = cardElement.querySelector('p');
+            const cardActions = cardElement.querySelector('.card-actions');
+
+            // Check if already in edit mode
+            if (cardTitle.hasAttribute('contenteditable')) {
+                return;
+            }
+
+            // Store original content
+            const originalTitle = cardTitle.textContent;
+            const originalContent = cardContent.textContent;
+
+            // Make content editable
+            cardTitle.setAttribute('contenteditable', 'true');
+            cardContent.setAttribute('contenteditable', 'true');
+            cardTitle.style.border = '2px dashed yellow';
+            cardContent.style.border = '2px dashed yellow';
+            cardTitle.focus();
+
+            // Hide existing buttons temporarily
+            cardActions.style.display = 'none';
+
+            // Create save/cancel buttons container
+            const editActions = document.createElement('div');
+            editActions.className = 'card-actions';
+            editActions.style.marginTop = '10px';
+
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = '💾 Save';
+            saveBtn.style.background = '#28a745';
+            saveBtn.style.color = 'white';
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = '❌ Cancel';
+            cancelBtn.style.background = '#6c757d';
+            cancelBtn.style.color = 'white';
+
+            // Save button event listener
+            saveBtn.addEventListener('click', function() {
+                // Update card content
+                cardTitle.removeAttribute('contenteditable');
+                cardContent.removeAttribute('contenteditable');
+                cardTitle.style.border = 'none';
+                cardContent.style.border = 'none';
+                
+                // Remove edit buttons and show original actions
+                cardElement.removeChild(editActions);
+                cardActions.style.display = 'flex';
+                
+                showNotification('Card updated successfully!', 'success');
+            });
+
+            // Cancel button event listener
+            cancelBtn.addEventListener('click', function() {
+                // Restore original content
+                cardTitle.textContent = originalTitle;
+                cardContent.textContent = originalContent;
+                cardTitle.removeAttribute('contenteditable');
+                cardContent.removeAttribute('contenteditable');
+                cardTitle.style.border = 'none';
+                cardContent.style.border = 'none';
+                
+                // Remove edit buttons and show original actions
+                cardElement.removeChild(editActions);
+                cardActions.style.display = 'flex';
+            });
+
+            // Append save/cancel buttons
+            editActions.appendChild(saveBtn);
+            editActions.appendChild(cancelBtn);
+            cardElement.appendChild(editActions);
+        }
+
+        function deleteCard(cardElement) {
+            // Confirm deletion
+            if (confirm('Are you sure you want to delete this card?')) {
+                // Remove element from DOM using remove()
+                cardElement.remove();
+                
+                // Update statistics
+                updateStats();
+                
+                showNotification('Card deleted successfully!', 'success');
+            }
+        }
+
+        function deleteListItem(listItem) {
+            // Remove list item from DOM using removeChild
+            const listContainer = document.getElementById('listContainer');
+            listContainer.removeChild(listItem);
+            
+            // Update statistics
+            updateStats();
+            
+            showNotification('List item deleted!', 'success');
+        }
+
+        function deleteTableRow(row) {
+            // Remove table row from DOM using remove()
+            row.remove();
+            
+            // Update statistics
+            updateStats();
+            
+            showNotification('Table row deleted!', 'success');
+        }
+
+        // Edit table row with input replacement
+        function editTableRow(row) {
+            const cells = row.querySelectorAll('td');
+            const nameCell = cells[1];
+            const emailCell = cells[2];
+            const roleCell = cells[3];
+            const actionsCell = cells[4];
+
+            // Check if already in edit mode
+            if (nameCell.querySelector('input')) {
+                return;
+            }
+
+            // Store original values
+            const originalName = nameCell.textContent;
+            const originalEmail = emailCell.textContent;
+            const originalRole = roleCell.textContent;
+
+            // Create input elements to replace text
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.value = originalName;
+            nameInput.style.width = '100%';
+            nameInput.style.padding = '5px';
+
+            const emailInput = document.createElement('input');
+            emailInput.type = 'email';
+            emailInput.value = originalEmail;
+            emailInput.style.width = '100%';
+            emailInput.style.padding = '5px';
+
+            const roleSelect = document.createElement('select');
+            roleSelect.style.width = '100%';
+            roleSelect.style.padding = '5px';
+            
+            const roles = ['Admin', 'User', 'Guest'];
+            roles.forEach(r => {
+                const option = document.createElement('option');
+                option.value = r;
+                option.textContent = r;
+                if (r === originalRole) {
+                    option.selected = true;
+                }
+                roleSelect.appendChild(option);
+            });
+
+            // Replace cell content with inputs
+            nameCell.textContent = '';
+            emailCell.textContent = '';
+            roleCell.textContent = '';
+            nameCell.appendChild(nameInput);
+            emailCell.appendChild(emailInput);
+            roleCell.appendChild(roleSelect);
+
+            // Hide existing action buttons
+            const existingButtons = actionsCell.querySelectorAll('button');
+            existingButtons.forEach(btn => btn.style.display = 'none');
+
+            // Create save/cancel buttons
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = '💾';
+            saveBtn.style.background = '#28a745';
+            saveBtn.style.color = 'white';
+            saveBtn.style.padding = '5px 10px';
+            saveBtn.style.border = 'none';
+            saveBtn.style.borderRadius = '5px';
+            saveBtn.style.cursor = 'pointer';
+            saveBtn.style.marginRight = '5px';
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = '❌';
+            cancelBtn.style.background = '#6c757d';
+            cancelBtn.style.color = 'white';
+            cancelBtn.style.padding = '5px 10px';
+            cancelBtn.style.border = 'none';
+            cancelBtn.style.borderRadius = '5px';
+            cancelBtn.style.cursor = 'pointer';
+
+            // Save button handler
+            saveBtn.addEventListener('click', function() {
+                nameCell.textContent = nameInput.value;
+                emailCell.textContent = emailInput.value;
+                roleCell.textContent = roleSelect.value;
+                
+                actionsCell.removeChild(saveBtn);
+                actionsCell.removeChild(cancelBtn);
+                existingButtons.forEach(btn => btn.style.display = 'inline-block');
+                
+                showNotification('Row updated successfully!', 'success');
+            });
+
+            // Cancel button handler
+            cancelBtn.addEventListener('click', function() {
+                nameCell.textContent = originalName;
+                emailCell.textContent = originalEmail;
+                roleCell.textContent = originalRole;
+                
+                actionsCell.removeChild(saveBtn);
+                actionsCell.removeChild(cancelBtn);
+                existingButtons.forEach(btn => btn.style.display = 'inline-block');
+            });
+
+            actionsCell.appendChild(saveBtn);
+            actionsCell.appendChild(cancelBtn);
+        }
+
+        // Bulk operations - modify all cards
+        function modifyAllCards() {
+            // Select all cards
+            const cards = document.querySelectorAll('.generated-card');
+            
+            if (cards.length === 0) {
+                showNotification('No cards to modify!', 'error');
+                return;
+            }
+
+            // Modify their styles and add animation effect
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    // Change background gradient
+                    const gradients = [
+                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                        'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                        'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                        'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
+                    ];
+                    
+                    const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
+                    card.style.background = randomGradient;
+                    
+                    // Add animation effect
+                    card.style.transform = 'scale(1.05) rotate(2deg)';
+                    card.style.transition = 'all 0.3s ease';
+                    
+                    setTimeout(() => {
+                        card.style.transform = 'scale(1) rotate(0deg)';
+                    }, 300);
+                }, index * 100);
+            });
+            
+            showNotification(`Modified ${cards.length} cards!`, 'success');
+        }
+
+        function clearAll() {
+            // Confirm action
+            if (!confirm('Are you sure you want to clear all content? This action cannot be undone!')) {
+                return;
+            }
+
+            // Remove all cards
+            const cardsContainer = document.getElementById('cardsContainer');
+            while (cardsContainer.firstChild) {
+                cardsContainer.removeChild(cardsContainer.firstChild);
+            }
+
+            // Remove all list items
+            const listContainer = document.getElementById('listContainer');
+            while (listContainer.firstChild) {
+                listContainer.removeChild(listContainer.firstChild);
+            }
+
+            // Remove all table rows
+            const tableBody = document.getElementById('tableBody');
+            while (tableBody.firstChild) {
+                tableBody.removeChild(tableBody.firstChild);
+            }
+
+            // Reset counters
+            cardCounter = 0;
+            listCounter = 0;
+            tableCounter = 0;
+
+            // Update statistics
+            updateStats();
+            
+            showNotification('All content cleared!', 'success');
+        }
+
+        // Update statistics display
+        function updateStats() {
+            // Count cards in cardsContainer
+            const cardsContainer = document.getElementById('cardsContainer');
+            const cardCount = cardsContainer.children.length;
+
+            // Count list items in listContainer
+            const listContainer = document.getElementById('listContainer');
+            const listCount = listContainer.children.length;
+
+            // Count rows in tableBody
+            const tableBody = document.getElementById('tableBody');
+            const tableCount = tableBody.children.length;
+
+            // Update stat displays
+            document.getElementById('cardCount').textContent = cardCount;
+            document.getElementById('listCount').textContent = listCount;
+            document.getElementById('tableCount').textContent = tableCount;
+        }
+
+        // Clone a card using cloneNode()
+        function cloneCard(cardElement) {
+            // Use cloneNode(true) to duplicate card with all children
+            const clonedCard = cardElement.cloneNode(true);
+            
+            // Modify cloned card's content
+            cardCounter++;
+            const clonedTitle = clonedCard.querySelector('h3');
+            clonedTitle.textContent = clonedTitle.textContent + ' (Copy)';
+            
+            // Update attributes for the cloned card
+            setElementAttributes(clonedCard, {
+                'data-card-id': cardCounter,
+                'data-created': new Date().toISOString(),
+                'data-cloned': 'true',
+                'id': `card-${cardCounter}`
+            });
+
+            // Re-attach event listeners since they don't clone
+            const buttons = clonedCard.querySelectorAll('button');
+            const editBtn = buttons[0];
+            const deleteBtn = buttons[1];
+            const cloneBtn = buttons[2];
+
+            // Clear old event listeners by replacing buttons
+            const newEditBtn = editBtn.cloneNode(true);
+            const newDeleteBtn = deleteBtn.cloneNode(true);
+            const newCloneBtn = cloneBtn.cloneNode(true);
+
+            editBtn.parentNode.replaceChild(newEditBtn, editBtn);
+            deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
+            cloneBtn.parentNode.replaceChild(newCloneBtn, cloneBtn);
+
+            // Add new event listeners
+            newEditBtn.addEventListener('click', function() {
+                editCard(clonedCard);
+            });
+
+            newDeleteBtn.addEventListener('click', function() {
+                deleteCard(clonedCard);
+            });
+
+            newCloneBtn.addEventListener('click', function() {
+                cloneCard(clonedCard);
+            });
+
+            // Append cloned card to container using insertBefore (insert after original)
+            const cardsContainer = document.getElementById('cardsContainer');
+            const nextCard = cardElement.nextSibling;
+            if (nextCard) {
+                cardsContainer.insertBefore(clonedCard, nextCard);
+            } else {
+                cardsContainer.appendChild(clonedCard);
+            }
+            
+            // Add animation effect
+            clonedCard.style.opacity = '0';
+            clonedCard.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                clonedCard.style.transition = 'all 0.3s ease';
+                clonedCard.style.opacity = '1';
+                clonedCard.style.transform = 'scale(1)';
+            }, 10);
+
+            // Update statistics
+            updateStats();
+            
+            showNotification('Card cloned successfully!', 'success');
+        }
+
+        // Set multiple attributes on an element using setAttribute
+        function setElementAttributes(element, attributes) {
+            // Use setAttribute for each attribute
+            for (const [key, value] of Object.entries(attributes)) {
+                if (key.startsWith('data-')) {
+                    // Set data attributes
+                    element.setAttribute(key, value);
+                } else if (key === 'class') {
+                    // Set class
+                    element.className = value;
+                } else if (key === 'id') {
+                    // Set id
+                    element.id = value;
+                } else {
+                    // Set any other attribute
+                    element.setAttribute(key, value);
+                }
+            }
+        }
+
+        // Utility functions
+        function clearInputs(inputIds) {
+            // Clear specified inputs
+            inputIds.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.value = '';
+                }
+            });
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.padding = '15px 25px';
+            notification.style.borderRadius = '8px';
+            notification.style.color = 'white';
+            notification.style.fontWeight = 'bold';
+            notification.style.zIndex = '10000';
+            notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+            notification.style.transition = 'all 0.3s ease';
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateY(-20px)';
+
+            // Set background color based on type
+            if (type === 'success') {
+                notification.style.background = '#28a745';
+            } else if (type === 'error') {
+                notification.style.background = '#dc3545';
+            } else {
+                notification.style.background = '#17a2b8';
+            }
+
+            // Append to body
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateY(0)';
+            }, 10);
+
+            // Auto-remove after delay
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(-20px)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Forms - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React Forms</h1>
+            <p>Chapter 9 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>React Forms</h2>
+            <p>Just like in HTML, React uses forms to allow users to interact with the web page. However, in React, form data is usually handled by the components themselves.</p>
+
+            <div class="info-box">
+                <strong>💡 Controlled Components:</strong> In React, form inputs whose values are controlled by React state are called "controlled components".
+            </div>
+
+            <h2>Adding a Form</h2>
+            <p>You add a form with React like any other element:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">MyForm</span>() {
+  <span class="keyword">return</span> (
+    &lt;form&gt;
+      &lt;label&gt;Enter your name:
+        &lt;input type=<span class="string">"text"</span> /&gt;
+      &lt;/label&gt;
+    &lt;/form&gt;
+  )
+}</code></pre>
+
+            <h2>Handling Forms</h2>
+            <p>In React, we control form data by storing it in component state. You can control changes by adding event handlers in the <code class="inline-code">onChange</code> attribute:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">MyForm</span>() {
+  <span class="keyword">const</span> [name, setName] = <span class="function">useState</span>(<span class="string">""</span>);
+
+  <span class="keyword">return</span> (
+    &lt;form&gt;
+      &lt;label&gt;Enter your name:
+        &lt;input 
+          type=<span class="string">"text"</span> 
+          value={name}
+          onChange={(e) => <span class="function">setName</span>(e.target.value)}
+        /&gt;
+      &lt;/label&gt;
+    &lt;/form&gt;
+  )
+}</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Two-Way Binding:</strong> The input value is bound to state, and state is updated when the input changes. This creates a "single source of truth"!
+            </div>
+
+            <h2>Submitting Forms</h2>
+            <p>You can control the submit action by adding an event handler in the <code class="inline-code">onSubmit</code> attribute:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">MyForm</span>() {
+  <span class="keyword">const</span> [name, setName] = <span class="function">useState</span>(<span class="string">""</span>);
+
+  <span class="keyword">const</span> <span class="function">handleSubmit</span> = (event) => {
+    event.<span class="function">preventDefault</span>();
+    <span class="function">alert</span>(`The name you entered was: ${name}`);
+  }
+
+  <span class="keyword">return</span> (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;label&gt;Enter your name:
+        &lt;input 
+          type=<span class="string">"text"</span> 
+          value={name}
+          onChange={(e) => <span class="function">setName</span>(e.target.value)}
+        /&gt;
+      &lt;/label&gt;
+      &lt;input type=<span class="string">"submit"</span> /&gt;
+    &lt;/form&gt;
+  )
+}</code></pre>
+
+            <div class="warning-box">
+                <strong>⚠️ Remember:</strong> Always use <code class="inline-code">event.preventDefault()</code> to prevent the page from refreshing when the form is submitted!
+            </div>
+
+            <h2>Multiple Input Fields</h2>
+            <p>You can control multiple input fields by adding a <code class="inline-code">name</code> attribute to each element and using one handler:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">MyForm</span>() {
+  <span class="keyword">const</span> [inputs, setInputs] = <span class="function">useState</span>({});
+
+  <span class="keyword">const</span> <span class="function">handleChange</span> = (event) => {
+    <span class="keyword">const</span> name = event.target.name;
+    <span class="keyword">const</span> value = event.target.value;
+    <span class="function">setInputs</span>(values => ({...values, [name]: value}));
+  }
+
+  <span class="keyword">const</span> <span class="function">handleSubmit</span> = (event) => {
+    event.<span class="function">preventDefault</span>();
+    <span class="function">console.log</span>(inputs);
+  }
+
+  <span class="keyword">return</span> (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;label&gt;Enter your name:
+        &lt;input 
+          type=<span class="string">"text"</span> 
+          name=<span class="string">"username"</span> 
+          value={inputs.username || <span class="string">""</span>} 
+          onChange={handleChange}
+        /&gt;
+      &lt;/label&gt;
+      &lt;label&gt;Enter your age:
+        &lt;input 
+          type=<span class="string">"number"</span> 
+          name=<span class="string">"age"</span> 
+          value={inputs.age || <span class="string">""</span>} 
+          onChange={handleChange}
+        /&gt;
+      &lt;/label&gt;
+      &lt;input type=<span class="string">"submit"</span> /&gt;
+    &lt;/form&gt;
+  )
+}</code></pre>
+
+            <h2>Textarea</h2>
+            <p>The textarea element in React is slightly different from HTML. In React, the value is handled by a <code class="inline-code">value</code> attribute:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">MyForm</span>() {
+  <span class="keyword">const</span> [textarea, setTextarea] = <span class="function">useState</span>(
+    <span class="string">"The content of a textarea goes in the value attribute"</span>
+  );
+
+  <span class="keyword">const</span> <span class="function">handleChange</span> = (event) => {
+    <span class="function">setTextarea</span>(event.target.value);
+  }
+
+  <span class="keyword">return</span> (
+    &lt;form&gt;
+      &lt;textarea value={textarea} onChange={handleChange} /&gt;
+    &lt;/form&gt;
+  )
+}</code></pre>
+
+            <h2>Select</h2>
+            <p>In React, the selected value in a drop down list is defined with a <code class="inline-code">value</code> attribute on the select tag:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">MyForm</span>() {
+  <span class="keyword">const</span> [myCar, setMyCar] = <span class="function">useState</span>(<span class="string">"Volvo"</span>);
+
+  <span class="keyword">const</span> <span class="function">handleChange</span> = (event) => {
+    <span class="function">setMyCar</span>(event.target.value);
+  }
+
+  <span class="keyword">return</span> (
+    &lt;form&gt;
+      &lt;select value={myCar} onChange={handleChange}&gt;
+        &lt;option value=<span class="string">"Ford"</span>&gt;Ford&lt;/option&gt;
+        &lt;option value=<span class="string">"Volvo"</span>&gt;Volvo&lt;/option&gt;
+        &lt;option value=<span class="string">"Fiat"</span>&gt;Fiat&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/form&gt;
+  )
+}</code></pre>
+
+            <h2>Checkboxes</h2>
+            <p>Checkboxes use the <code class="inline-code">checked</code> attribute instead of <code class="inline-code">value</code>:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">MyForm</span>() {
+  <span class="keyword">const</span> [isChecked, setIsChecked] = <span class="function">useState</span>(<span class="keyword">false</span>);
+
+  <span class="keyword">const</span> <span class="function">handleChange</span> = (event) => {
+    <span class="function">setIsChecked</span>(event.target.checked);
+  }
+
+  <span class="keyword">return</span> (
+    &lt;form&gt;
+      &lt;label&gt;
+        &lt;input
+          type=<span class="string">"checkbox"</span>
+          checked={isChecked}
+          onChange={handleChange}
+        /&gt;
+        I agree to the terms
+      &lt;/label&gt;
+      &lt;p&gt;{isChecked ? <span class="string">"Agreed"</span> : <span class="string">"Not agreed"</span>}&lt;/p&gt;
+    &lt;/form&gt;
+  )
+}</code></pre>
+
+            <h2>Radio Buttons</h2>
+            <p>Radio buttons are similar to other inputs:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">MyForm</span>() {
+  <span class="keyword">const</span> [gender, setGender] = <span class="function">useState</span>(<span class="string">"male"</span>);
+
+  <span class="keyword">const</span> <span class="function">handleChange</span> = (event) => {
+    <span class="function">setGender</span>(event.target.value);
+  }
+
+  <span class="keyword">return</span> (
+    &lt;form&gt;
+      &lt;label&gt;
+        &lt;input
+          type=<span class="string">"radio"</span>
+          value=<span class="string">"male"</span>
+          checked={gender === <span class="string">"male"</span>}
+          onChange={handleChange}
+        /&gt;
+        Male
+      &lt;/label&gt;
+      &lt;label&gt;
+        &lt;input
+          type=<span class="string">"radio"</span>
+          value=<span class="string">"female"</span>
+          checked={gender === <span class="string">"female"</span>}
+          onChange={handleChange}
+        /&gt;
+        Female
+      &lt;/label&gt;
+    &lt;/form&gt;
+  )
+}</code></pre>
+
+            <h2>Form Validation</h2>
+            <p>You can add validation to your forms:</p>
+
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">MyForm</span>() {
+  <span class="keyword">const</span> [email, setEmail] = <span class="function">useState</span>(<span class="string">""</span>);
+  <span class="keyword">const</span> [error, setError] = <span class="function">useState</span>(<span class="string">""</span>);
+
+  <span class="keyword">const</span> <span class="function">handleSubmit</span> = (event) => {
+    event.<span class="function">preventDefault</span>();
+    
+    <span class="keyword">if</span> (!email.<span class="function">includes</span>(<span class="string">"@"</span>)) {
+      <span class="function">setError</span>(<span class="string">"Please enter a valid email"</span>);
+      <span class="keyword">return</span>;
+    }
+    
+    <span class="function">setError</span>(<span class="string">""</span>);
+    <span class="function">alert</span>(<span class="string">"Form submitted successfully!"</span>);
+  }
+
+  <span class="keyword">return</span> (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        type=<span class="string">"text"</span>
+        value={email}
+        onChange={(e) => <span class="function">setEmail</span>(e.target.value)}
+        placeholder=<span class="string">"Enter email"</span>
+      /&gt;
+      {error && &lt;p style={{color: <span class="string">"red"</span>}}&gt;{error}&lt;/p&gt;}
+      &lt;button type=<span class="string">"submit"</span>&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre>
+
+            <h2>Complete Registration Form Example</h2>
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">RegistrationForm</span>() {
+  <span class="keyword">const</span> [formData, setFormData] = <span class="function">useState</span>({
+    username: <span class="string">""</span>,
+    email: <span class="string">""</span>,
+    password: <span class="string">""</span>,
+    country: <span class="string">"USA"</span>,
+    agreeTerms: <span class="keyword">false</span>
+  });
+
+  <span class="keyword">const</span> <span class="function">handleChange</span> = (event) => {
+    <span class="keyword">const</span> { name, value, type, checked } = event.target;
+    <span class="function">setFormData</span>(prevData => ({
+      ...prevData,
+      [name]: type === <span class="string">"checkbox"</span> ? checked : value
+    }));
+  }
+
+  <span class="keyword">const</span> <span class="function">handleSubmit</span> = (event) => {
+    event.<span class="function">preventDefault</span>();
+    <span class="function">console.log</span>(<span class="string">"Form Data:"</span>, formData);
+  }
+
+  <span class="keyword">return</span> (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;div&gt;
+        &lt;label&gt;Username:&lt;/label&gt;
+        &lt;input
+          type=<span class="string">"text"</span>
+          name=<span class="string">"username"</span>
+          value={formData.username}
+          onChange={handleChange}
+          required
+        /&gt;
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label&gt;Email:&lt;/label&gt;
+        &lt;input
+          type=<span class="string">"email"</span>
+          name=<span class="string">"email"</span>
+          value={formData.email}
+          onChange={handleChange}
+          required
+        /&gt;
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label&gt;Password:&lt;/label&gt;
+        &lt;input
+          type=<span class="string">"password"</span>
+          name=<span class="string">"password"</span>
+          value={formData.password}
+          onChange={handleChange}
+          required
+        /&gt;
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label&gt;Country:&lt;/label&gt;
+        &lt;select
+          name=<span class="string">"country"</span>
+          value={formData.country}
+          onChange={handleChange}
+        &gt;
+          &lt;option value=<span class="string">"USA"</span>&gt;USA&lt;/option&gt;
+          &lt;option value=<span class="string">"Canada"</span>&gt;Canada&lt;/option&gt;
+          &lt;option value=<span class="string">"UK"</span>&gt;UK&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+
+      &lt;div&gt;
+        &lt;label&gt;
+          &lt;input
+            type=<span class="string">"checkbox"</span>
+            name=<span class="string">"agreeTerms"</span>
+            checked={formData.agreeTerms}
+            onChange={handleChange}
+            required
+          /&gt;
+          I agree to the terms and conditions
+        &lt;/label&gt;
+      &lt;/div&gt;
+
+      &lt;button type=<span class="string">"submit"</span>&gt;Register&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+
+            <h2>Uncontrolled Components</h2>
+            <p>Sometimes you might want to use uncontrolled components with refs instead of state:</p>
+
+            <pre><code><span class="keyword">import</span> { useRef } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">function</span> <span class="function">MyForm</span>() {
+  <span class="keyword">const</span> inputRef = <span class="function">useRef</span>(<span class="keyword">null</span>);
+
+  <span class="keyword">const</span> <span class="function">handleSubmit</span> = (event) => {
+    event.<span class="function">preventDefault</span>();
+    <span class="function">alert</span>(<span class="string">"Input value: "</span> + inputRef.current.value);
+  }
+
+  <span class="keyword">return</span> (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input type=<span class="string">"text"</span> ref={inputRef} /&gt;
+      &lt;button type=<span class="string">"submit"</span>&gt;Submit&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre>
+
+            <div class="info-box">
+                <strong>💡 Controlled vs Uncontrolled:</strong> Controlled components (using state) are recommended in most cases as they give you more control and are easier to test.
+            </div>
+
+            <h2>Form Best Practices</h2>
+            <ul>
+                <li><strong>Use controlled components</strong> for better control over form data</li>
+                <li><strong>Always prevent default</strong> on form submission</li>
+                <li><strong>Validate input</strong> before submission</li>
+                <li><strong>Provide feedback</strong> to users (error messages, success messages)</li>
+                <li><strong>Use appropriate input types</strong> (email, number, password, etc.)</li>
+                <li><strong>Make forms accessible</strong> with proper labels and ARIA attributes</li>
+                <li><strong>Handle loading states</strong> when submitting forms to APIs</li>
+            </ul>
+
+            <h2>What's Next?</h2>
+            <p>Now that you understand forms, you're ready to learn about React Router - how to add navigation and routing to your React applications!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="08-events.html" class="nav-button">← Previous: Events</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="10-router.html" class="nav-button">Next: Router →</a>
+        </div>
+    </div>
+</body>
+</html>
+

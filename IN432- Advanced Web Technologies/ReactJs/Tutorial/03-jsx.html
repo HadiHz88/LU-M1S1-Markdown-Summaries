@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React JSX - React Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚛️ React JSX</h1>
+            <p>Chapter 3 of 15</p>
+        </header>
+
+        <div class="content">
+            <h2>What is JSX?</h2>
+            <p>JSX stands for JavaScript XML. JSX allows us to write HTML in React. JSX makes it easier to write and add HTML in React.</p>
+
+            <div class="info-box">
+                <strong>💡 Key Point:</strong> JSX is not HTML, it's JavaScript code that looks like HTML. It gets compiled to regular JavaScript function calls.
+            </div>
+
+            <h2>JSX Syntax</h2>
+            <p>With JSX, you can write what looks like HTML directly in your JavaScript code:</p>
+
+            <pre><code><span class="keyword">const</span> myElement = &lt;h1&gt;I Love JSX!&lt;/h1&gt;;
+
+<span class="keyword">const</span> root = ReactDOM.<span class="function">createRoot</span>(document.<span class="function">getElementById</span>(<span class="string">'root'</span>));
+root.<span class="function">render</span>(myElement);</code></pre>
+
+            <p>JSX allows you to write HTML elements in JavaScript and place them in the DOM without using <code class="inline-code">createElement()</code> or <code class="inline-code">appendChild()</code> methods.</p>
+
+            <h2>JSX vs Regular JavaScript</h2>
+            <p>Without JSX, you would have to write:</p>
+
+            <pre><code><span class="keyword">const</span> myElement = React.<span class="function">createElement</span>(<span class="string">'h1'</span>, {}, <span class="string">'I do NOT use JSX!'</span>);
+
+<span class="keyword">const</span> root = ReactDOM.<span class="function">createRoot</span>(document.<span class="function">getElementById</span>(<span class="string">'root'</span>));
+root.<span class="function">render</span>(myElement);</code></pre>
+
+            <div class="success-box">
+                <strong>✨ Why JSX is Better:</strong> As you can see, JSX is much more readable and easier to write than plain JavaScript!
+            </div>
+
+            <h2>Expressions in JSX</h2>
+            <p>With JSX you can write expressions inside curly braces <code class="inline-code">{ }</code>. The expression can be a React variable, or property, or any other valid JavaScript expression:</p>
+
+            <pre><code><span class="keyword">const</span> myElement = &lt;h1&gt;React is {<span class="number">5</span> + <span class="number">5</span>} times better with JSX&lt;/h1&gt;;</code></pre>
+
+            <p>More examples:</p>
+
+            <pre><code><span class="keyword">const</span> name = <span class="string">"John"</span>;
+<span class="keyword">const</span> element = &lt;h1&gt;Hello, {name}!&lt;/h1&gt;;
+
+<span class="keyword">const</span> user = {
+  firstName: <span class="string">'Jane'</span>,
+  lastName: <span class="string">'Doe'</span>
+};
+<span class="keyword">const</span> greeting = &lt;h1&gt;Hello, {user.firstName} {user.lastName}!&lt;/h1&gt;;</code></pre>
+
+            <h2>Inserting a Large Block of HTML</h2>
+            <p>To write HTML on multiple lines, put the HTML inside parentheses:</p>
+
+            <pre><code><span class="keyword">const</span> myElement = (
+  &lt;div&gt;
+    &lt;h1&gt;I am a Header.&lt;/h1&gt;
+    &lt;p&gt;I am a paragraph.&lt;/p&gt;
+  &lt;/div&gt;
+);</code></pre>
+
+            <h2>One Top Level Element</h2>
+            <p>The HTML code must be wrapped in ONE top level element. If you want to return two elements, wrap them in a parent element:</p>
+
+            <div class="warning-box">
+                <strong>⚠️ This will NOT work:</strong>
+                <pre><code><span class="keyword">const</span> myElement = (
+  &lt;h1&gt;I am a Header.&lt;/h1&gt;
+  &lt;p&gt;I am a paragraph.&lt;/p&gt;
+);</code></pre>
+            </div>
+
+            <div class="success-box">
+                <strong>✅ This WILL work:</strong>
+                <pre><code><span class="keyword">const</span> myElement = (
+  &lt;div&gt;
+    &lt;h1&gt;I am a Header.&lt;/h1&gt;
+    &lt;p&gt;I am a paragraph.&lt;/p&gt;
+  &lt;/div&gt;
+);</code></pre>
+            </div>
+
+            <h2>React Fragments</h2>
+            <p>Alternatively, you can use a "fragment" to wrap multiple lines without adding extra nodes to the DOM:</p>
+
+            <pre><code><span class="keyword">const</span> myElement = (
+  &lt;&gt;
+    &lt;p&gt;I am a paragraph.&lt;/p&gt;
+    &lt;p&gt;I am another paragraph.&lt;/p&gt;
+  &lt;/&gt;
+);</code></pre>
+
+            <p>Fragments let you group elements without adding extra DOM nodes, keeping your HTML cleaner!</p>
+
+            <h2>Elements Must be Closed</h2>
+            <p>JSX follows XML rules, and therefore HTML elements must be properly closed:</p>
+
+            <pre><code><span class="keyword">const</span> myElement = &lt;input type=<span class="string">"text"</span> /&gt;;</code></pre>
+
+            <div class="warning-box">
+                <strong>⚠️ Remember:</strong> Self-closing tags like <code class="inline-code">&lt;input&gt;</code>, <code class="inline-code">&lt;img&gt;</code>, and <code class="inline-code">&lt;br&gt;</code> must end with <code class="inline-code">/&gt;</code> in JSX!
+            </div>
+
+            <h2>Attribute class = className</h2>
+            <p>The <code class="inline-code">class</code> attribute is a much used attribute in HTML, but since JSX is rendered as JavaScript, and the <code class="inline-code">class</code> keyword is a reserved word in JavaScript, you are not allowed to use it in JSX.</p>
+
+            <p>Use attribute <code class="inline-code">className</code> instead:</p>
+
+            <pre><code><span class="keyword">const</span> myElement = &lt;h1 className=<span class="string">"myclass"</span>&gt;Hello World&lt;/h1&gt;;</code></pre>
+
+            <h2>Conditions in JSX</h2>
+            <p>React supports <code class="inline-code">if</code> statements, but not inside JSX. You have several options:</p>
+
+            <h3>Option 1: Outside JSX</h3>
+            <pre><code><span class="keyword">const</span> x = <span class="number">5</span>;
+<span class="keyword">let</span> text = <span class="string">"Goodbye"</span>;
+<span class="keyword">if</span> (x &lt; <span class="number">10</span>) {
+  text = <span class="string">"Hello"</span>;
+}
+
+<span class="keyword">const</span> myElement = &lt;h1&gt;{text}&lt;/h1&gt;;</code></pre>
+
+            <h3>Option 2: Ternary Expression</h3>
+            <pre><code><span class="keyword">const</span> x = <span class="number">5</span>;
+<span class="keyword">const</span> myElement = &lt;h1&gt;{x &lt; <span class="number">10</span> ? <span class="string">"Hello"</span> : <span class="string">"Goodbye"</span>}&lt;/h1&gt;;</code></pre>
+
+            <h3>Option 3: Logical && Operator</h3>
+            <pre><code><span class="keyword">const</span> isLoggedIn = <span class="keyword">true</span>;
+<span class="keyword">const</span> myElement = (
+  &lt;div&gt;
+    {isLoggedIn && &lt;h1&gt;Welcome back!&lt;/h1&gt;}
+  &lt;/div&gt;
+);</code></pre>
+
+            <h2>JSX Attributes</h2>
+            <p>JSX uses camelCase for attribute names:</p>
+
+            <ul>
+                <li><code class="inline-code">onclick</code> becomes <code class="inline-code">onClick</code></li>
+                <li><code class="inline-code">onchange</code> becomes <code class="inline-code">onChange</code></li>
+                <li><code class="inline-code">tabindex</code> becomes <code class="inline-code">tabIndex</code></li>
+                <li><code class="inline-code">class</code> becomes <code class="inline-code">className</code></li>
+                <li><code class="inline-code">for</code> becomes <code class="inline-code">htmlFor</code></li>
+            </ul>
+
+            <pre><code><span class="keyword">const</span> element = (
+  &lt;button onClick={<span class="function">handleClick</span>} className=<span class="string">"btn"</span>&gt;
+    Click Me
+  &lt;/button&gt;
+);</code></pre>
+
+            <div class="info-box">
+                <strong>💡 Why camelCase?</strong> Since JSX is closer to JavaScript than HTML, React DOM uses camelCase property naming convention instead of HTML attribute names.
+            </div>
+
+            <h2>Practice Example</h2>
+            <p>Here's a complete example combining multiple JSX concepts:</p>
+
+            <pre><code><span class="keyword">function</span> <span class="function">Welcome</span>() {
+  <span class="keyword">const</span> name = <span class="string">"Sarah"</span>;
+  <span class="keyword">const</span> isLoggedIn = <span class="keyword">true</span>;
+  <span class="keyword">const</span> age = <span class="number">25</span>;
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;h1 className=<span class="string">"title"</span>&gt;Hello, {name}!&lt;/h1&gt;
+      {isLoggedIn && &lt;p&gt;Welcome back!&lt;/p&gt;}
+      &lt;p&gt;You are {age &gt;= <span class="number">18</span> ? <span class="string">"an adult"</span> : <span class="string">"a minor"</span>}.&lt;/p&gt;
+      &lt;img src=<span class="string">"avatar.jpg"</span> alt=<span class="string">"User avatar"</span> /&gt;
+    &lt;/&gt;
+  );
+}</code></pre>
+
+            <h2>What's Next?</h2>
+            <p>Now that you understand JSX, you're ready to learn about React Components - the building blocks of React applications!</p>
+        </div>
+
+        <div class="navigation">
+            <a href="02-getting-started.html" class="nav-button">← Previous: Getting Started</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <a href="04-components.html" class="nav-button">Next: Components →</a>
+        </div>
+    </div>
+</body>
+</html>
+

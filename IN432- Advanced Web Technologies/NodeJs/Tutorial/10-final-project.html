@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 10: Final Mini Project - Node.js Tutorial</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔟 Final Mini Project</h1>
+            <p>Simple Task Manager - Full Stack</p>
+        </header>
+
+        <div class="content">
+            <h2>Project: Task Manager</h2>
+            
+            <p>A simple full-stack app with:</p>
+            <ul>
+                <li>✅ React frontend</li>
+                <li>✅ Express backend</li>
+                <li>✅ MongoDB database</li>
+                <li>✅ CRUD operations</li>
+            </ul>
+
+            <h2>Project Structure</h2>
+
+            <div class="file-tree">
+📁 task-manager/
+├── 📁 backend/
+│   ├── 📄 index.js
+│   └── 📄 package.json
+│
+└── 📁 frontend/
+    ├── 📄 package.json
+    └── 📁 src/
+        ├── 📄 App.jsx
+        └── 📄 App.css
+            </div>
+
+            <h2>Backend Code</h2>
+
+            <h3>package.json</h3>
+            <pre><code>{
+  <span class="string">"name"</span>: <span class="string">"task-backend"</span>,
+  <span class="string">"scripts"</span>: { <span class="string">"start"</span>: <span class="string">"node index.js"</span> },
+  <span class="string">"dependencies"</span>: {
+    <span class="string">"express"</span>: <span class="string">"^4.18.2"</span>,
+    <span class="string">"mongoose"</span>: <span class="string">"^8.0.0"</span>,
+    <span class="string">"cors"</span>: <span class="string">"^2.8.5"</span>
+  }
+}</code></pre>
+
+            <h3>index.js</h3>
+            <pre><code><span class="keyword">const</span> express = <span class="function">require</span>(<span class="string">'express'</span>);
+<span class="keyword">const</span> mongoose = <span class="function">require</span>(<span class="string">'mongoose'</span>);
+<span class="keyword">const</span> cors = <span class="function">require</span>(<span class="string">'cors'</span>);
+
+<span class="keyword">const</span> app = <span class="function">express</span>();
+app.<span class="function">use</span>(<span class="function">cors</span>());
+app.<span class="function">use</span>(express.<span class="function">json</span>());
+
+<span class="comment">// Connect to MongoDB</span>
+mongoose.<span class="function">connect</span>(<span class="string">'mongodb://localhost:27017/taskapp'</span>);
+
+<span class="comment">// Task Schema</span>
+<span class="keyword">const</span> Task = mongoose.<span class="function">model</span>(<span class="string">'Task'</span>, {
+  title: String,
+  completed: { type: Boolean, default: <span class="keyword">false</span> }
+});
+
+<span class="comment">// GET all tasks</span>
+app.<span class="function">get</span>(<span class="string">'/api/tasks'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">const</span> tasks = <span class="keyword">await</span> Task.<span class="function">find</span>();
+  res.<span class="function">json</span>(tasks);
+});
+
+<span class="comment">// POST new task</span>
+app.<span class="function">post</span>(<span class="string">'/api/tasks'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">const</span> task = <span class="keyword">await</span> Task.<span class="function">create</span>({ title: req.body.title });
+  res.<span class="function">json</span>(task);
+});
+
+<span class="comment">// DELETE task</span>
+app.<span class="function">delete</span>(<span class="string">'/api/tasks/:id'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">await</span> Task.<span class="function">findByIdAndDelete</span>(req.params.id);
+  res.<span class="function">json</span>({ message: <span class="string">'Deleted'</span> });
+});
+
+<span class="comment">// Toggle complete</span>
+app.<span class="function">patch</span>(<span class="string">'/api/tasks/:id/toggle'</span>, <span class="keyword">async</span> (req, res) => {
+  <span class="keyword">const</span> task = <span class="keyword">await</span> Task.<span class="function">findById</span>(req.params.id);
+  task.completed = !task.completed;
+  <span class="keyword">await</span> task.<span class="function">save</span>();
+  res.<span class="function">json</span>(task);
+});
+
+app.<span class="function">listen</span>(<span class="number">5000</span>, () => console.<span class="function">log</span>(<span class="string">'Server on port 5000'</span>));</code></pre>
+
+            <h2>Frontend Code (React with useState only)</h2>
+
+            <h3>App.jsx</h3>
+            <pre><code><span class="keyword">import</span> { useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+<span class="keyword">import</span> <span class="string">'./App.css'</span>;
+
+<span class="keyword">function</span> <span class="function">App</span>() {
+  <span class="keyword">const</span> [tasks, setTasks] = <span class="function">useState</span>([]);
+  <span class="keyword">const</span> [newTask, setNewTask] = <span class="function">useState</span>(<span class="string">''</span>);
+  <span class="keyword">const</span> [loaded, setLoaded] = <span class="function">useState</span>(<span class="keyword">false</span>);
+
+  <span class="comment">// Load tasks</span>
+  <span class="keyword">async function</span> <span class="function">loadTasks</span>() {
+    <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">'http://localhost:5000/api/tasks'</span>);
+    <span class="keyword">const</span> data = <span class="keyword">await</span> res.<span class="function">json</span>();
+    <span class="function">setTasks</span>(data);
+    <span class="function">setLoaded</span>(<span class="keyword">true</span>);
+  }
+
+  <span class="comment">// Add task</span>
+  <span class="keyword">async function</span> <span class="function">addTask</span>(e) {
+    e.<span class="function">preventDefault</span>();
+    <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">'http://localhost:5000/api/tasks'</span>, {
+      method: <span class="string">'POST'</span>,
+      headers: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> },
+      body: JSON.<span class="function">stringify</span>({ title: newTask })
+    });
+    <span class="keyword">const</span> task = <span class="keyword">await</span> res.<span class="function">json</span>();
+    <span class="function">setTasks</span>([...tasks, task]);
+    <span class="function">setNewTask</span>(<span class="string">''</span>);
+  }
+
+  <span class="comment">// Delete task</span>
+  <span class="keyword">async function</span> <span class="function">deleteTask</span>(id) {
+    <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`http://localhost:5000/api/tasks/${id}`</span>, { method: <span class="string">'DELETE'</span> });
+    <span class="function">setTasks</span>(tasks.<span class="function">filter</span>(t => t._id !== id));
+  }
+
+  <span class="comment">// Toggle complete</span>
+  <span class="keyword">async function</span> <span class="function">toggleTask</span>(id) {
+    <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`http://localhost:5000/api/tasks/${id}/toggle`</span>, { method: <span class="string">'PATCH'</span> });
+    <span class="keyword">const</span> updated = <span class="keyword">await</span> res.<span class="function">json</span>();
+    <span class="function">setTasks</span>(tasks.<span class="function">map</span>(t => t._id === id ? updated : t));
+  }
+
+  <span class="keyword">return</span> (
+    <span class="string">&lt;div className="app"&gt;</span>
+      <span class="string">&lt;h1&gt;📝 Task Manager&lt;/h1&gt;</span>
+      
+      {!loaded ? (
+        <span class="string">&lt;button onClick={loadTasks}&gt;Load Tasks&lt;/button&gt;</span>
+      ) : (
+        <span class="string">&lt;&gt;</span>
+          <span class="string">&lt;form onSubmit={addTask}&gt;</span>
+            <span class="string">&lt;input value={newTask} onChange={e => setNewTask(e.target.value)} /&gt;</span>
+            <span class="string">&lt;button&gt;Add&lt;/button&gt;</span>
+          <span class="string">&lt;/form&gt;</span>
+          <span class="string">&lt;ul&gt;</span>
+            {tasks.<span class="function">map</span>(t => (
+              <span class="string">&lt;li key={t._id}&gt;</span>
+                <span class="string">&lt;input type="checkbox" checked={t.completed} onChange={() => toggleTask(t._id)} /&gt;</span>
+                <span class="string">&lt;span style={{textDecoration: t.completed ? 'line-through' : 'none'}}&gt;</span>
+                  {t.title}
+                <span class="string">&lt;/span&gt;</span>
+                <span class="string">&lt;button onClick={() => deleteTask(t._id)}&gt;🗑️&lt;/button&gt;</span>
+              <span class="string">&lt;/li&gt;</span>
+            ))}
+          <span class="string">&lt;/ul&gt;</span>
+        <span class="string">&lt;/&gt;</span>
+      )}
+    <span class="string">&lt;/div&gt;</span>
+  );
+}
+
+<span class="keyword">export default</span> App;</code></pre>
+
+            <h2>How to Run</h2>
+
+            <div class="step">
+                <span class="step-number">1</span>
+                Start MongoDB
+            </div>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                Start Backend: <code>cd backend && npm install && npm start</code>
+            </div>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                Start Frontend: <code>cd frontend && npm install && npm run dev</code>
+            </div>
+
+            <div class="success-box">
+                <strong>🎉 Congratulations!</strong> You've completed the Node.js Tutorial!
+                <br><br>
+                You now know how to:
+                <ul>
+                    <li>Build REST APIs with Express.js</li>
+                    <li>Use async/await</li>
+                    <li>Connect to MongoDB</li>
+                    <li>Connect React to Node backend</li>
+                    <li>Build full-stack applications!</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="09-react-integration.html" class="nav-button">← Previous: React Integration</a>
+            <a href="index.html" class="home-button">🏠 Home</a>
+            <div></div>
+        </div>
+    </div>
+</body>
+</html>
