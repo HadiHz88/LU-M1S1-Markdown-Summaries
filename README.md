@@ -1,6 +1,6 @@
-# LU M1S1 - Course Summaries & Resources
+# LU M1S1 - Course Materials, Summaries & Resources
 
-Hello guys, this is [Hadi](https://www.hadihz.me) A comprehensive collection of summaries, notes, and external resources for Master Year 1, Semester 1 courses at Lebanese University. This repository serves as a collaborative resource for students to understand key concepts, study efficiently, and access supplementary learning materials.
+Hi, this is [Hadi](https://www.hadihz.me). This repository is a comprehensive collection of **course materials**, summaries, notes, and external resources for Master Year 1, Semester 1 courses at Lebanese University. Materials are organized and lightly adjusted when needed to keep a clean structure and make everything easy to pull and update via Git.
 
 ---
 
@@ -8,7 +8,8 @@ Hello guys, this is [Hadi](https://www.hadihz.me) A comprehensive collection of 
 
 This repository contains:
 
-- **Markdown summaries** of course materials and lectures
+- **Organized course materials** (labs, slides/exports, code, notebooks)
+- **Markdown summaries** of lectures and key topics
 - **Key concepts and definitions** for quick reference
 - **Curated external resources** (tutorials, documentation, articles)
 - **Study guides** and exam preparation materials
@@ -38,16 +39,6 @@ All content is structured by course code and title for easy navigation.
 
 ---
 
-## 📖 How to Use This Repository
-
-1. **Navigate by course folder** - Each course has its own directory
-2. **Start with summaries** - Read the main `.md` file for course overview
-3. **Check assets folder** - Find diagrams, tables, and visual aids
-4. **Use external resources** - Click links for deeper learning
-5. **Contribute** - Add notes and resources to help classmates
-
----
-
 ## 🤝 Contributing
 
 This is a collaborative resource! Feel free to:
@@ -57,11 +48,13 @@ This is a collaborative resource! Feel free to:
 - Share additional notes and study tips
 - Improve organization and formatting
 
+If you have suggestions, notes, or found an issue, feel free to open an **Issue**.
+
 ---
 
 ## ⚠️ Disclaimer
 
-These summaries are student-created study materials and may not cover all course content exhaustively. Always refer to official course materials, lecture notes, and textbooks. External resource links are for educational purposes and are subject to availability and updates by their respective providers.
+These materials and summaries are student-maintained and may not cover all course content exhaustively. Always refer to official course materials, lecture notes, and textbooks. External resource links are for educational purposes and are subject to availability and updates by their respective providers.
 
 ---
 
