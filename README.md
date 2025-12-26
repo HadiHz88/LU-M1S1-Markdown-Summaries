@@ -1,6 +1,6 @@
 # LU M1S1 - Course Materials, Summaries & Resources
 
-Hi, this is [Hadi](https://www.hadihz.me). This repository is a comprehensive collection of **course materials**, summaries, notes, and external resources for Master Year 1, Semester 1 courses at Lebanese University. Materials are organized and lightly adjusted when needed to keep a clean structure and make everything easy to pull and update via Git.
+Hi, this is [Hadi](https://www.hadihz.me). This repository is a comprehensive collection of **course materials**, summaries, notes, and external resources for Master Year 1, Semester 1 courses at Lebanese University, Hadath, academic year 2025/2026. Materials are organized and lightly adjusted when needed to keep a clean structure and make everything easy to pull and update via Git.
 
 ---
 
@@ -21,7 +21,7 @@ All content is structured by course code and title for easy navigation.
 ## 🎓 Courses
 
 | Course Code | Course Name | Credits |
-|-------------|-------------|---------|
+| ----------- | ----------- | ------- |
 | IN400 | Applied Math & Statistics | 5 |
 | IN401 | Cloud Computing | 5 |
 | IN402 | Machine Learning | 5 |
@@ -48,7 +48,7 @@ This is a collaborative resource! Feel free to:
 - Share additional notes and study tips
 - Improve organization and formatting
 
-If you have suggestions, notes, or found an issue, feel free to open an **Issue**.
+If you have suggestions, notes, or found an issue, feel free to open an **Issue**, or contact me directly via [email](mailto:contact@hadihz.me)
 
 ---
 
@@ -61,6 +61,10 @@ These materials and summaries are student-maintained and may not cover all cours
 ## 📝 License
 
 These summaries are provided as educational resources for Lebanese University students. Please respect intellectual property rights and academic integrity when using these materials.
+
+## One more thing
+
+If you find this repository helpful, please consider giving it a ⭐️! Your support encourages me to keep updating and improving the content.
 
 ---
 
