@@ -1,6 +1,0 @@
-# Ignore notes.json (generated file)
-notes.json
-
-# Ignore node_modules if any
-node_modules/
-

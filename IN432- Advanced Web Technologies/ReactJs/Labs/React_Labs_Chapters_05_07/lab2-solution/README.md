@@ -3,6 +3,7 @@
 ## 🎯 Project Overview
 
 An interactive product catalog application built with React that demonstrates:
+
 - **Props** (Chapter 05): Component communication via props and prop destructuring
 - **Events** (Chapter 06): User interactions through event handlers
 - **useState Hook** (Chapter 07): State management for dynamic UI updates
@@ -10,11 +11,13 @@ An interactive product catalog application built with React that demonstrates:
 ## 🚀 Setup Instructions
 
 1. **Install Dependencies**
+
    ```bash
    npm install
    ```
 
 2. **Start Development Server**
+
    ```bash
    npm run dev
    ```
@@ -25,9 +28,11 @@ An interactive product catalog application built with React that demonstrates:
 ## 📦 Components Description
 
 ### 1. **ProductCard** (`src/components/ProductCard.jsx`)
+
 **Purpose:** Displays individual product information with action buttons
 
 **Props Used:**
+
 - `id` (number): Unique product identifier
 - `name` (string): Product name
 - `price` (number): Product price
@@ -37,6 +42,7 @@ An interactive product catalog application built with React that demonstrates:
 - `discount` (number, optional): Discount percentage for stretch goal
 
 **Key Features:**
+
 - **Prop Destructuring**: Uses destructuring in function parameters
 - **Function Props**: Accepts and calls `onAddToCart` callback
 - **Price Formatting**: Formats prices as currency ($X.XX)
@@ -44,54 +50,66 @@ An interactive product catalog application built with React that demonstrates:
 - **Event Handling**: Click handler for "Add to Cart" button
 
 **Event Handlers:**
+
 - `onClick`: Triggers `onAddToCart(id)` when button is clicked
 
 ---
 
 ### 2. **CartSummary** (`src/components/CartSummary.jsx`)
+
 **Purpose:** Displays shopping cart summary and checkout functionality
 
 **Props Used:**
+
 - `count` (number): Total number of items in cart
 - `total` (number): Total price of all cart items
 - `onCheckout` (function): Callback function for checkout action
 
 **Key Features:**
+
 - **Price Formatting**: Displays total as currency
 - **Conditional Button State**: Disables checkout button when cart is empty
 - **Dynamic Button Text**: Changes text based on cart state
 
 **Event Handlers:**
+
 - `onClick`: Triggers checkout process when button is clicked
 
 ---
 
 ### 3. **SearchBar** (`src/components/SearchBar.jsx`)
+
 **Purpose:** Provides search functionality for filtering products
 
 **Props Used:**
+
 - `value` (string): Current search query (controlled input)
 - `onChange` (function): Handler for input changes
 - `placeholder` (string): Placeholder text for input
 
 **Key Features:**
+
 - **Controlled Component**: Value managed by parent component
 - **Multiple Event Handlers**: Implements both `onChange` and `onFocus`
 - **Console Logging**: Logs when search input receives focus
 
 **Event Handlers:**
+
 - `onChange`: Updates search query as user types
 - `onFocus`: Logs "Search focused" to console
 
 ---
 
 ### 4. **AddProductForm** (`src/components/AddProductForm.jsx`)
+
 **Purpose:** Form for adding new products to the catalog
 
 **Props Used:**
+
 - `onSubmit` (function): Callback function when form is submitted
 
 **Key Features:**
+
 - **Form State Management**: Uses `useState` with object containing multiple fields
 - **Controlled Inputs**: All form fields are controlled components
 - **Spread Operator**: Updates form state immutably using spread syntax
@@ -101,10 +119,12 @@ An interactive product catalog application built with React that demonstrates:
 - **Dynamic Emoji Assignment**: Assigns category-appropriate emoji to products
 
 **Event Handlers:**
+
 - `onChange`: Updates form state for each input field
 - `onSubmit`: Validates and submits form data (with `preventDefault()`)
 
 **Form Fields:**
+
 - Name (text input)
 - Price (number input)
 - Description (textarea)
@@ -114,7 +134,7 @@ An interactive product catalog application built with React that demonstrates:
 
 ## 🔄 State Variables & Their Purposes
 
-### In `App.jsx`:
+### In `App.jsx`
 
 1. **`products`** (array of objects)
    - **Initial Value**: `INITIAL_PRODUCTS` array
@@ -124,7 +144,7 @@ An interactive product catalog application built with React that demonstrates:
 2. **`cartItems`** (array of objects)
    - **Initial Value**: `[]` (empty array)
    - **Purpose**: Stores products that have been added to cart
-   - **Updated By**: 
+   - **Updated By**:
      - `handleAddToCart`: Adds products using functional update
      - `handleCheckout`: Resets to empty array
 
@@ -151,19 +171,19 @@ An interactive product catalog application built with React that demonstrates:
    - **Purpose**: Filters products by category
    - **Updated By**: `handleCategoryChange` function
 
-### In `AddProductForm.jsx`:
+### In `AddProductForm.jsx`
 
 1. **`formData`** (object)
    - **Initial Value**: `{ name: '', price: '', description: '', category: '' }`
    - **Purpose**: Manages all form field values as a single state object
-   - **Updated By**: 
+   - **Updated By**:
      - `handleChange`: Updates specific field using spread operator
      - `handleSubmit`: Resets to initial state after submission
 
 2. **`errors`** (object) - *Stretch Goal*
    - **Initial Value**: `{}`
    - **Purpose**: Stores validation error messages for each field
-   - **Updated By**: 
+   - **Updated By**:
      - `validateForm`: Sets errors for invalid fields
      - `handleChange`: Clears errors as user corrects input
 
@@ -172,6 +192,7 @@ An interactive product catalog application built with React that demonstrates:
 ## 🎯 Key Concepts Demonstrated
 
 ### Chapter 05: Props
+
 - ✅ Prop destructuring in component parameters
 - ✅ Passing data from parent to child components
 - ✅ Function props (callbacks)
@@ -179,6 +200,7 @@ An interactive product catalog application built with React that demonstrates:
 - ✅ Default prop values (placeholder in SearchBar)
 
 ### Chapter 06: Events
+
 - ✅ `onClick` event handlers for buttons
 - ✅ `onChange` event handlers for inputs
 - ✅ `onFocus` event handlers for focus tracking
@@ -188,6 +210,7 @@ An interactive product catalog application built with React that demonstrates:
 - ✅ Event object usage (e.target, e.key, etc.)
 
 ### Chapter 07: useState Hook
+
 - ✅ Multiple state variables in single component
 - ✅ State as primitives (numbers, strings, booleans)
 - ✅ State as complex objects (arrays, objects)
@@ -202,21 +225,25 @@ An interactive product catalog application built with React that demonstrates:
 ## ✨ Stretch Goals Completed
 
 ### Part 1: ProductCard Enhancements
+
 - ✅ **Optional Discount Prop**: Displays original price with strikethrough and discounted price in green
   - Laptop has 10% discount
   - Headphones have 15% discount
 
 ### Part 2: Keyboard Support
+
 - ✅ **Escape Key Handler**: Press Escape to clear cart (with confirmation dialog)
 - ✅ Attached to main layout with `onKeyDown` event
 
 ### Part 3: Category Filtering
+
 - ✅ **Category State**: `selectedCategory` state variable
 - ✅ **Category Buttons**: Dynamic buttons for each category (All, Electronics, Audio, Books)
 - ✅ **Functional Updates**: Uses `setState(prev => ...)` for toggling
 - ✅ **Visual Feedback**: Active category button highlighted in blue
 
 ### Part 4: Form Validation
+
 - ✅ **Required Field Validation**: Name, price, and category are required
 - ✅ **Price Validation**: Must be a valid number greater than 0
 - ✅ **Error Messages**: Red error text displays below invalid fields
@@ -228,6 +255,7 @@ An interactive product catalog application built with React that demonstrates:
 ## 🛠️ Additional Features
 
 ### User Experience Enhancements
+
 - **Empty State Handling**: Shows message when no products match filters
 - **Disabled States**: Checkout button disabled when cart is empty
 - **Loading Feedback**: Console logs for debugging and tracking
@@ -236,6 +264,7 @@ An interactive product catalog application built with React that demonstrates:
 - **Product Counter**: Shows number of filtered products
 
 ### UI Polish
+
 - **Responsive Design**: Grid layout adapts to screen size
 - **Hover Effects**: Interactive feedback on buttons and cards
 - **Visual Hierarchy**: Clear section separation with cards
@@ -318,6 +347,7 @@ Through this lab, I learned:
 ## 🚀 Future Enhancements
 
 Potential improvements for future iterations:
+
 - Persist cart to localStorage
 - Add product quantity controls
 - Implement product ratings and reviews

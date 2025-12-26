@@ -4,12 +4,14 @@
 Build the Workshop Registration Control Room focusing on Chapter 08 (conditional rendering patterns) and Chapter 09 (forms & validation). Students will coordinate filters, empty states, and confirmation banners while implementing a fully controlled registration form.
 
 **Template Requirement**  
+
 1. Duplicate the provided `lab3-template` folder and rename it `react-lab03-<yourname>`.  
 2. Run `npm install` inside the duplicated folder.  
 3. Do **not** rename starter files. Add new components under `src/components`.  
 4. Keep the schedule times exactly as provided (use ق.ظ. / ب.ظ. abbreviations).  
 
 **Styling Rules**  
+
 1. The file `src/styles/lab-theme.css` already contains the layout grid, hero styles, pills, and summary panel colors.  
 2. Extend styling by adding new utility classes in the same folder if necessary.  
 3. Avoid inline styles—use the supplied CSS tokens/variables for consistency.  
@@ -57,6 +59,7 @@ Build the Workshop Registration Control Room focusing on Chapter 08 (conditional
 ### Part 3 – Registration Form (Chapter 09)
 
 1. Finish `RegistrationForm.jsx` using `useState`:
+
    ```javascript
    const [formData, setFormData] = useState({
      fullName: '',
@@ -68,6 +71,7 @@ Build the Workshop Registration Control Room focusing on Chapter 08 (conditional
      notes: ''
    })
    ```
+
 2. Validate inputs:
    - Name must be at least 3 characters.
    - Email must contain `'@'` (manual check per instructor preference).
@@ -117,5 +121,3 @@ Build the Workshop Registration Control Room focusing on Chapter 08 (conditional
 - [ ] README completed with setup notes and feature overview.  
 
 Good luck! Test each conditional branch (open vs full, remote vs in-person, filter edge cases) before you move on.
-
-

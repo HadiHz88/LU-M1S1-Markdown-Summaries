@@ -4,12 +4,14 @@
 Apply JSX fundamentals, props, lists, and composition exactly as presented in chapters 01–04 to build a multi-section lab overview page.
 
 **Template Requirement**  
+
 1. Locate the provided `lab-template` React + Vite project.  
 2. Duplicate the folder and rename it using the pattern `react-lab01-<yourname>`.  
 3. Install dependencies with `npm install` from inside the duplicated folder.  
 4. Do not rename or delete starter files. All new components should live under `src/components`.  
 
 **Predefined Styling**  
+
 1. Keep the stylesheet `src/styles/lab-theme.css` exactly as provided.  
 2. When you need new styles, add class names to your JSX and extend the CSS in a separate file (e.g., `src/styles/extensions.css`) that you import into `App.jsx`.  
 3. Use the existing utility classes (cards, layout, typography) to keep a consistent look.  
@@ -17,6 +19,7 @@ Apply JSX fundamentals, props, lists, and composition exactly as presented in ch
 ---
 
 ### Part 1 – JSX & Rendering (Chapter 01)
+
 1. Create a file `src/components/WelcomeBanner.jsx`.  
 2. Export a function component that accepts props: `course`, `instructor`, `term`, and `description`.  
 3. The component should return a single `<section>` with:  
@@ -28,6 +31,7 @@ Apply JSX fundamentals, props, lists, and composition exactly as presented in ch
 6. *Stretch:* Add a helper function inside the component that returns "صباح الخير" or "مساء الخير" based on the current hour (use plain JavaScript conditionals only). Display this greeting in the component.  
 
 ### Part 2 – Props & Component Hierarchy (Chapter 02)
+
 1. Create `src/components/CourseSummary.jsx`.  
 2. Define props: `title`, `topics`, `duration`, `deliveryMode`, and an optional `children` area for extra notes.  
 3. In `App.jsx`, pass static (hard-coded) values for these props—no state or external data yet.  
@@ -36,6 +40,7 @@ Apply JSX fundamentals, props, lists, and composition exactly as presented in ch
 6. *Stretch:* Provide a short static array (e.g., three bullet topics) as a prop and render it inline, separated by commas—no loops or dynamic updates in this stretch.  
 
 ### Part 3 – JSX Lists & Reusable Components (Chapter 03)
+
 1. Create `src/components/ResourceItem.jsx` to display a resource title and description.  
 2. The component should accept props: `title`, `description`, and an optional `isNew` (boolean).  
 3. In `App.jsx`, declare a constant array `labResources` with at least four objects (`{ id, title, description }`). Optionally, some objects can include `isNew: true`.  
@@ -44,6 +49,7 @@ Apply JSX fundamentals, props, lists, and composition exactly as presented in ch
 6. *Stretch:* In `ResourceItem`, add a small badge (e.g., "NEW") that appears only when the `isNew` prop is `true` (use a ternary in JSX, not state).  
 
 ### Part 4 – Layout Composition (Chapter 04)
+
 1. Create `src/components/LabOverview.jsx`.  
 2. Inside `LabOverview`, compose the previous components in this order: `WelcomeBanner`, a pair of `CourseSummary` components (current lab and upcoming lab), and the resource list section (using `ResourceList`).  
 3. Accept props in `LabOverview`: `welcome` (object with `course`, `instructor`, `term`, `description`), `current` (object with `title`, `topics`, `duration`, `deliveryMode`, `note`), `upcoming` (object with same structure as `current`), and `resources` (array of resource objects).  
@@ -55,6 +61,7 @@ Apply JSX fundamentals, props, lists, and composition exactly as presented in ch
 ---
 
 ### Deliverables
+
 1. A working React project built on the template with all components compiled successfully.  
 2. `README.md` at the project root containing:  
    - Setup steps you followed.  
@@ -63,6 +70,7 @@ Apply JSX fundamentals, props, lists, and composition exactly as presented in ch
 3. Optional reflection file `REFLECTION.md` describing one challenge per part and how you solved it.  
 
 ### Submission Checklist
+
 - [ ] Template duplicated and dependencies installed.  
 - [ ] All components placed under `src/components`.  
 - [ ] Styling uses the provided `lab-theme.css` plus optional extensions.  
@@ -70,4 +78,3 @@ Apply JSX fundamentals, props, lists, and composition exactly as presented in ch
 - [ ] README completed and project runs with `npm run dev`.  
 
 Good luck, and remember to stay within chapters 01–04—no hooks or advanced patterns yet!
-

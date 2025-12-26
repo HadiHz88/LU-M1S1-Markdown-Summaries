@@ -33,11 +33,13 @@ const MONGODB_URI = 'mongodb://localhost:27017/booklibrary';
 
 Open `index.js` and `models/Book.js` and complete each TODO section:
 
-### In `models/Book.js`:
+### In `models/Book.js`
+
 - Define the Book schema with all required fields
 - Export the Book model
 
-### In `index.js`:
+### In `index.js`
+
 - Set up MongoDB connection
 - Create logger middleware
 - Create all route handlers (GET, POST, PUT, DELETE)
@@ -46,12 +48,14 @@ Open `index.js` and `models/Book.js` and complete each TODO section:
 ## Step 5: Start MongoDB
 
 **If using local MongoDB:**
+
 ```bash
 # Make sure MongoDB is running
 # On Windows, MongoDB usually runs as a service
 ```
 
 **If using MongoDB Atlas:**
+
 - No local setup needed!
 
 ## Step 6: Run Your Server
@@ -61,6 +65,7 @@ node index.js
 ```
 
 You should see:
+
 ```
 ✅ Connected to MongoDB
 Server running on http://localhost:3000
@@ -68,7 +73,7 @@ Server running on http://localhost:3000
 
 ## Step 7: Test Your API
 
-### Using PowerShell:
+### Using PowerShell
 
 ```powershell
 # Test 1: Get all books
@@ -100,13 +105,14 @@ Invoke-RestMethod -Uri http://localhost:3000/api/books?category=fiction
 Invoke-RestMethod -Uri http://localhost:3000/api/books?category=fiction&minPrice=10
 ```
 
-### Using VS Code REST Client:
+### Using VS Code REST Client
 
 Open `test-api.http` and click "Send Request" above each request.
 
 ## Step 8: Verify Your Solution
 
 Check the console output - you should see logger messages for each request:
+
 ```
 GET /api/books
 POST /api/books
@@ -117,6 +123,7 @@ DELETE /api/books/...
 ## Step 9: Check the Solution (If You Get Stuck)
 
 If you're having trouble, you can compare your code with the solution files:
+
 - `index-solution.js` - Complete server solution
 - `models/Book-solution.js` - Complete Book model solution
 
@@ -125,26 +132,31 @@ If you're having trouble, you can compare your code with the solution files:
 ## Common Issues
 
 ### MongoDB Connection Error
+
 - Check your connection string
 - Make sure MongoDB is running (if local)
 - Check firewall/network (if Atlas)
 
 ### Port Already in Use
+
 ```bash
 # Change port in index.js to something else (3001, 5000, etc.)
 ```
 
 ### Cannot find module 'mongoose'
+
 ```bash
 npm install
 ```
 
 ### Request body is undefined
+
 - Make sure `express.json()` middleware is BEFORE your routes!
 
 ## Next Steps
 
 Once everything works:
+
 1. Add more fields to the Book schema (description, pages, ISBN, etc.)
 2. Add pagination to GET /api/books
 3. Add sorting (by price, title, etc.)

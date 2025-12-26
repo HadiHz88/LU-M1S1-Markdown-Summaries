@@ -26,10 +26,13 @@ Your server should handle these routes:
 2. Use the template provided in `server-template.js`
 3. Fill in the TODO sections
 4. Test your server using:
+
    ```bash
    node server.js
    ```
+
 5. Test with browser or PowerShell:
+
    ```powershell
    # Get all notes
    Invoke-RestMethod -Uri http://localhost:3000/notes
@@ -73,4 +76,3 @@ Your server should handle these routes:
 - ✅ HTTP request handling
 
 Good luck! 🚀
-

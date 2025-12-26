@@ -4,12 +4,14 @@
 Build an interactive product catalog application using Props (Chapter 05), Events (Chapter 06), and useState Hook (Chapter 07). Students will create components that pass data via props, handle user interactions through events, and manage state with useState.
 
 **Template Requirement**  
+
 1. Locate the provided `lab2-template` React + Vite project.  
 2. Duplicate the folder and rename it using the pattern `react-lab02-<yourname>`.  
 3. Install dependencies with `npm install` from inside the duplicated folder.  
 4. Do not rename or delete starter files. All new components should live under `src/components`.  
 
 **Predefined Styling**  
+
 1. Keep the stylesheet `src/styles/lab-theme.css` exactly as provided.  
 2. When you need new styles, add class names to your JSX and extend the CSS in a separate file (e.g., `src/styles/extensions.css`) that you import into `App.jsx`.  
 3. Use the existing utility classes (cards, buttons, forms) to keep a consistent look.  
@@ -64,6 +66,7 @@ Build an interactive product catalog application using Props (Chapter 05), Event
 
 1. Create a component `src/components/AddProductForm.jsx` that accepts props: `onSubmit` (function).  
 2. Inside the form component, use `useState` to manage form state as an object:  
+
    ```javascript
    const [formData, setFormData] = useState({
      name: '',
@@ -72,13 +75,16 @@ Build an interactive product catalog application using Props (Chapter 05), Event
      category: ''
    })
    ```  
+
 3. Create a `handleChange` function that updates the form state using the spread operator:  
+
    ```javascript
    const handleChange = (e) => {
      const { name, value } = e.target
      setFormData(prev => ({ ...prev, [name]: value }))
    }
    ```  
+
 4. The form should include input fields for `name`, `price`, `description`, and a `select` dropdown for `category`. All inputs should be controlled (use `value` and `onChange`).  
 5. Add a submit button. In the form's `onSubmit` event handler, call `e.preventDefault()` to prevent default form submission.  
 6. Call the `onSubmit` prop function with the form data, then reset the form by setting `formData` back to its initial state.  
@@ -110,10 +116,10 @@ Build an interactive product catalog application using Props (Chapter 05), Event
 - [ ] README completed with all required information.  
 
 **Important Reminders:**
+
 - Stay within chapters 05–07 only—no useEffect, useContext, or other advanced hooks yet.  
 - Use functional updates (`setState(prev => ...)`) when new state depends on previous state.  
 - Always prevent default form submission with `e.preventDefault()`.  
 - Keep event handlers simple and focused—complex logic can go in separate functions.  
 
 Good luck, and remember to test each part thoroughly before moving to the next!
-
