@@ -94,17 +94,17 @@
                         "rationale": "The SYN flag is used to initiate a connection, not to refuse one."
                     },
                     {
-                        "text": "Congestion control uses the 'Receive Window' field, whereas flow control uses duplicate ACKs.",
-                        "isCorrect": false,
-                        "rationale": "This is the reverse; flow control uses the 'Receive Window' field, while congestion control algorithms react to signals like timeouts and duplicate ACKs."
+                        "text": "RST",
+                        "isCorrect": true,
+                        "rationale": "The RST (Reset) flag is used to abruptly terminate a connection or refuse a connection attempt when no service is available on the destination port."
                     },
                     {
-                        "text": "There is no functional difference; they are two terms for the same process.",
+                        "text": "ACK",
                         "isCorrect": false,
-                        "rationale": "Although related, they solve two distinct problems: one concerning the network path and the other concerning the endpoint's capacity."
+                        "rationale": "The ACK flag acknowledges received data but is not used to reject connection requests."
                     }
                 ],
-                "hint": "Consider the two potential bottlenecks in data transfer: the path and the destination."
+                "hint": "This flag immediately terminates the connection attempt without the normal handshake."
             },
             {
                 "question": "A TCP sender transmits a segment with Seq=92 containing 8 bytes of data. It then receives a retransmitted segment with the same sequence number. If the receiver's next expected byte is 100, what action will it take?",
@@ -752,6 +752,1846 @@
                     }
                 ],
                 "hint": "Consider the topology description for this address type: 'One to One'."
+            }
+        ]
+    },
+    {
+        "chapter": 4,
+        "quiz": [
+            {
+                "question": "What is the fundamental principle of a 'Software-Defined' system, as described in the source material?",
+                "answerOptions": [
+                    {
+                        "text": "The control of the underlying system is exposed to developers through an API.",
+                        "isCorrect": true,
+                        "rationale": "This aligns with the definition that system functionality is implemented as software over an API, allowing for programmability and customisation."
+                    },
+                    {
+                        "text": "The hardware and software components are tightly coupled into a single proprietary unit.",
+                        "isCorrect": false,
+                        "rationale": "This describes the architecture of traditional, monolithic routers, which SDN aims to move away from."
+                    },
+                    {
+                        "text": "All network functions are moved from hardware to virtual machines in the cloud.",
+                        "isCorrect": false,
+                        "rationale": "While related to network virtualisation, this is a specific implementation choice, not the core definition of being 'software-defined'."
+                    },
+                    {
+                        "text": "It requires the use of open-source hardware for all network infrastructure.",
+                        "isCorrect": false,
+                        "rationale": "SDN promotes the use of commodity hardware but does not strictly require it to be open-source; the key is the open interface to control it."
+                    }
+                ],
+                "hint": "Consider how an application developer interacts with the network's decision-making process in this paradigm."
+            },
+            {
+                "question": "In a traditional network architecture, what is the typical relationship between the control plane and the data plane?",
+                "answerOptions": [
+                    {
+                        "text": "The data plane is located in a centralised controller, while the control plane is distributed among the routers.",
+                        "isCorrect": false,
+                        "rationale": "This configuration inverts the roles and locations characteristic of both traditional and SDN architectures."
+                    },
+                    {
+                        "text": "They are logically separated by open, standardised interfaces like OpenFlow.",
+                        "isCorrect": false,
+                        "rationale": "This describes the approach taken by SDN, not the architecture of traditional networking devices."
+                    },
+                    {
+                        "text": "They are tightly coupled and integrated within each individual network device.",
+                        "isCorrect": true,
+                        "rationale": "Traditional routers are described as monolithic systems where the control logic and forwarding hardware are combined in one proprietary box."
+                    },
+                    {
+                        "text": "The control plane is an application that runs on a separate server, managing multiple data planes.",
+                        "isCorrect": false,
+                        "rationale": "This architecture, with a separate management server, is the model that SDN introduces."
+                    }
+                ],
+                "hint": "Think about how a single router from a traditional vendor operates as a self-contained unit."
+            },
+            {
+                "question": "Which of the following best describes the role of Southbound APIs like OpenFlow in an SDN architecture?",
+                "answerOptions": [
+                    {
+                        "text": "They allow network applications to express their requirements to the SDN controller.",
+                        "isCorrect": false,
+                        "rationale": "This communication channel, between applications and the controller, is the function of Northbound APIs."
+                    },
+                    {
+                        "text": "They facilitate communication between different SDN controllers in a distributed setup.",
+                        "isCorrect": false,
+                        "rationale": "While controller-to-controller communication exists (sometimes called East-West), it is not the purpose of Southbound APIs."
+                    },
+                    {
+                        "text": "They enable the SDN controller to program and manage the forwarding behaviour of the infrastructure layer.",
+                        "isCorrect": true,
+                        "rationale": "These APIs provide the communication link from the centralised control logic down to the distributed switching and routing hardware."
+                    },
+                    {
+                        "text": "They provide network administrators with a graphical user interface for network management.",
+                        "isCorrect": false,
+                        "rationale": "A GUI would be part of a network management application in the application layer, using Northbound APIs to interact with the controller."
+                    }
+                ],
+                "hint": "This type of API connects the network's 'brain' to its 'muscles'."
+            },
+            {
+                "question": "What is a primary advantage gained by separating the control plane from the data plane?",
+                "answerOptions": [
+                    {
+                        "text": "It enables centralised network intelligence and a global view of the topology.",
+                        "isCorrect": true,
+                        "rationale": "By centralising the control functions, administrators can manage the network holistically, simplifying policy enforcement and management."
+                    },
+                    {
+                        "text": "It completely eliminates the possibility of network latency.",
+                        "isCorrect": false,
+                        "rationale": "While the data plane is optimised for low latency, separating the planes can introduce latency in controller communication."
+                    },
+                    {
+                        "text": "It forces all network hardware to be manufactured by a single vendor for compatibility.",
+                        "isCorrect": false,
+                        "rationale": "This separation, through standard APIs, is designed to achieve the opposite effect: promoting vendor neutrality and interoperability."
+                    },
+                    {
+                        "text": "It increases the complexity of switch design by adding more routing protocols.",
+                        "isCorrect": false,
+                        "rationale": "This approach actually simplifies switch design by offloading complex routing decisions to the centralised controller."
+                    }
+                ],
+                "hint": "Think about what becomes possible when one entity has visibility and control over the entire network."
+            },
+            {
+                "question": "Within the SDN three-layer architecture, which layer is directly responsible for the physical task of packet forwarding?",
+                "answerOptions": [
+                    {
+                        "text": "The Control Layer",
+                        "isCorrect": false,
+                        "rationale": "The Control Layer contains the network intelligence (the SDN controller) but does not handle the packet forwarding itself."
+                    },
+                    {
+                        "text": "The Application Layer",
+                        "isCorrect": false,
+                        "rationale": "The Application Layer houses network services and business logic that utilise the network, rather than operating it."
+                    },
+                    {
+                        "text": "The Infrastructure Layer",
+                        "isCorrect": true,
+                        "rationale": "This layer, also known as the Data Plane, consists of the switches and routers that perform the actual forwarding of data packets."
+                    },
+                    {
+                        "text": "The Northbound APIs",
+                        "isCorrect": false,
+                        "rationale": "APIs are interfaces for communication between layers, not a functional layer responsible for hardware tasks."
+                    }
+                ],
+                "hint": "Consider which layer consists of the actual network hardware that data traffic flows through."
+            },
+            {
+                "question": "According to the provided material, which of the following is a significant technical challenge in SDN implementation?",
+                "answerOptions": [
+                    {
+                        "text": "The slow pace of software innovation due to proprietary development.",
+                        "isCorrect": false,
+                        "rationale": "This is a problem with traditional networks that SDN is designed to solve by enabling faster innovation."
+                    },
+                    {
+                        "text": "The difficulty in managing network policies across distributed, independent routers.",
+                        "isCorrect": false,
+                        "rationale": "SDN aims to simplify this by centralising policy enforcement, which is a challenge in traditional networking."
+                    },
+                    {
+                        "text": "The security risk of having a centralised controller as a primary attack surface.",
+                        "isCorrect": true,
+                        "rationale": "Centralising control offers many benefits but also creates a high-value target for attacks and a potential single point of failure."
+                    },
+                    {
+                        "text": "The high cost associated with specialised, vendor-specific hardware.",
+                        "isCorrect": false,
+                        "rationale": "One of the benefits of SDN is the ability to use commodity hardware, which can lead to cost reductions."
+                    }
+                ],
+                "hint": "Think about the potential downsides of putting all of your 'eggs' in one basket."
+            },
+            {
+                "question": "The document draws a parallel between the evolution of computing and the motivation for SDN. What change in computing does this refer to?",
+                "answerOptions": [
+                    {
+                        "text": "The shift from single-core to multi-core microprocessors.",
+                        "isCorrect": false,
+                        "rationale": "While an important evolution, the key parallel is about the system's architecture and interfaces, not processor design."
+                    },
+                    {
+                        "text": "The shift from vertically integrated systems to layered architecture with open interfaces.",
+                        "isCorrect": true,
+                        "rationale": "The move away from proprietary mainframes (like IBM's) to a model with open OS and application layers on commodity hardware is presented as the model for SDN's evolution of networking."
+                    },
+                    {
+                        "text": "The development of graphical user interfaces to replace command-line interfaces.",
+                        "isCorrect": false,
+                        "rationale": "This comparison focuses on the user-facing aspect of computing, whereas the SDN parallel relates to the underlying system architecture."
+                    },
+                    {
+                        "text": "The transition from wired local area networks to wireless connectivity.",
+                        "isCorrect": false,
+                        "rationale": "Wireless is mentioned as an area where SDN can innovate, but it is not the historical parallel used to explain the motivation for SDN itself."
+                    }
+                ],
+                "hint": "Consider the difference between old mainframe computers and modern PCs in terms of hardware, operating systems, and applications."
+            },
+            {
+                "question": "What is the primary function of an SDN Controller, such as ONOS or OpenDaylight?",
+                "answerOptions": [
+                    {
+                        "text": "To perform high-throughput packet forwarding and processing.",
+                        "isCorrect": false,
+                        "rationale": "This is the primary function of the data plane (infrastructure layer), which is controlled by the controller."
+                    },
+                    {
+                        "text": "To maintain a global view of the network and manage flow rules.",
+                        "isCorrect": true,
+                        "rationale": "The controller acts as the centralised brain, maintaining network state, enforcing policies, and installing the rules that data plane devices follow."
+                    },
+                    {
+                        "text": "To provide a physical connection point for servers and workstations.",
+                        "isCorrect": false,
+                        "rationale": "This describes the role of a physical switch or access point in the infrastructure layer."
+                    },
+                    {
+                        "text": "To run business-specific applications and network services directly.",
+                        "isCorrect": false,
+                        "rationale": "These applications run in the application layer and communicate with the controller via Northbound APIs."
+                    }
+                ],
+                "hint": "This component acts as the central point of intelligence and decision-making in the network."
+            },
+            {
+                "question": "Which type of interface is used for communication between the Control Layer and the Application Layer in SDN?",
+                "answerOptions": [
+                    {
+                        "text": "Southbound APIs",
+                        "isCorrect": false,
+                        "rationale": "These interfaces connect the control layer downwards to the infrastructure layer."
+                    },
+                    {
+                        "text": "Northbound APIs",
+                        "isCorrect": true,
+                        "rationale": "These interfaces expose the controller's capabilities upwards to network applications and services."
+                    },
+                    {
+                        "text": "Proprietary Command-Line Interfaces",
+                        "isCorrect": false,
+                        "rationale": "SDN aims to replace these with open, standard, and programmable interfaces."
+                    },
+                    {
+                        "text": "In-band Management Interfaces",
+                        "isCorrect": false,
+                        "rationale": "This refers to a method of managing devices using the same network that carries user data, not a specific API layer in the SDN architecture."
+                    }
+                ],
+                "hint": "In a typical diagram, this API connects the middle layer to the top layer."
+            },
+            {
+                "question": "What is presented as a key long-term motivation for adopting SDN's programmable network model?",
+                "answerOptions": [
+                    {
+                        "text": "To simplify the management of middleboxes in data centres.",
+                        "isCorrect": false,
+                        "rationale": "The document identifies this as an important, but short-term, motivation for SDN adoption."
+                    },
+                    {
+                        "text": "To promote innovation within the networking industry.",
+                        "isCorrect": true,
+                        "rationale": "The material argues that, like in computing, making the network programmable will unlock new services and foster industry-wide innovation."
+                    },
+                    {
+                        "text": "To improve security in wireless networks.",
+                        "isCorrect": false,
+                        "rationale": "This is cited as a specific, short-term area where existing network control is no longer sufficient."
+                    },
+                    {
+                        "text": "To achieve a marginal reduction in operational expenses.",
+                        "isCorrect": false,
+                        "rationale": "While cost reduction is a benefit, the primary long-term driver mentioned is the potential for innovation."
+                    }
+                ],
+                "hint": "The source material connects this goal to the historical evolution of the computing industry from proprietary systems to open platforms."
+            },
+            {
+                "question": "What is the primary distinction between the network layer's data plane and control plane functions?",
+                "answerOptions": [
+                    {
+                        "text": "The data plane operates in milliseconds using software, while the control plane operates in nanoseconds using hardware.",
+                        "isCorrect": false,
+                        "rationale": "This reverses the typical operating speeds and implementation methods; the data plane is associated with high-speed hardware forwarding."
+                    },
+                    {
+                        "text": "The data plane determines the end-to-end path of a packet, while the control plane forwards the packet at each individual router.",
+                        "isCorrect": false,
+                        "rationale": "This swaps the roles of the two planes. Path determination is a network-wide logic function."
+                    },
+                    {
+                        "text": "The data plane handles the local forwarding of datagrams within a router, whereas the control plane manages the network-wide routing logic.",
+                        "isCorrect": true,
+                        "rationale": "This correctly identifies the data plane's per-router function of moving packets and the control plane's broader role in determining the overall path."
+                    },
+                    {
+                        "text": "The data plane is only implemented in hosts, while the control plane is only implemented in routers.",
+                        "isCorrect": false,
+                        "rationale": "Network layer protocols, including data and control plane aspects, are present in both hosts and routers to facilitate end-to-end communication."
+                    }
+                ],
+                "hint": "Think about the scope of each function: one is local to a device, while the other considers the entire network path."
+            },
+            {
+                "question": "In the context of a router's input port, what is 'Head-of-the-Line (HOL) blocking'?",
+                "answerOptions": [
+                    {
+                        "text": "A datagram is discarded because the output port's buffer is full due to congestion.",
+                        "isCorrect": false,
+                        "rationale": "This describes packet loss due to output port queueing, not a blockage at the input queue."
+                    },
+                    {
+                        "text": "The switching fabric is slower than the combined rate of the input ports, causing a general slowdown.",
+                        "isCorrect": false,
+                        "rationale": "This is a condition that leads to input queuing, but it doesn't describe the specific HOL blocking phenomenon itself."
+                    },
+                    {
+                        "text": "A queued datagram at the front of an input queue is unable to proceed, thereby blocking all subsequent datagrams in the same queue.",
+                        "isCorrect": true,
+                        "rationale": "This defines HOL blocking, where a single packet waiting for a busy output port prevents other packets behind it from being forwarded, even if their destination ports are free."
+                    },
+                    {
+                        "text": "The routing processor takes too long to calculate the forwarding table, causing all input ports to pause.",
+                        "isCorrect": false,
+                        "rationale": "This relates to a control plane function (routing calculations), whereas HOL blocking is a data plane phenomenon occurring during forwarding."
+                    }
+                ],
+                "hint": "Consider what happens in an input queue when the very first packet is stalled."
+            },
+            {
+                "question": "According to the principle of longest prefix matching, which link interface would a router choose for a datagram with the destination address '11001000 00010111 00011000 10101010'?",
+                "answerOptions": [
+                    {
+                        "text": "The interface matching the prefix '11001000 00010111 00010*** *********'",
+                        "isCorrect": false,
+                        "rationale": "While this prefix does match the destination address, it is shorter than another available match in the table."
+                    },
+                    {
+                        "text": "The interface with the 'otherwise' or default route.",
+                        "isCorrect": false,
+                        "rationale": "A default route is only used when no other more specific prefix in the forwarding table matches the destination address."
+                    },
+                    {
+                        "text": "The interface matching the prefix '11001000 00010111 00011*** *********'",
+                        "isCorrect": false,
+                        "rationale": "This prefix also matches the address, but it is not the most specific (longest) match available."
+                    },
+                    {
+                        "text": "The interface matching the prefix '11001000 00010111 00011000 *********'",
+                        "isCorrect": true,
+                        "rationale": "This is the most specific, or longest, prefix in the table that matches the given destination address, so it will be selected for forwarding."
+                    }
+                ],
+                "hint": "The router will always prefer the most specific route available in its forwarding table."
+            },
+            {
+                "question": "In Software-Defined Networking (SDN), how are the flow tables in each router typically managed?",
+                "answerOptions": [
+                    {
+                        "text": "Each router independently computes its own flow table by communicating with its direct neighbours.",
+                        "isCorrect": false,
+                        "rationale": "This describes a traditional, decentralised routing algorithm approach, not the SDN model."
+                    },
+                    {
+                        "text": "Flow tables are computed and distributed by a logically centralised routing controller.",
+                        "isCorrect": true,
+                        "rationale": "This is the core principle of SDN, where network control logic is abstracted from the forwarding hardware and managed centrally."
+                    },
+                    {
+                        "text": "Flow tables are manually configured by a network administrator on each individual router.",
+                        "isCorrect": false,
+                        "rationale": "While static routes can be manually configured, this is not the typical dynamic management method in an SDN architecture."
+                    },
+                    {
+                        "text": "The tables are pre-loaded at the factory and cannot be changed during operation.",
+                        "isCorrect": false,
+                        "rationale": "Network routing must be dynamic to adapt to changes in topology and traffic, making fixed tables impractical."
+                    }
+                ],
+                "hint": "Consider the key architectural shift that separates the control plane from the data plane in SDN."
+            },
+            {
+                "question": "Which of the following best describes the OpenFlow protocol's role in an SDN architecture?",
+                "answerOptions": [
+                    {
+                        "text": "It is a routing algorithm that determines the most efficient path between two hosts.",
+                        "isCorrect": false,
+                        "rationale": "OpenFlow is a communication protocol, not a routing algorithm itself; routing algorithms run on the controller which then uses OpenFlow."
+                    },
+                    {
+                        "text": "It is a standard communication protocol (southbound API) between the SDN controller and network devices.",
+                        "isCorrect": true,
+                        "rationale": "This accurately defines OpenFlow's primary function as the interface for the controller to manage the flow tables on switches and routers."
+                    },
+                    {
+                        "text": "It is a hardware specification for building high-speed switching fabrics in routers.",
+                        "isCorrect": false,
+                        "rationale": "OpenFlow is a software protocol standard, not a hardware design for physical components like switching fabrics."
+                    },
+                    {
+                        "text": "It is an application layer protocol for guaranteeing minimum bandwidth to a flow of datagrams.",
+                        "isCorrect": false,
+                        "rationale": "While OpenFlow rules can be used to implement quality of service, its fundamental role is communication and control, not the service guarantee itself."
+                    }
+                ],
+                "hint": "Think about which two major components of an SDN architecture need to communicate with each other."
+            },
+            {
+                "question": "An OpenFlow rule is defined in a firewall's flow table as: Match 'TCP dport = 22', Action 'drop'. What is the function of this rule?",
+                "answerOptions": [
+                    {
+                        "text": "To forward all traffic destined for TCP port 22 to the controller.",
+                        "isCorrect": false,
+                        "rationale": "The specified action is 'drop', which means the packet is discarded, not sent to the controller."
+                    },
+                    {
+                        "text": "To block all datagrams destined for TCP port 22.",
+                        "isCorrect": true,
+                        "rationale": "This rule matches packets based on their destination TCP port and the 'drop' action instructs the device to discard them, effectively blocking that traffic."
+                    },
+                    {
+                        "text": "To allow all traffic originating from TCP port 22.",
+                        "isCorrect": false,
+                        "rationale": "The rule matches on the destination port ('dport'), not the source port, and the action is to block, not permit, traffic."
+                    },
+                    {
+                        "text": "To rewrite the destination port for all traffic on TCP port 22.",
+                        "isCorrect": false,
+                        "rationale": "The action is 'drop', not a 'modify field' action that would be required to change the port number."
+                    }
+                ],
+                "hint": "Analyse each part of the 'match-plus-action' rule to determine its overall effect on network packets."
+            },
+            {
+                "question": "What is the primary limitation of a first-generation router that uses memory for its switching fabric?",
+                "answerOptions": [
+                    {
+                        "text": "It is limited by the speed of the routing processor's CPU.",
+                        "isCorrect": false,
+                        "rationale": "While the CPU is involved, the main bottleneck is the data transfer across the system bus to and from memory."
+                    },
+                    {
+                        "text": "It is limited by the bandwidth of the system memory, as each datagram must cross the bus twice.",
+                        "isCorrect": true,
+                        "rationale": "Switching via memory requires a packet to be copied from an input port to memory, and then from memory to an output port, creating a performance bottleneck."
+                    },
+                    {
+                        "text": "It suffers from Head-of-the-Line (HOL) blocking.",
+                        "isCorrect": false,
+                        "rationale": "HOL blocking is a phenomenon related to input port queuing, not a direct limitation of the memory-based switching fabric itself."
+                    },
+                    {
+                        "text": "It cannot perform longest prefix matching efficiently.",
+                        "isCorrect": false,
+                        "rationale": "The lookup function (like longest prefix matching) is separate from the switching fabric's function of transferring the packet."
+                    }
+                ],
+                "hint": "Consider the path a packet must take inside the router when the main system memory is used for switching."
+            },
+            {
+                "question": "In OpenFlow, which message category is used by a switch to notify the controller about events like a port's state changing or an unmatched packet arriving?",
+                "answerOptions": [
+                    {
+                        "text": "Controller-to-Switch Messages",
+                        "isCorrect": false,
+                        "rationale": "This category describes messages that originate from the controller to configure or query the switch."
+                    },
+                    {
+                        "text": "Symmetric Messages",
+                        "isCorrect": false,
+                        "rationale": "These are bidirectional messages, such as 'Hello' or 'Echo', used for connection management and keepalives."
+                    },
+                    {
+                        "text": "Asynchronous Messages",
+                        "isCorrect": true,
+                        "rationale": "This category is for unsolicited messages from the switch to the controller to report network events, such as 'Packet-In' or 'Port Status'."
+                    },
+                    {
+                        "text": "Statistics Request/Reply Messages",
+                        "isCorrect": false,
+                        "rationale": "These are part of the Controller-to-Switch category and are used by the controller to poll the switch for information, rather than for event-driven notifications."
+                    }
+                ],
+                "hint": "Think about which type of message would be initiated by the switch without being asked first by the controller."
+            },
+            {
+                "question": "What is the key advantage of using an interconnection network (like a crossbar) as a switching fabric compared to a shared bus?",
+                "answerOptions": [
+                    {
+                        "text": "It consumes significantly less power than a shared bus.",
+                        "isCorrect": false,
+                        "rationale": "Interconnection networks are often more complex and may consume more power, but their primary advantage lies in performance."
+                    },
+                    {
+                        "text": "It overcomes the bandwidth limitations inherent in a shared bus by allowing multiple parallel transfers.",
+                        "isCorrect": true,
+                        "rationale": "A crossbar switch allows multiple input ports to forward packets to different output ports simultaneously, avoiding the single-path contention of a bus."
+                    },
+                    {
+                        "text": "It simplifies the routing algorithms needed in the control plane.",
+                        "isCorrect": false,
+                        "rationale": "The choice of switching fabric is a data plane implementation detail and does not directly affect the control plane's routing logic."
+                    },
+                    {
+                        "text": "It completely eliminates the need for buffering at the output ports.",
+                        "isCorrect": false,
+                        "rationale": "Output port buffering is still required if multiple inputs send packets to the same output port simultaneously, exceeding its line speed."
+                    }
+                ],
+                "hint": "Consider what happens when multiple packets need to be transferred from input to output ports at the same time."
+            },
+            {
+                "question": "The OpenFlow abstraction unifies various network devices using a 'match-plus-action' paradigm. How would a traditional Layer 2 switch's function be represented in this model?",
+                "answerOptions": [
+                    {
+                        "text": "Match on the destination IP prefix; Action is to forward out a link.",
+                        "isCorrect": false,
+                        "rationale": "This describes the function of a router (Layer 3 device), which operates based on IP addresses."
+                    },
+                    {
+                        "text": "Match on IP addresses and TCP/UDP ports; Action is to permit or deny.",
+                        "isCorrect": false,
+                        "rationale": "This describes the function of a firewall, which inspects Layer 3 and Layer 4 headers to enforce security policies."
+                    },
+                    {
+                        "text": "Match on the destination MAC address; Action is to forward or flood.",
+                        "isCorrect": true,
+                        "rationale": "A Layer 2 switch makes forwarding decisions based on the destination MAC address in the Ethernet frame, forwarding to a known port or flooding to all ports."
+                    },
+                    {
+                        "text": "Match on IP address and port; Action is to rewrite address and port.",
+                        "isCorrect": false,
+                        "rationale": "This describes the function of a Network Address Translation (NAT) device."
+                    }
+                ],
+                "hint": "At which layer of the network model does a traditional switch operate, and what type of address does it use?"
+            },
+            {
+                "question": "What is the defining characteristic of the control plane in a traditional internet network layer, as described in the source material?",
+                "answerOptions": [
+                    {
+                        "text": "It is logically centralised in a remote controller for simplified management.",
+                        "rationale": "This describes the Software-Defined Networking (SDN) approach, which contrasts with the traditional method.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "It operates using open, non-proprietary protocols on commodity hardware.",
+                        "rationale": "The material notes that traditional routers typically run proprietary implementations of standard protocols on proprietary hardware.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "It consists of a distributed, per-router approach where each device runs its own control logic.",
+                        "rationale": "The text states that traditionally, individual routing algorithm components in each router interact to compute forwarding tables.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "It separates control functions into distinct 'middleboxes' like firewalls and load balancers.",
+                        "rationale": "While middleboxes are part of a traditional network, the core control logic for routing is implemented on a per-router basis.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Consider how individual routers determine their forwarding tables in a non-SDN environment."
+            },
+            {
+                "question": "In the SDN architecture, what is the primary purpose of the 'northbound API'?",
+                "answerOptions": [
+                    {
+                        "text": "To allow the SDN controller to communicate with and manage the data plane switches.",
+                        "rationale": "Communication between the controller and the switches is handled by the southbound API.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To enable network-control applications to interact with the SDN controller and access network information.",
+                        "rationale": "The northbound API serves as the interface between the control applications (the 'brains') and the network operating system (the controller).",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "To standardise the physical connection between different network hardware components.",
+                        "rationale": "APIs in this context define software interactions, not physical connections.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To provide a direct communication channel between data plane switches for peer-to-peer updates.",
+                        "rationale": "In SDN, switches communicate with the central controller, not typically with each other, for control plane information.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Think about the layered structure of SDN and which interface sits 'above' the controller."
+            },
+            {
+                "question": "According to the presentation, what is a major advantage of the centralised programming model in SDN?",
+                "answerOptions": [
+                    {
+                        "text": "It requires less powerful hardware for the central controller.",
+                        "rationale": "Centralising control logic may actually require a powerful, robust, and scalable controller or distributed system of controllers.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "It ensures all routers use a single proprietary operating system like Cisco IOS.",
+                        "rationale": "SDN moves away from this model, promoting open, non-proprietary implementations of the control plane.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "It simplifies the computation of forwarding tables, which can be calculated centrally and then distributed.",
+                        "rationale": "The material contrasts this simpler centralised computation with the more difficult distributed algorithm approach used in traditional routers.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "It physically combines the control plane and data plane within each switch.",
+                        "rationale": "A core principle of SDN is the separation of the control and data planes, not their combination.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Compare the complexity of coordinating many independent devices versus issuing instructions from a single logical point."
+            },
+            {
+                "question": "The evolution of networking towards SDN is compared to which historical shift in computing technology?",
+                "answerOptions": [
+                    {
+                        "text": "The move from batch processing to real-time operating systems.",
+                        "rationale": "This analogy is about processing methodology, not the architectural shift from integrated to layered systems.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "The development of graphical user interfaces to replace command-line interfaces.",
+                        "rationale": "This relates to user interaction, whereas the SDN analogy is about hardware and software architecture.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "The transition from vertically integrated mainframes to PCs with open, horizontal architecture.",
+                        "rationale": "This analogy highlights the move from closed, proprietary systems to open interfaces and specialised layers, which mirrors the goals of SDN.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "The invention of the microprocessor, leading to smaller devices.",
+                        "rationale": "While the microprocessor was a key enabler for the PC evolution, the analogy itself is about the overall system architecture.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Look for the diagram that contrasts a 'vertically integrated' system with a 'horizontal' one."
+            },
+            {
+                "question": "What is the role of a data plane switch in an SDN network?",
+                "answerOptions": [
+                    {
+                        "text": "To run distributed routing algorithms and compute its own forwarding tables.",
+                        "rationale": "This is the function of a router in a traditional network; in SDN, this computation is done by the controller.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To implement generalised data-plane forwarding based on flow tables installed by the controller.",
+                        "rationale": "The material describes these switches as fast and simple devices that execute forwarding instructions provided by the controller.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "To host network-control applications like routing and load balancing.",
+                        "rationale": "Network-control applications run on or interact with the SDN controller, not the data plane switches.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To monitor network performance and directly signal other switches about link failures.",
+                        "rationale": "In the event of a failure, a switch signals the central controller, not other switches directly.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Remember the principle of separating the 'thinking' (control) from the 'doing' (data)."
+            },
+            {
+                "question": "In the SDN link failure example, what is the immediate consequence of the controller receiving an OpenFlow port status message?",
+                "answerOptions": [
+                    {
+                        "text": "The controller immediately installs new flow tables in the affected switch.",
+                        "rationale": "Before installing new tables, the controller must first update its state and allow the relevant application to compute the new routes.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "The controller updates its link status information, reflecting the change in the network state.",
+                        "rationale": "This is the second step in the example; the controller first updates its internal representation of the network based on the message from the switch.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "The Dijkstra's routing application directly contacts the switch to verify the failure.",
+                        "rationale": "The application relies on the state information maintained by the controller, it does not communicate directly with the switch.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "The switch automatically forwards the message to all adjacent switches.",
+                        "rationale": "The switch's role is to inform the controller, which holds the centralised view of the network.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Consider the sequence of events after the initial notification arrives at the central controller."
+            },
+            {
+                "question": "Which component of the SDN controller is described as a 'distributed database' responsible for the state of network links and switches?",
+                "answerOptions": [
+                    {
+                        "text": "The communication layer.",
+                        "rationale": "This layer handles the protocols for talking to devices, not storing the overall network state.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "The interface layer to network control apps.",
+                        "rationale": "This layer provides the API and abstractions for applications, but does not itself store the network state.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "The network-wide state management layer.",
+                        "rationale": "This layer is explicitly defined as maintaining the state of network links, switches, and services.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "The network-control applications.",
+                        "rationale": "These applications use the state information stored by the controller to make decisions, but they are not the database itself.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "The name of this component directly reflects its function of managing network-wide information."
+            },
+            {
+                "question": "What key feature of the ONOS controller's 'intent framework' is highlighted in the material?",
+                "answerOptions": [
+                    {
+                        "text": "It requires administrators to specify the exact flow rules for every switch.",
+                        "rationale": "The intent framework is designed to abstract this level of detail, focusing on 'what' is needed, not 'how' to implement it.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "It provides a high-level way to specify a desired service, abstracting the implementation details.",
+                        "rationale": "The text describes this as specifying 'what rather than how,' allowing for a simpler, goal-oriented approach to network management.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "It tightly bundles all control applications within the controller's core for performance.",
+                        "rationale": "The description of ONOS explicitly states that its control applications are separate from the controller.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "It is a southbound protocol designed for maximum reliability and performance scaling.",
+                        "rationale": "An intent framework is a northbound concept, defining how users and applications specify their needs to the network.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Think about the difference between declaring an objective versus providing a detailed set of instructions."
+            }
+        ]
+    },
+    {
+        "chapter": 5,
+        "quiz": [
+            {
+                "question": "What is the primary function of the Border Gateway Protocol (BGP)?",
+                "answerOptions": [
+                    {
+                        "text": "To calculate the shortest path within a single Autonomous System using link-state information.",
+                        "rationale": "This describes the function of an Interior Gateway Protocol (IGP) like OSPF, not an Exterior Gateway Protocol like BGP.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To share connectivity information and enforce routing policies between different Autonomous Systems.",
+                        "rationale": "BGP is designed for inter-domain routing, connecting the distinct networks that form the internet and allowing them to apply specific policies.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "To assign IP addresses to hosts within an organisation's local network.",
+                        "rationale": "IP address assignment is typically handled by protocols like DHCP or static configuration, not by an inter-domain routing protocol.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To manage the physical connection and data link layer between two border routers.",
+                        "rationale": "BGP operates at a higher layer of the network stack and is concerned with reachability, not the underlying physical or data link connections.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Consider whether BGP operates within a single network or between different networks."
+            },
+            {
+                "question": "Classless Inter-Domain Routing (CIDR) was introduced to solve which two major problems?",
+                "answerOptions": [
+                    {
+                        "text": "Exhaustion of the IP address space and the rapid growth of internet routing tables.",
+                        "rationale": "CIDR allows for flexible allocation of IP address blocks and route aggregation, which directly addresses both address space depletion and routing table size.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "Network latency and the lack of trust between Autonomous Systems.",
+                        "rationale": "While BGP policies can address trust, and network design addresses latency, these were not the specific problems that CIDR was designed to solve.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "The high cost of routers and the complexity of configuring routing protocols.",
+                        "rationale": "CIDR simplifies routing tables but does not directly address the hardware cost or the inherent complexity of protocol configuration.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Insecure data transmission and the need for a 16-bit Autonomous System number.",
+                        "rationale": "CIDR is an addressing and routing scheme; it does not provide encryption for data, and the AS number system is a separate concept.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Think about how addressing was handled before CIDR and what limitations that system had."
+            },
+            {
+                "question": "In BGP, what is the purpose of a KEEPALIVE message?",
+                "answerOptions": [
+                    {
+                        "text": "To advertise new network routes to a BGP peer.",
+                        "rationale": "Advertising new routes is the function of the UPDATE message, which contains path attributes and Network Layer Reachability Information.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To signal an error and terminate the connection with a peer.",
+                        "rationale": "Error reporting and connection termination are handled by the NOTIFICATION message.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To confirm that the connection to a BGP peer is still active.",
+                        "rationale": "These messages are sent periodically during the session's hold time to prevent the connection from being considered 'dead' when there are no route updates.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "To negotiate session parameters like the AS number and hold time.",
+                        "rationale": "Initial session parameters are negotiated using the OPEN message when the connection is first established.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Consider what needs to happen to maintain a BGP session when there are no new routes to announce."
+            },
+            {
+                "question": "Which BGP attribute is used within a single AS to influence the choice of an exit point for outbound traffic?",
+                "answerOptions": [
+                    {
+                        "text": "AS-PATH",
+                        "rationale": "The AS-PATH lists the Autonomous Systems a route has traversed and is primarily used for loop prevention and as a factor in path selection, but not for internal preference.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "MED (Multi-Exit Discriminator)",
+                        "rationale": "MED is used to influence how a neighbouring AS sends traffic *into* your AS; it does not control your AS's outbound traffic preferences.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "ORIGIN",
+                        "rationale": "The ORIGIN attribute indicates how a route was introduced into BGP (e.g., from an IGP) and is a factor in the final stages of route selection, not the primary tool for exit point preference.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "LOCAL_PREF (Local Preference)",
+                        "rationale": "This attribute is local to an AS and is exchanged between iBGP peers. A higher LOCAL_PREF value is more preferred, making it the standard tool for choosing an outbound path.",
+                        "isCorrect": true
+                    }
+                ],
+                "hint": "Look for an attribute that is explicitly described as 'Local to the AS' and used for setting preferences."
+            },
+            {
+                "question": "According to the provided material, what is the key characteristic of BGP as a path-vector protocol?",
+                "answerOptions": [
+                    {
+                        "text": "It calculates the lowest metric based on link bandwidth and delay.",
+                        "rationale": "Calculating metrics based on link characteristics is typical of link-state protocols, not path-vector protocols.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Every router maintains a complete map of the entire network topology.",
+                        "rationale": "This describes a link-state protocol like OSPF. BGP routers do not have visibility into the internal topology of other ASes.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Each route advertisement includes the full sequence of Autonomous Systems it has passed through.",
+                        "rationale": "This list, known as the AS-PATH, is the defining feature of a path-vector protocol and is crucial for loop detection and policy application.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "It only advertises the next-hop router and a simple hop count.",
+                        "rationale": "This is more characteristic of a distance-vector protocol. BGP provides a much richer set of information, including the entire AS path.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Consider what the 'vector' in 'path-vector' refers to."
+            },
+            {
+                "question": "A BGP session established between two border routers in different Autonomous Systems is known as what type of session?",
+                "answerOptions": [
+                    {
+                        "text": "I-BGP (Internal BGP)",
+                        "rationale": "I-BGP sessions are established between routers *within* the same Autonomous System to share external route information.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "E-BGP (External BGP)",
+                        "rationale": "This is the correct term for a BGP peering between routers in separate Autonomous Systems, used to exchange routing information between them.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "IGP (Interior Gateway Protocol)",
+                        "rationale": "IGP refers to a category of protocols (like OSPF or IS-IS) used for routing *inside* an AS, not a type of BGP session.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "EGP (Exterior Gateway Protocol)",
+                        "rationale": "While BGP is an example of an EGP, the specific term for the session between different ASes is External BGP (E-BGP). EGP is also the name of an older, obsolete protocol.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "The name of the session type reflects whether it is internal or external to an Autonomous System."
+            },
+            {
+                "question": "If a router receives multiple paths to the same destination, which attribute is generally considered first in the BGP best path selection process?",
+                "answerOptions": [
+                    {
+                        "text": "Shortest AS-PATH length",
+                        "rationale": "While a shorter AS-PATH is preferred, it is evaluated after the LOCAL_PREF attribute has been considered.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Highest LOCAL_PREF value",
+                        "rationale": "The document's 'Choosing best route' section lists selecting the route with the highest LOCAL_PREF as the first step in the decision process.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "Lowest MED value",
+                        "rationale": "The MED attribute is considered later in the process, typically only when comparing multiple paths from the same neighbouring AS.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Lowest ORIGIN type",
+                        "rationale": "The ORIGIN type (IGP < EGP < INCOMPLETE) is an important tie-breaker, but it is checked after LOCAL_PREF and AS-PATH length.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "The decision process prioritises internal policy decisions within an AS before looking at external factors."
+            },
+            {
+                "question": "What is the function of the Multi-Exit Discriminator (MED) attribute?",
+                "answerOptions": [
+                    {
+                        "text": "To indicate to routers within the same AS which path is preferred for outgoing traffic.",
+                        "rationale": "This describes the function of the LOCAL_PREF attribute, which is used internally.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To enable a neighbouring AS to choose the most preferred entry point into the advertising AS.",
+                        "rationale": "An AS sets the MED on advertised routes to suggest which link a neighbour should use to send traffic to it, with a lower value being preferred.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "To list all the AS numbers in the path to the destination network.",
+                        "rationale": "This is the function of the mandatory AS-PATH attribute, which is used for loop prevention.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To report a specific error code when a BGP session needs to be terminated.",
+                        "rationale": "Error reporting is the purpose of the NOTIFICATION message, not a path attribute like MED.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Think about how one AS can influence the routing decisions of a neighbouring AS."
+            },
+            {
+                "question": "An Autonomous System that does not carry transit traffic is known as a nontransit AS. What routing information does it typically advertise?",
+                "answerOptions": [
+                    {
+                        "text": "Only its own internally originated routes.",
+                        "rationale": "A nontransit AS, often called a stub network, participates in BGP to announce its own prefixes but does not pass on routes learned from other ASes.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "All routes learned from its providers, peers, and customers.",
+                        "rationale": "Advertising all learned routes is the behaviour of a transit AS, which allows traffic to pass through it between other networks.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Only the routes learned from its provider.",
+                        "rationale": "Advertising routes learned from a provider would make the AS a transit network for other parties, which contradicts the definition.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "It does not advertise any routes and only receives a default route.",
+                        "rationale": "While it might receive a default route, a nontransit AS must still advertise its own routes so that the rest of the internet knows how to reach it.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Consider the definition of 'transit traffic' – traffic that doesn't start or end in the AS."
+            },
+            {
+                "question": "What kind of information is contained in a BGP UPDATE message used to announce a new route?",
+                "answerOptions": [
+                    {
+                        "text": "Only an empty header to confirm the session is alive.",
+                        "rationale": "An empty message used as a heartbeat is the description of a KEEPALIVE message.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "An error code, a subcode, and optional error data.",
+                        "rationale": "This information is found in a NOTIFICATION message, which is sent to close a session due to an error.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "The BGP version, the sender's AS number, and a hold time.",
+                        "rationale": "These are parameters for establishing a connection and are sent in the initial OPEN message.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Path attributes like AS-PATH and NEXT-HOP, and the network prefix being advertised.",
+                        "rationale": "An UPDATE message bundles the route (NLRI) with all its associated characteristics (path attributes) to inform a peer about reachability.",
+                        "isCorrect": true
+                    }
+                ],
+                "hint": "Think about what a router needs to know to be able to use and evaluate a new path."
+            },
+            {
+                "question": "Under what circumstance would a BGP router send a NOTIFICATION message?",
+                "answerOptions": [
+                    {
+                        "text": "When it wants to advertise a new, more efficient route to a peer.",
+                        "rationale": "Advertising new routes is the function of the UPDATE message, which is a normal part of BGP operation.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Upon detecting a protocol error, such as a mismatched AS number in an OPEN message.",
+                        "rationale": "The NOTIFICATION message is specifically designed to report errors and is followed by the closing of the BGP connection.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "Every 60 seconds by default to ensure its peer is still responsive.",
+                        "rationale": "Periodic messages to check connectivity are KEEPALIVE messages, not NOTIFICATION messages.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "When it initially connects to a peer to establish session parameters.",
+                        "rationale": "The initial connection is established using an OPEN message to negotiate parameters like AS number and hold time.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "This type of message is sent when something has gone wrong with the BGP session."
+            },
+            {
+                "question": "In the context of AS relationships, what is the standard export rule when an AS is advertising routes to its provider?",
+                "answerOptions": [
+                    {
+                        "text": "It exports its own routes, plus all routes learned from its other providers and peers.",
+                        "rationale": "This would turn the provider into the customer's customer, which violates the typical business relationship and is known as the 'customer-transit problem'.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "It exports only the routes learned from its peers.",
+                        "rationale": "A provider is not interested in routes from its customer's peers; it is only concerned with reaching the customer and the customer's clients.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "It exports its own routes and the routes of its customers.",
+                        "rationale": "This is the correct policy. An AS pays a provider to grant it and its own customers connectivity to the rest of the internet.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "It exports no routes and only receives a default route from the provider.",
+                        "rationale": "For the provider and the internet to be able to send traffic to the AS, the AS must advertise which IP prefixes it is responsible for.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Consider the business relationship: what service is the customer paying the provider for?"
+            },
+            {
+                "question": "An OSPF router uses a specific database to store information about all other routers within its area, forming a complete map of the network topology. Which command is used to view this database?",
+                "answerOptions": [
+                    {
+                        "text": "show ip ospf neighbor",
+                        "isCorrect": false,
+                        "rationale": "This command displays the neighbor table, which is a list of adjacent routers with whom bidirectional communication has been established."
+                    },
+                    {
+                        "text": "show ip route",
+                        "isCorrect": false,
+                        "rationale": "This command displays the routing table, which contains the best paths to destinations after the SPF algorithm has been run."
+                    },
+                    {
+                        "text": "show ip ospf database",
+                        "isCorrect": true,
+                        "rationale": "This command displays the link-state database (LSDB), which contains all the Link-State Advertisements (LSAs) and represents the complete network topology for the area."
+                    },
+                    {
+                        "text": "show ip protocols",
+                        "isCorrect": false,
+                        "rationale": "This command provides a summary of the OSPF process, including the router ID, networks being advertised, and administrative distance, but not the detailed topology map."
+                    }
+                ],
+                "hint": "Think about the three main data structures OSPF uses and which one represents the overall network map."
+            },
+            {
+                "question": "What is the primary function of an OSPF Hello packet?",
+                "answerOptions": [
+                    {
+                        "text": "To request specific link-state records from a neighboring router.",
+                        "isCorrect": false,
+                        "rationale": "Requesting specific link-state records is the function of the Link-State Request (LSR) packet."
+                    },
+                    {
+                        "text": "To discover neighbors and establish adjacencies.",
+                        "isCorrect": true,
+                        "rationale": "Hello packets are sent periodically on OSPF-enabled interfaces to find other OSPF routers and form neighbor relationships."
+                    },
+                    {
+                        "text": "To send specifically requested link-state records to a neighbor.",
+                        "isCorrect": false,
+                        "rationale": "Sending link-state records in response to a request is handled by the Link-State Update (LSU) packet."
+                    },
+                    {
+                        "text": "To check for database synchronization between routers.",
+                        "isCorrect": false,
+                        "rationale": "Database synchronization is checked using Database Description (DBD) packets, which summarise the LSDB."
+                    }
+                ],
+                "hint": "Consider the very first step a router must take to begin communicating with other routers in an OSPF network."
+            },
+            {
+                "question": "In the OSPF link-state operational process, what immediately follows the flooding of LSAs to all routers in an area?",
+                "answerOptions": [
+                    {
+                        "text": "The establishment of neighbor adjacencies.",
+                        "isCorrect": false,
+                        "rationale": "Establishing neighbor adjacencies using Hello packets is one of the first steps, occurring before LSAs are flooded extensively."
+                    },
+                    {
+                        "text": "The insertion of the best paths into the routing table.",
+                        "isCorrect": false,
+                        "rationale": "This is the final step in the process, which happens only after the best paths have been calculated."
+                    },
+                    {
+                        "text": "The building of the topology table (LSDB).",
+                        "isCorrect": true,
+                        "rationale": "Each router uses the collected LSAs from all other routers to build its own identical copy of the link-state database, which represents the network topology."
+                    },
+                    {
+                        "text": "The election of the Designated Router (DR).",
+                        "isCorrect": false,
+                        "rationale": "The DR election happens during the neighbor adjacency process on multi-access networks, before the main LSA flooding and database building."
+                    }
+                ],
+                "hint": "What must a router construct after it has received all the pieces of the network map (LSAs)?"
+            },
+            {
+                "question": "Which of the following statements accurately describes a key difference between single-area and multiarea OSPF?",
+                "answerOptions": [
+                    {
+                        "text": "Single-area OSPF uses the SPF algorithm, while multiarea OSPF uses a distance-vector algorithm.",
+                        "isCorrect": false,
+                        "rationale": "Both single-area and multiarea OSPF are link-state protocols and fundamentally rely on the SPF algorithm to calculate the best paths."
+                    },
+                    {
+                        "text": "Multiarea OSPF is useful in larger networks to reduce processing and memory overhead.",
+                        "isCorrect": true,
+                        "rationale": "By dividing the network into areas, multiarea OSPF limits the scope of link-state flooding and SPF calculations, making it more scalable."
+                    },
+                    {
+                        "text": "Only single-area OSPF uses a backbone area known as Area 0.",
+                        "isCorrect": false,
+                        "rationale": "The backbone area (Area 0) is the core of a multiarea OSPF design, and all other areas must connect to it."
+                    },
+                    {
+                        "text": "Interconnecting routers, called Area Border Routers (ABRs), are only used in single-area OSPF.",
+                        "isCorrect": false,
+                        "rationale": "Area Border Routers (ABRs) are a fundamental component of multiarea OSPF, as they connect other areas to the backbone area."
+                    }
+                ],
+                "hint": "Consider the scalability challenges that OSPF might face in a very large network."
+            },
+            {
+                "question": "What is the order of precedence for determining an OSPF router ID in a Cisco router?",
+                "answerOptions": [
+                    {
+                        "text": "Highest active IP address, highest loopback IP address, explicitly configured ID.",
+                        "isCorrect": false,
+                        "rationale": "This order is the reverse of the actual precedence used by the router."
+                    },
+                    {
+                        "text": "Explicitly configured ID, highest loopback IP address, highest active IP address.",
+                        "isCorrect": true,
+                        "rationale": "The router will always prefer a manually configured router ID; if none exists, it looks for the highest IP on a loopback, and finally, the highest IP on an active physical interface."
+                    },
+                    {
+                        "text": "Highest loopback IP address, explicitly configured ID, highest active IP address.",
+                        "isCorrect": false,
+                        "rationale": "While the loopback address is preferred over a physical interface address, an explicitly configured ID takes the highest priority."
+                    },
+                    {
+                        "text": "Lowest active IP address, lowest loopback IP address, explicitly configured ID.",
+                        "isCorrect": false,
+                        "rationale": "OSPF uses the highest IP address for automatic selection, not the lowest."
+                    }
+                ],
+                "hint": "Think about which method gives a network administrator the most direct control."
+            },
+            {
+                "question": "A router has interfaces with speeds of 100 Mbps (Fast Ethernet) and 1 Gbps (Gigabit Ethernet). Using the default Cisco OSPF reference bandwidth of 100,000,000 bps, what will be the calculated cost for these interfaces?",
+                "answerOptions": [
+                    {
+                        "text": "A cost of 10 for Fast Ethernet and 1 for Gigabit Ethernet.",
+                        "isCorrect": false,
+                        "rationale": "This reflects an older calculation method or a different reference bandwidth. The formula is reference bandwidth divided by interface bandwidth."
+                    },
+                    {
+                        "text": "A cost of 1 for Fast Ethernet and a cost of 1 for Gigabit Ethernet.",
+                        "isCorrect": true,
+                        "rationale": "The default reference bandwidth (100,000,000 bps) divided by the Fast Ethernet bandwidth (100,000,000 bps) is 1. Divided by Gigabit Ethernet (1,000,000,000 bps) is 0.1, which rounds up to 1, making them appear equal."
+                    },
+                    {
+                        "text": "A cost of 100 for Fast Ethernet and 1000 for Gigabit Ethernet.",
+                        "isCorrect": false,
+                        "rationale": "The cost is inversely proportional to bandwidth; a higher bandwidth should result in a lower cost, not a higher one."
+                    },
+                    {
+                        "text": "A cost of 64 for Fast Ethernet and 1 for Gigabit Ethernet.",
+                        "isCorrect": false,
+                        "rationale": "A cost of 64 is typically associated with a serial link (T1), not an Ethernet interface."
+                    }
+                ],
+                "hint": "Recall the formula for OSPF cost and remember that the result must be an integer."
+            },
+            {
+                "question": "Which of the following is a key difference in how OSPFv3 is configured compared to OSPFv2?",
+                "answerOptions": [
+                    {
+                        "text": "OSPFv3 is configured globally on the router using the `network` command.",
+                        "isCorrect": false,
+                        "rationale": "The `network` command is characteristic of OSPFv2 configuration; OSPFv3 uses a different method."
+                    },
+                    {
+                        "text": "OSPFv3 is enabled directly on each interface.",
+                        "isCorrect": true,
+                        "rationale": "OSPFv3 for IPv6 is enabled on a per-interface basis using a command like `ipv6 ospf <process-id> area <area-id>`."
+                    },
+                    {
+                        "text": "OSPFv3 uses a different algorithm than SPF to calculate routes.",
+                        "isCorrect": false,
+                        "rationale": "Both OSPFv2 and OSPFv3 are link-state protocols that use the Shortest Path First (SPF) algorithm."
+                    },
+                    {
+                        "text": "OSPFv3 does not require a router ID to be configured.",
+                        "isCorrect": false,
+                        "rationale": "OSPFv3 still requires a 32-bit router ID, which must be manually configured if no IPv4 addresses are present on the router."
+                    }
+                ],
+                "hint": "Consider how OSPFv2 identifies which interfaces participate in the routing process versus the more direct method used for IPv6."
+            },
+            {
+                "question": "During OSPF database synchronization, two routers have reached the ExStart state. What is decided in this state?",
+                "answerOptions": [
+                    {
+                        "text": "Which router will be the Designated Router (DR).",
+                        "isCorrect": false,
+                        "rationale": "The DR and BDR election is completed in the Two-Way state, before database synchronization begins."
+                    },
+                    {
+                        "text": "If the neighbors have compatible Hello packet parameters.",
+                        "isCorrect": false,
+                        "rationale": "Parameter compatibility is checked when Hello packets are first received, leading to the Two-Way state."
+                    },
+                    {
+                        "text": "Which router will be the master and initiate the DBD packet exchange.",
+                        "isCorrect": true,
+                        "rationale": "In the ExStart state, the routers elect a master and a slave based on the higher router ID. The master controls the subsequent exchange of Database Description (DBD) packets."
+                    },
+                    {
+                        "text": "The final best routes to all networks in the area.",
+                        "isCorrect": false,
+                        "rationale": "Best routes are only calculated after the databases are fully synchronized and the SPF algorithm is run."
+                    }
+                ],
+                "hint": "This state is the beginning of the database exchange process; think about what needs to be established to control that exchange."
+            },
+            {
+                "question": "A network engineer wants to advertise a network connected to an interface into OSPF, but prevent the router from sending OSPF packets out of that same interface. What is the most appropriate command to achieve this?",
+                "answerOptions": [
+                    {
+                        "text": "The `no bandwidth` command on the interface.",
+                        "isCorrect": false,
+                        "rationale": "This command would affect the OSPF cost calculation but would not stop OSPF packets from being sent."
+                    },
+                    {
+                        "text": "The `clear ip ospf process` command.",
+                        "isCorrect": false,
+                        "rationale": "This command resets the entire OSPF process, which is a disruptive action and does not achieve the specific goal."
+                    },
+                    {
+                        "text": "The `passive-interface` command in router configuration mode.",
+                        "isCorrect": true,
+                        "rationale": "This command is specifically designed to suppress routing updates on an interface while still allowing the network on that interface to be advertised to other OSPF neighbors."
+                    },
+                    {
+                        "text": "The `no network` command in router configuration mode.",
+                        "isCorrect": false,
+                        "rationale": "Removing the `network` command would prevent the network from being advertised into OSPF at all."
+                    }
+                ],
+                "hint": "Look for the feature designed for interfaces connected to LANs where no other OSPF routers exist."
+            },
+            {
+                "question": "What is the multicast destination address used by OSPFv3 routers to communicate with all other OSPFv3 routers on a link?",
+                "answerOptions": [
+                    {
+                        "text": "224.0.0.5",
+                        "isCorrect": false,
+                        "rationale": "This is the multicast address used by OSPFv2 for all OSPF routers."
+                    },
+                    {
+                        "text": "224.0.0.6",
+                        "isCorrect": false,
+                        "rationale": "This is the multicast address used by OSPFv2 for communicating with the DR and BDR."
+                    },
+                    {
+                        "text": "FF02::5",
+                        "isCorrect": true,
+                        "rationale": "OSPFv3 uses this link-local scope multicast address for communication with all OSPFv3-enabled routers on the same link."
+                    },
+                    {
+                        "text": "FF02::6",
+                        "isCorrect": false,
+                        "rationale": "This is the multicast address used by OSPFv3 for communicating with the DR and BDR, not all routers."
+                    }
+                ],
+                "hint": "Remember that OSPFv3 is for IPv6, and it has its own set of reserved multicast addresses."
+            }
+        ]
+    },
+    {
+        "chapter": 6,
+        "quiz": [
+            {
+                "question": "In IPSec, which mode protects the entire original IP packet, including its header, by encapsulating it within a new IP packet?",
+                "answerOptions": [
+                    {
+                        "text": "Transport mode",
+                        "rationale": "This mode is primarily used for host-to-host security and only protects the payload from the transport layer, leaving the original IP header intact and unprotected.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Tunnel mode",
+                        "rationale": "This mode encapsulates the complete original IP datagram and adds a new IP header, making it ideal for creating a secure tunnel between gateways like routers.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "Authentication mode",
+                        "rationale": "IPSec does not define an 'Authentication mode'; authentication is a service provided by its protocols (AH and ESP) within either Transport or Tunnel mode.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Encapsulation mode",
+                        "rationale": "While encapsulation is a key process in IPSec, it is a mechanism used within Tunnel mode rather than being a distinct mode itself.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Consider how a VPN connects two separate networks over a public one."
+            },
+            {
+                "question": "Which security service is provided by the Encapsulating Security Payload (ESP) protocol but is absent in the Authentication Header (AH) protocol?",
+                "answerOptions": [
+                    {
+                        "text": "Message authentication",
+                        "rationale": "Both AH and ESP protocols provide this service to ensure the integrity of the message.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Replay attack protection",
+                        "rationale": "Both protocols utilise sequence numbers to guard against an attacker retransmitting captured packets.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Confidentiality",
+                        "rationale": "ESP can encrypt the payload to ensure privacy, a feature that is not offered by the AH protocol.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "Data source authentication",
+                        "rationale": "This service, also known as entity authentication, is offered by both AH and ESP to verify the origin of the data.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Think about the 'E' in ESP and what it implies about data privacy."
+            },
+            {
+                "question": "At which layer of the TCP/IP model are IPSec protocols designed to operate?",
+                "answerOptions": [
+                    {
+                        "text": "Application Layer",
+                        "rationale": "Security at this layer is typically handled by protocols like PGP for email, not by IPSec.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Transport Layer",
+                        "rationale": "This layer is where protocols like TCP and UDP operate; security here is provided by SSL/TLS, not IPSec.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Network Layer",
+                        "rationale": "IPSec is specifically designed to add security services directly to the IP protocol at this layer.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "Physical Layer",
+                        "rationale": "This layer deals with the physical transmission of bits over a medium and does not have security protocols like IPSec applied to it.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "IPSec's name provides a clue about the fundamental internet protocol it aims to secure."
+            },
+            {
+                "question": "What is the primary function of a Security Association (SA) in the IPSec framework?",
+                "answerOptions": [
+                    {
+                        "text": "To compress data packets before transmission to save bandwidth.",
+                        "rationale": "While some security protocols offer compression, the main purpose of an SA is not related to data compression.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To establish a set of security parameters for a connection.",
+                        "rationale": "An SA defines the specific algorithms, keys, and protocols to be used for protecting the communication between two parties, effectively creating a connection-oriented relationship.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "To fragment large IP packets into smaller ones for easier routing.",
+                        "rationale": "Packet fragmentation is a standard function of the IP protocol itself and is not the purpose of a Security Association.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To assign temporary IP addresses to hosts in a VPN.",
+                        "rationale": "IP address assignment is handled by services like DHCP, not by the Security Association within IPSec.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "This concept transforms the connectionless IP protocol into something more like a secure, established link."
+            },
+            {
+                "question": "The Internet Key Exchange (IKE) protocol is a combination of three other protocols. Which of the following is NOT one of them?",
+                "answerOptions": [
+                    {
+                        "text": "Oakley",
+                        "rationale": "This protocol, based on the Diffie-Hellman key exchange, is a core component of IKE.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "SKEME",
+                        "rationale": "This protocol contributes its method of using public-key encryption for entity authentication to the IKE process.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "ISAKMP",
+                        "rationale": "This protocol provides the framework and standardised message formats for IKE exchanges to establish Security Associations.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Kerberos",
+                        "rationale": "Kerberos is a separate network authentication protocol and is not one of the three foundational protocols that make up IKE.",
+                        "isCorrect": true
+                    }
+                ],
+                "hint": "Review the diagram illustrating the components that form the Internet Key Exchange."
+            },
+            {
+                "question": "According to the source material, which IPSec protocol is identified by the IP protocol field value of 50?",
+                "answerOptions": [
+                    {
+                        "text": "ESP (Encapsulating Security Payload)",
+                        "rationale": "The procedure for adding an ESP header involves changing the protocol value in the preceding IP header to 50.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "AH (Authentication Header)",
+                        "rationale": "When an AH is added, the protocol value in the preceding IP header is changed to 51, not 50.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "IKE (Internet Key Exchange)",
+                        "rationale": "IKE is a key management protocol that operates over UDP, typically on port 500, and does not have its own IP protocol number in this context.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "SSL (Secure Sockets Layer)",
+                        "rationale": "SSL operates at the Transport layer on top of TCP, so it does not have a designated IP protocol field value.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Check the final step listed in the procedure for applying each IPSec protocol."
+            },
+            {
+                "question": "What is a key difference in how authentication is handled between the AH and ESP protocols in IPSec?",
+                "answerOptions": [
+                    {
+                        "text": "AH authenticates parts of the IP header, while ESP does not authenticate the IP header at all.",
+                        "rationale": "AH's authentication calculation includes immutable fields of the IP header, whereas ESP's calculation only covers its own header and the encapsulated payload.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "ESP uses a hash function for authentication, whereas AH uses public-key encryption.",
+                        "rationale": "Both protocols use a keyed-hash function (a MAC) to create a message digest for authentication.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "AH places the authentication data in a trailer, while ESP places it in a header.",
+                        "rationale": "This is reversed; AH is an authentication header, while ESP places its authentication data at the end of the packet.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "ESP provides authentication for the payload, but AH only authenticates the header.",
+                        "rationale": "Both AH and ESP provide authentication and integrity for the transport layer payload.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Consider what parts of the packet each protocol is designed to protect and verify."
+            },
+            {
+                "question": "Which feature is used in both AH and ESP to protect against an attacker capturing and retransmitting a packet later?",
+                "answerOptions": [
+                    {
+                        "text": "Security Parameter Index (SPI)",
+                        "rationale": "The SPI acts as an identifier for the Security Association but does not prevent the retransmission of packets within that association.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Sequence Number",
+                        "rationale": "This monotonically increasing number allows the receiver to track packets and discard duplicates or out-of-order packets that fall outside a defined window.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "Padding",
+                        "rationale": "Padding is used to align the payload to a specific block size for encryption or hashing algorithms, not to prevent replay attacks.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Next Header field",
+                        "rationale": "This field simply indicates the protocol type of the payload that follows, similar to the protocol field in the main IP header.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "This mechanism ensures that each packet in a sequence is unique and can be ordered correctly."
+            },
+            {
+                "question": "In the context of SSL/TLS, what three algorithm types are combined to define a 'cipher suite'?",
+                "answerOptions": [
+                    {
+                        "text": "Fragmentation, Compression, and Framing algorithms",
+                        "rationale": "These are services or steps in the SSL process, not the cryptographic algorithms that define a cipher suite.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Key Exchange, Encryption, and Hash algorithms",
+                        "rationale": "An SSL cipher suite specifies one algorithm for each of these three functions, such as `SSL_DHE_RSA_WITH_DES_CBC_SHA`.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "Authentication, Authorisation, and Accounting algorithms",
+                        "rationale": "This refers to the 'AAA' framework for network security and is a different concept from the cryptographic suite used by SSL/TLS.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Session, Connection, and Handshake protocols",
+                        "rationale": "These are different protocols within the SSL/TLS architecture, not the components of a cipher suite.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Examine the format of a typical cipher suite name, such as `SSL_key-exchange-algo_WITH_encryption-algo_hash-algo`."
+            },
+            {
+                "question": "What is the primary goal of the SSL/TLS protocols?",
+                "answerOptions": [
+                    {
+                        "text": "To provide security services for connectionless network layer protocols like IP.",
+                        "rationale": "This describes the role of IPSec; SSL/TLS operates at a higher layer and relies on a connection-oriented protocol.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To secure email messages for the SMTP protocol.",
+                        "rationale": "While SSL/TLS can be used to secure the connection for SMTP, dedicated protocols like PGP are designed for end-to-end email security.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To provide end-to-end security services for applications using a reliable transport protocol.",
+                        "rationale": "SSL/TLS is designed to sit on top of a reliable protocol like TCP to secure data for application layer protocols such as HTTP.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "To manage the exchange of cryptographic keys for network routers.",
+                        "rationale": "This function is more closely associated with the IKE protocol used by IPSec, not the primary goal of SSL/TLS.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Think about where SSL/TLS is positioned within the internet protocol stack and what kind of protocol it sits on top of."
+            }
+        ]
+    },
+    {
+        "chapter": 7,
+        "quiz": [
+            {
+                "question": "What is the primary transport layer protocol used by HTTP/3 to overcome the limitations of its predecessors?",
+                "answerOptions": [
+                    {
+                        "text": "TCP",
+                        "rationale": "TCP is the transport protocol used by earlier versions like HTTP/1.1 and HTTP/2, and its limitations, such as head-of-line blocking, prompted the move to a new protocol for HTTP/3.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "QUIC",
+                        "rationale": "HTTP/3 is built on top of QUIC, a transport protocol that uses UDP to provide faster connection establishment and eliminate transport-layer head-of-line blocking.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "TLS",
+                        "rationale": "While TLS provides encryption and is integrated into QUIC, it is a security protocol, not the underlying transport protocol responsible for data transmission.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "UDP",
+                        "rationale": "Although QUIC runs over UDP, QUIC itself is the more specific transport protocol that adds reliability, congestion control, and security features that raw UDP lacks.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Consider the protocol that was specifically developed to address the shortcomings of TCP for modern web traffic."
+            },
+            {
+                "question": "Which company initially developed the QUIC protocol before it was standardised by the IETF?",
+                "answerOptions": [
+                    {
+                        "text": "Microsoft",
+                        "rationale": "While Microsoft is a major contributor to web standards, the initial development of this protocol began at another large technology company around 2012.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "IETF",
+                        "rationale": "The Internet Engineering Task Force (IETF) was responsible for standardising QUIC and HTTP/3, but the protocol's initial creation and development happened elsewhere.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Google",
+                        "rationale": "Google started working on QUIC around 2012 to address TCP's shortcomings and improve the performance of its web services, later proposing it for standardisation.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "Cloudflare",
+                        "rationale": "Cloudflare is a major adopter and proponent of HTTP/3 and QUIC, providing it as part of their CDN service, but they were not the original developers of the protocol.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Think about which major tech company has a vested interest in speeding up web browsing and video streaming."
+            },
+            {
+                "question": "What is the key advantage of QUIC's connection establishment process compared to a traditional TCP + TLS handshake?",
+                "answerOptions": [
+                    {
+                        "text": "It eliminates the handshake process entirely.",
+                        "rationale": "The handshake is not eliminated but is significantly streamlined. An initial connection still requires an exchange of information between the client and server.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "It combines the transport and cryptographic handshakes to reduce round trips.",
+                        "rationale": "QUIC is designed to perform the transport setup and TLS cryptographic negotiation in a single round trip (1-RTT), whereas TCP and TLS require separate, sequential handshakes.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "It uses multiple parallel TCP connections for a faster handshake.",
+                        "rationale": "This describes a different optimisation technique and is contrary to QUIC's design, which aims to establish a single, efficient connection over UDP.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "It relies on a slower but more secure multi-step verification.",
+                        "rationale": "The goal of QUIC's design is to decrease latency and speed up connections without compromising on modern security standards.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Consider how many times the client and server need to communicate back and forth before data can be sent."
+            },
+            {
+                "question": "What feature of QUIC allows a session to persist without interruption even if the user's IP address changes, such as when switching from Wi-Fi to a mobile network?",
+                "answerOptions": [
+                    {
+                        "text": "Connection IDs",
+                        "rationale": "QUIC uses connection IDs, exchanged during the initial handshake, to identify a connection, allowing it to continue even if the underlying IP address and port change.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "Forward Error Correction (FEC)",
+                        "rationale": "FEC is a technique used to recover lost packets without retransmission, enhancing reliability, but it is not the mechanism for maintaining a connection across network changes.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "0-RTT Resumption",
+                        "rationale": "0-RTT allows for faster reconnections to a known server by reusing session information, but connection migration handles changes within an already active session.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "QPACK Compression",
+                        "rationale": "QPACK is an algorithm used to compress HTTP headers efficiently, which reduces bandwidth but is unrelated to session continuity during network switches.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Think about how the connection is identified. Does it rely on network information that can change?"
+            },
+            {
+                "question": "Which of the following is identified as a potential limitation or challenge of adopting HTTP/3 and QUIC?",
+                "answerOptions": [
+                    {
+                        "text": "A lack of built-in encryption, requiring additional protocols.",
+                        "rationale": "On the contrary, one of QUIC's strengths is its deeply integrated, mandatory TLS-based encryption, making it more secure by default.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Incompatibility with modern web browsers.",
+                        "rationale": "Major web servers, browsers, and CDNs have already implemented support for HTTP/3, making this statement inaccurate.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Difficulty integrating with network infrastructure that expects TCP.",
+                        "rationale": "Because QUIC operates over UDP, some existing firewalls, NATs, and other network middleboxes may not be configured to handle it correctly, potentially blocking or throttling traffic.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "The removal of multiplexing, leading to slower page loads.",
+                        "rationale": "HTTP/3 and QUIC enhance multiplexing by solving the head-of-line blocking problem present in HTTP/2's implementation over TCP.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Consider how new protocols interact with older equipment in the middle of the network path."
+            },
+            {
+                "question": "What is the primary purpose of the 0-RTT (Zero Round-Trip Time) feature in QUIC?",
+                "answerOptions": [
+                    {
+                        "text": "To allow the very first connection to a server to be established instantly.",
+                        "rationale": "The first connection to a server always requires at least one round trip (1-RTT) to establish security parameters. 0-RTT applies to subsequent connections.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To enable faster reconnections by using previously stored session information.",
+                        "rationale": "After a successful initial connection, the client can store a session ticket and use it on a subsequent connection to send encrypted data immediately, without a full handshake.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "To guarantee that no data packets are ever lost during transmission.",
+                        "rationale": "Packet loss is handled by other mechanisms like retransmission and Forward Error Correction. 0-RTT is focused on reducing connection latency.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "To allow servers to push resources to the client without being asked.",
+                        "rationale": "Server Push was a feature of HTTP/2. 0-RTT is specifically about the speed of establishing a new connection to a known server.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "This feature is about making return visits to a website faster than the first visit."
+            },
+            {
+                "question": "How does HTTP/3's use of QUIC solve the head-of-line blocking problem that affected HTTP/2?",
+                "answerOptions": [
+                    {
+                        "text": "By opening a separate TCP connection for every single request.",
+                        "rationale": "This would be inefficient and is similar to how HTTP/1.1 operated without keep-alive. HTTP/3 still uses a single connection.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "By processing each data stream independently at the transport layer.",
+                        "rationale": "In QUIC, if a packet for one stream is lost, it only blocks that specific stream, allowing other streams on the same connection to continue processing, unlike TCP where a single lost packet blocks all streams.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "By compressing HTTP headers more efficiently with QPACK.",
+                        "rationale": "QPACK reduces data overhead, which improves performance, but it does not address the issue of how lost packets are handled by the transport protocol.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "By completely eliminating the need for packet retransmission.",
+                        "rationale": "Packet loss is an unavoidable reality on the internet. QUIC still retransmits lost packets but does so in a way that doesn't block unrelated data streams.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Focus on what happens when a single packet is lost within a connection carrying multiple streams of data."
+            },
+            {
+                "question": "According to the provided history, which version of HTTP first introduced persistent connections and the 'Host' header?",
+                "answerOptions": [
+                    {
+                        "text": "HTTP/0.9",
+                        "rationale": "This was the earliest 'one-line' version, capable of only simple GET requests without any headers.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "HTTP/1.0",
+                        "rationale": "HTTP/1.0 introduced features like status codes and Content-Type headers, but persistent connections were not a standard part of this version.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "HTTP/1.1",
+                        "rationale": "The specification for HTTP/1.1 introduced these key features to allow connection reuse and enable virtual hosting on a single IP address.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "HTTP/2",
+                        "rationale": "HTTP/2 built upon the foundations of HTTP/1.1 but its key innovations were multiplexing and binary framing, not persistent connections or the Host header.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "This update, released in 1997, became the long-standing standard for the web for nearly two decades."
+            },
+            {
+                "question": "Which technique does QUIC employ to enhance connection reliability by allowing the receiver to reconstruct lost packets without requiring immediate retransmission?",
+                "answerOptions": [
+                    {
+                        "text": "Multiplexing",
+                        "rationale": "Multiplexing allows multiple data streams to run over a single connection but does not in itself provide a mechanism for recovering lost data.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Connection Migration",
+                        "rationale": "This feature maintains a connection when a client's network address changes, which improves reliability, but it is not the technique used for reconstructing packets.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Dynamic Congestion Control",
+                        "rationale": "Congestion control algorithms adjust the sending rate to avoid network overload, which can reduce packet loss, but they don't reconstruct lost packets.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "Forward Error Correction (FEC)",
+                        "rationale": "FEC involves sending redundant data along with the original packets, which allows the receiver to rebuild lost packets from the information it has, maintaining a smooth data stream.",
+                        "isCorrect": true
+                    }
+                ],
+                "hint": "This proactive method involves sending extra data to help repair potential transmission errors."
+            },
+            {
+                "question": "What is the relationship between HTTP/3 and QUIC?",
+                "answerOptions": [
+                    {
+                        "text": "They are two competing protocols designed to replace HTTP/2.",
+                        "rationale": "These protocols are not in competition; they are designed to work together as a pair, with one operating at the application layer and the other at the transport layer.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "HTTP/3 is the application protocol, and QUIC is the transport protocol it runs on.",
+                        "rationale": "This correctly describes the protocol stack, where HTTP/3 defines the semantics of requests and responses, and QUIC handles the reliable, secure transport of that data.",
+                        "isCorrect": true
+                    },
+                    {
+                        "text": "QUIC is a new name for HTTP/3, and they are the same thing.",
+                        "rationale": "While closely related, they are distinct protocols operating at different layers of the network model, similar to how HTTP/1.1 is distinct from TCP.",
+                        "isCorrect": false
+                    },
+                    {
+                        "text": "HTTP/3 is a security layer that encrypts data for the QUIC protocol.",
+                        "rationale": "This inverts the relationship. Security is built into the transport protocol (QUIC) using TLS, upon which the application protocol (HTTP/3) runs.",
+                        "isCorrect": false
+                    }
+                ],
+                "hint": "Think about the relationship between HTTP/1.1 and TCP, and how the new versions map to that model."
             }
         ]
     }
